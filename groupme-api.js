@@ -6,8 +6,7 @@ const https = require("https")
 
 ////////// INITIALIZE VARS //////////
 const baseurl = "https://api.groupme.com/"
-const helptext = "Anurag Commands:\n" +
-                  "/everyone - Mentions everybody in the group (admins only)\n" +
+const helptext = "Kobe Commands:\n" +
                   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
                   "/help - Uhhh... you're here"
 
@@ -48,27 +47,9 @@ const createPost = async (message) => {
     }
 }
 
-// Get members
-const getEveryone = async () => {
-  const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
-  const desturl = new URL(getpath, baseurl)
-  const response = await got(desturl, {
-      responseType: "json"
-  })
-
-  memberdict = response.body.response.members
-  console.log(memberdict)
-  let memberarr = []
-  for (const key of Object.entries(memberdict)) {
-    memberarr.push(key[1].user_id)
-  }
-
-  return memberarr
-}
-
 // Get members from the nearest upcoming event
 const getBallers = async () => {
-  const limit = 3
+  const limit = 5
   const date = new Date().getTime()
   const yesterdaylong = date - 24*60*60*1000
   const yesterday = new Date(yesterdaylong)
@@ -124,49 +105,6 @@ const getAdmins = async () => {
   return adminarr
 }
 
-// Create mention post
-const mentionEveryone = async (slashtext) => {
-  console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
-  let text = slashtext.replace("/", "@")
-  const message = {
-      text,
-      bot_id,
-      attachments: [{ loci: [], type: "mentions", user_ids: [] }]
-    }
-
-  // Get member IDs as an array and push to message variable
-  members = await getEveryone()
-  for (let i = 0; i < members.length; i++) {
-    message.attachments[0].loci.push([i, i + 1])
-    message.attachments[0].user_ids.push(members[i])
-  }
-
-  // Prep message as JSON and construct packet
-  const json = JSON.stringify(message)
-  const groupmeAPIOptions = {
-    agent: false,
-    host: "api.groupme.com",
-    path: "/v3/bots/post",
-    port: 443,
-    method: "POST",
-    headers: {
-      "Content-Length": json.length,
-      "Content-Type": "application/json",
-      "X-Access-Token": accesstoken
-    }
-  }
-
-  // Send request
-  const req = https.request(groupmeAPIOptions, response => {
-    let data = ""
-    response.on("data", chunk => (data += chunk))
-    response.on("end", () =>
-      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
-    )
-  })
-  req.end(json)
-}
-
 // Create mention post for people that replied going to the closest event
 const mentionBallers = async (slashtext) => {
   console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
@@ -208,11 +146,6 @@ const mentionBallers = async (slashtext) => {
     )
   })
   req.end(json)
-}
-
-// Mention anyone who hasn't answered a poll yet
-const noPoll = async(text) => {
-  return
 }
 
 // Post pic from URL
@@ -267,7 +200,6 @@ const getBots = async () => {
 ////////// REGEX //////////
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
-const everyoneregex = /^(\s)*\/everyone/i
 const ballersregex = /^(\s)*\/ballers/i
 
 ////////// EXPORTS //////////
@@ -279,10 +211,6 @@ exports.postPic = postPic
 exports.helpregex = helpregex
 exports.helptext = helptext
 
-// Everyone
-exports.everyoneregex = everyoneregex
-exports.getAdmins = getAdmins
-
 // Ballers
 exports.getBallers = getBallers
 exports.ballersregex = ballersregex
@@ -292,5 +220,3 @@ exports.mentionBallers = mentionBallers
 exports.coolregex = coolregex
 exports.getBots = getBots
 exports.createPost = createPost
-exports.getEveryone = getEveryone
-exports.mentionEveryone = mentionEveryone

@@ -2,7 +2,6 @@
 const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
-  everyoneregex, mentionEveryone,
   ballersregex, mentionBallers,
   getAdmins, postPic,
   coolregex, createPost
@@ -45,17 +44,6 @@ const respond = async (req, res) => {
       }
 
       ////////// ADMIN CONTROLS //////////
-      // Only allow admins to mention everyone
-      else if (everyoneregex.test(requesttext)) {
-        let adminarr = await getAdmins()
-        if (adminarr.indexOf(senderid) > -1) {
-          await mentionEveryone(requesttext)
-        }
-        else {
-          console.log(`${sendername} attempted to mention everybody`)
-        }
-      }
-
       // Only allow admins to mention ballers
       else if (ballersregex.test(requesttext)) {
         let adminarr = await getAdmins()
