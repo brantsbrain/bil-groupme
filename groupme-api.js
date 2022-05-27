@@ -220,3 +220,4 @@ exports.mentionBallers = mentionBallers
 exports.coolregex = coolregex
 exports.getBots = getBots
 exports.createPost = createPost
+exports.getAdmins = getAdmins
