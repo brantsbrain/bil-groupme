@@ -51,6 +51,7 @@ const respond = async (req, res) => {
           await mentionBallers(requesttext)
         }
         else {
+          createPost(`You're not an admin, ${sendername}!`)
           console.log(`${sendername} attempted to mention everybody`)
         }
       }

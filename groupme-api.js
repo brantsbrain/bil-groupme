@@ -54,7 +54,7 @@ const getBallers = async () => {
   const yesterdaylong = date - 24*60*60*1000
   const yesterday = new Date(yesterdaylong)
   var end_at = yesterday.toISOString()
-  console.log(`end_at set to: ${end_at}`)
+
   const getpath = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
   const response = await got(desturl, {
@@ -63,7 +63,6 @@ const getBallers = async () => {
 
   console.log(response.body.response)
 
-  // memberarr = response.body.response.events[0].going
   const eventarr = response.body.response.events
   let goodevent = []
 
@@ -198,9 +197,9 @@ const getBots = async () => {
 }
 
 ////////// REGEX //////////
+const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
-const ballersregex = /^(\s)*\/ballers/i
 
 ////////// EXPORTS //////////
 
