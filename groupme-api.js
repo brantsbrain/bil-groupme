@@ -57,14 +57,15 @@ const sendDm = async (userid, message) => {
     const postPath = `/v3/direct_messages?token=${accesstoken}`
     const desturl = new URL(postPath, baseurl)
 
-    let guid = Math.random().toString(36).slice(2)
+    let guid = String(Math.random().toString(36).slice(2))
+    console.log(`Using GUID: ${guid}`)
 
     const response = await got.post(desturl, {
         json: {
             "source_guid" : guid,
             "recipient_id" : userid,
-            "bot_id": bot_id,
-            "text": String(message)
+            "bot_id" : bot_id,
+            "text" : String(message)
         },
     })
 
