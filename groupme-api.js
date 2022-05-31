@@ -52,9 +52,10 @@ const createPost = async (message) => {
 }
 
 // Tell the bot to create a post within its group
-const sendDm = async (recipient_id, slashtext) => {
+const sendDm = async (userid, slashtext) => {
   console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
   let text = slashtext.replace("/", "@")
+  let recipient_id = String(userid)
   const source_guid = String(Math.random().toString(36).substring(2,34))
   console.log(source_guid)
   const message = {
@@ -76,8 +77,7 @@ const sendDm = async (recipient_id, slashtext) => {
     headers: {
       "Content-Length": json.length,
       "Content-Type": "application/json",
-      "X-Access-Token": accesstoken,
-      "recipient_id" : recipient_id
+      "X-Access-Token": accesstoken
     }
   }
 
