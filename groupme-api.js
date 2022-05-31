@@ -53,8 +53,8 @@ const createPost = async (message) => {
 
 // Tell the bot to create a post within its group
 const sendDm = async (userid, message) => {
-    console.log(`Creating new post (${message.length}): ${message}`)
-    const postPath = "/v3/direct_messages"
+    console.log(`Sending DM (${message.length}): ${message}`)
+    const postPath = `/v3/direct_messages?token=${accesstoken}`
     const desturl = new URL(postPath, baseurl)
 
     let guid = Math.random().toString(36).slice(2)
@@ -64,8 +64,7 @@ const sendDm = async (userid, message) => {
             "source_guid" : guid,
             "recipient_id" : userid,
             "bot_id": bot_id,
-            "text": String(message),
-            "token" : accesstoken
+            "text": String(message)
         },
     })
 
