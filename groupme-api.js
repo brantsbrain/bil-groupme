@@ -52,27 +52,44 @@ const createPost = async (message) => {
 }
 
 // Tell the bot to create a post within its group
-const sendDm = async (userid, message) => {
-    console.log(`Sending DM (${message.length}): ${message}`)
-    const postPath = `/v3/direct_messages?token=${accesstoken}`
-    const desturl = new URL(postPath, baseurl)
-
-    let guid = String(Math.random().toString(36).slice(2))
-    console.log(`Using GUID: ${guid}`)
-
-    const response = await got.post(desturl, {
-        json: {
-            "source_guid" : guid,
-            "recipient_id" : userid,
-            "bot_id" : bot_id,
-            "text" : String(message)
-        },
-    })
-
-    const statusCode = response.statusCode
-    if (statusCode !== 201) {
-        console.log(`Error creating a post ${statusCode}`)
+const sendDm = async (recipient_id, slashtext) => {
+  console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
+  let text = slashtext.replace("/", "@")
+  const source_guid = String(Math.random().toString(36).substring(2,34))
+  console.log(source_guid)
+  const message = {
+      recipient_id,
+      source_guid,
+      text
+      // bot_id,
+      // attachments: [{ loci: [], type: "mentions", user_ids: [] }]
     }
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: "/v3/direct_messages",
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "application/json",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
+
 }
 
 // Get members from the nearest upcoming event
