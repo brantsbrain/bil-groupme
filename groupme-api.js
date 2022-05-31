@@ -57,14 +57,12 @@ const sendDm = async (userid, slashtext) => {
   let text = slashtext.replace("/", "@")
   const recipient_id = String(userid)
   const source_guid = String(Math.random().toString(36).substring(2,34))
-  console.log(source_guid)
+
   const message = {
     direct_message : {
       recipient_id,
       source_guid,
-      text,
-      // bot_id,
-      // attachments: [{ loci: [], type: "", user_ids: [] }]
+      text
       }
     }
 
