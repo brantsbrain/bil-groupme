@@ -64,7 +64,7 @@ const sendDm = async (userid, slashtext) => {
       source_guid,
       text,
       // bot_id,
-      attachments: [{ loci: [], type: "", user_ids: [] }]
+      // attachments: [{ loci: [], type: "", user_ids: [] }]
       }
     }
 
