@@ -36,9 +36,7 @@ const respond = async (req, res) => {
 
       // Post a cool face
       if (coolregex.test(requesttext)) {
-        await getAdmins()
-        await sendDm(senderid, "Test DM")
-        // await createCoolFaceMessage()
+        await createCoolFaceMessage()
       }
 
       // Post help text
@@ -55,7 +53,7 @@ const respond = async (req, res) => {
           await mentionBallers(requesttext)
         }
         else {
-          await createPost(`You're not an admin, ${sendername}!`)
+          await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
           console.log(`${sendername} attempted to mention everybody`)
         }
       }
