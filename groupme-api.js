@@ -59,11 +59,13 @@ const sendDm = async (userid, slashtext) => {
   const source_guid = String(Math.random().toString(36).substring(2,34))
   console.log(source_guid)
   const message = {
+    direct_message : {
       recipient_id,
       source_guid,
       text,
       // bot_id,
       attachments: [{ loci: [], type: "", user_ids: [] }]
+      }
     }
 
   // Prep message as JSON and construct packet
