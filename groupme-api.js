@@ -76,7 +76,8 @@ const sendDm = async (recipient_id, slashtext) => {
     headers: {
       "Content-Length": json.length,
       "Content-Type": "application/json",
-      "X-Access-Token": accesstoken
+      "X-Access-Token": accesstoken,
+      "recipient_id" : recipient_id
     }
   }
 
