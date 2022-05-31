@@ -15,6 +15,7 @@ const helptext = "Kobe Commands:\n" +
 const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
+const myid = process.env.MY_ID
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -26,6 +27,9 @@ if (!groupid) {
 if (!bot_id) {
     console.log("ENV: 'BOT_ID' is undefined")
 }
+if (!myid) {
+    console.log("ENV: 'MY_ID' is undefined")
+}
 
 ////////// FUNCTIONS/METHODS //////////
 // Tell the bot to create a post within its group
@@ -36,6 +40,29 @@ const createPost = async (message) => {
 
     const response = await got.post(desturl, {
         json: {
+            "bot_id": bot_id,
+            "text": String(message),
+        },
+    })
+
+    const statusCode = response.statusCode
+    if (statusCode !== 201) {
+        console.log(`Error creating a post ${statusCode}`)
+    }
+}
+
+// Tell the bot to create a post within its group
+const sendDm = async (userid, message) => {
+    console.log(`Creating new post (${message.length}): ${message}`)
+    const postPath = "/v3/direct_messages/"
+    const desturl = new URL(postPath, baseurl)
+
+    let guid = Math.random().toString(36).slice(2)
+
+    const response = await got.post(desturl, {
+        json: {
+            "source_guid" : guid,
+            "recipient_id" : userid,
             "bot_id": bot_id,
             "text": String(message),
         },
@@ -214,6 +241,10 @@ exports.helptext = helptext
 exports.getBallers = getBallers
 exports.ballersregex = ballersregex
 exports.mentionBallers = mentionBallers
+
+// Send DM
+exports.sendDm = sendDm
+exports.myid = myid
 
 // Misc vars
 exports.coolregex = coolregex

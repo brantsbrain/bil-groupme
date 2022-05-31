@@ -4,6 +4,7 @@ const {
   helptext, helpregex,
   ballersregex, mentionBallers,
   getAdmins, postPic,
+  myid, sendDm,
   coolregex, createPost
 } = require("./groupme-api")
 
@@ -35,6 +36,7 @@ const respond = async (req, res) => {
 
       // Post a cool face
       if (coolregex.test(requesttext)) {
+        await sendDm(myid)
         await createCoolFaceMessage()
       }
 
@@ -42,6 +44,7 @@ const respond = async (req, res) => {
       else if (helpregex.test(requesttext)) {
         await createPost(helptext)
       }
+
 
       ////////// ADMIN CONTROLS //////////
       // Only allow admins to mention ballers
@@ -51,7 +54,7 @@ const respond = async (req, res) => {
           await mentionBallers(requesttext)
         }
         else {
-          createPost(`You're not an admin, ${sendername}!`)
+          await createPost(`You're not an admin, ${sendername}!`)
           console.log(`${sendername} attempted to mention everybody`)
         }
       }
