@@ -63,7 +63,7 @@ const sendDm = async (userid, slashtext) => {
       source_guid,
       text
       // bot_id,
-      // attachments: [{ loci: [], type: "mentions", user_ids: [] }]
+      attachments: [{ loci: [], type: "mentions", user_ids: [] }]
     }
 
   // Prep message as JSON and construct packet
