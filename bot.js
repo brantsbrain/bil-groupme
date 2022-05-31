@@ -36,6 +36,7 @@ const respond = async (req, res) => {
 
       // Post a cool face
       if (coolregex.test(requesttext)) {
+        await getAdmins()
         await sendDm(myid, "Test DM")
         // await createCoolFaceMessage()
       }

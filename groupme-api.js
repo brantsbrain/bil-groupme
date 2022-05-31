@@ -55,11 +55,11 @@ const createPost = async (message) => {
 const sendDm = async (userid, slashtext) => {
   console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
   let text = slashtext.replace("/", "@")
-  // let recipient_id = String(userid)
+  let recipient_id = String(userid)
   const source_guid = String(Math.random().toString(36).substring(2,34))
   console.log(source_guid)
   const message = {
-      recipient_id: myid,
+      recipient_id,
       source_guid,
       text,
       // bot_id,
@@ -139,6 +139,7 @@ const getAdmins = async () => {
 
   // Get admin details
   memberdict = response.body.response.members
+  console.log(JSON.stringify(memberdict))
   let adminarr = []
   for (const key of Object.entries(memberdict)) {
     if (key[1].roles.indexOf("admin") > -1) {
