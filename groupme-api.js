@@ -59,7 +59,7 @@ const sendDm = async (userid, slashtext) => {
   const source_guid = String(Math.random().toString(36).substring(2,34))
   console.log(source_guid)
   const message = {
-      recipient_id: userid,
+      recipient_id: myid,
       source_guid,
       text
       // bot_id,
