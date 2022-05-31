@@ -4,7 +4,7 @@ const {
   helptext, helpregex,
   ballersregex, mentionBallers,
   getAdmins, postPic,
-  myid, sendDm,
+  sendDm,
   coolregex, createPost
 } = require("./groupme-api")
 
