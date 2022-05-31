@@ -55,7 +55,7 @@ const createPost = async (message) => {
 const sendDm = async (userid, slashtext) => {
   console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
   let text = slashtext.replace("/", "@")
-  let recipient_id = String(userid)
+  const recipient_id = String(userid)
   const source_guid = String(Math.random().toString(36).substring(2,34))
   console.log(source_guid)
   const message = {
