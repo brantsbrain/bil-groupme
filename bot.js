@@ -41,7 +41,7 @@ const respond = async (req, res) => {
       }
 
       else if (eventregex.test(requesttext)) {
-        await createEvent("Sportsball")
+        await createEvent("Sportsball", "Test Location")
       }
 
       ////////// ADMIN CONTROLS //////////
