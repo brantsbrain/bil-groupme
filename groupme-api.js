@@ -247,7 +247,7 @@ const createEvent = async(name, loc) => {
       "is_all_day": true,
       "timezone": "America/Chicago",
       "location": {"name": loc},
-      bot_id
+      // bot_id
     }
 
     // Prep message as JSON and construct packet
@@ -255,7 +255,7 @@ const createEvent = async(name, loc) => {
     const groupmeAPIOptions = {
       agent: false,
       host: "api.groupme.com",
-      path: "/v3/bots/post",
+      path: `/v3/conversations/${groupid}/events/create`,
       port: 443,
       method: "POST",
       headers: {
