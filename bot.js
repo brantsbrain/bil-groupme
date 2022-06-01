@@ -9,9 +9,6 @@ const {
 } = require("./groupme-api")
 
 ////////// INITIALIZE VARS //////////
-// Declare quiet boolean
-let quiet = true
-
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
@@ -23,7 +20,6 @@ const respond = async (req, res) => {
     const requesttext = request.text
     const senderid = request.user_id
     const sendername = request.name
-    const notadmin = `You ain't the boss of me, ${sendername}!`
     console.log(`User request: "${requesttext}"`)
     console.log(`Request Body: "${JSON.stringify(request)}"`)
 
@@ -33,7 +29,6 @@ const respond = async (req, res) => {
       await sleep(1500)
 
       ////////// BASE CONTROLS //////////
-
       // Post a cool face
       if (coolregex.test(requesttext)) {
         await createCoolFaceMessage()
@@ -43,7 +38,6 @@ const respond = async (req, res) => {
       else if (helpregex.test(requesttext)) {
         await createPost(helptext)
       }
-
 
       ////////// ADMIN CONTROLS //////////
       // Only allow admins to mention ballers

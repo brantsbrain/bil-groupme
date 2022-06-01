@@ -245,7 +245,6 @@ const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 
 ////////// EXPORTS //////////
-
 // Pic vars
 exports.postPic = postPic
 
