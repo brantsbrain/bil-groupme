@@ -3,6 +3,7 @@ const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
   ballersregex, mentionBallers,
+  eventregex, createEvent,
   getAdmins, postPic,
   sendDm,
   coolregex, createPost
