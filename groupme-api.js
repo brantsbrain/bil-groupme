@@ -246,7 +246,8 @@ const createEvent = async(name, loc) => {
       end_at,
       "is_all_day": true,
       "timezone": "America/Chicago",
-      "location": {"name": loc}
+      "location": {"name": loc},
+      bot_id
     }
 
     // Prep message as JSON and construct packet
