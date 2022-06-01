@@ -39,6 +39,10 @@ const respond = async (req, res) => {
         await createPost(helptext)
       }
 
+      else if (eventregex.test(requesttext)) {
+        await createEvent("Sportsball")
+      }
+
       ////////// ADMIN CONTROLS //////////
       // Only allow admins to mention ballers
       else if (ballersregex.test(requesttext)) {

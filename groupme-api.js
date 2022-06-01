@@ -16,6 +16,12 @@ const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
+// Sport vars
+const sportname = process.env.SPORT_NAME
+const sportloc = process.env.SPORT_LOC
+const sportday = process.env.SPORT_DAY
+const sporttime = process.env.SPORT_TIME
+
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
     console.log("ENV: 'ACCESS_TOKEN' is undefined")
@@ -225,8 +231,46 @@ const postPic = async(text) => {
 }
 
 // Create event
-const createEvent = async() => {
-  return
+const createEvent = async(name, loc) => {
+  console.log(`Creating ${name} event`)
+  const today = new Date()
+  const day = today.getDay()
+  const start_at = (today.getDate() - day + (day === 0 ? -6 : 2)).toISOString()
+  const end_at = (today.getDate() + 1 - day + (day === 0 ? -6 : 2)).toISOString()
+
+  const message = {
+      name,
+      start_at,
+      end_at,
+      "is_all_day": true,
+      "timezone": "America/Chicago",
+      "location": {"name": "Test Location"}
+    }
+
+    // Prep message as JSON and construct packet
+    const json = JSON.stringify(message)
+    const groupmeAPIOptions = {
+      agent: false,
+      host: "api.groupme.com",
+      path: "/v3/bots/post",
+      port: 443,
+      method: "POST",
+      headers: {
+        "Content-Length": json.length,
+        "Content-Type": "image/jpeg",
+        "X-Access-Token": accesstoken
+      }
+    }
+
+    // Send request
+    const req = https.request(groupmeAPIOptions, response => {
+      let data = ""
+      response.on("data", chunk => (data += chunk))
+      response.on("end", () =>
+        console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+      )
+    })
+    req.end(json)
 }
 
 // Returns all your bots and their info
@@ -241,6 +285,7 @@ const getBots = async () => {
 
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
+const eventregex = /^(\s)*\/event/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 
@@ -256,6 +301,10 @@ exports.helptext = helptext
 exports.getBallers = getBallers
 exports.ballersregex = ballersregex
 exports.mentionBallers = mentionBallers
+
+// Event
+exports.eventregex = eventregex
+exports.createEvent = createEvent
 
 // Send DM
 exports.sendDm = sendDm
