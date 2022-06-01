@@ -235,8 +235,8 @@ const createEvent = async(name, loc) => {
   console.log(`Creating ${name} event`)
   var today = new Date()
   day = today.getDay()
-  const start_at = new Date("06/01/22 5:30 PM").toISOString()
-  const end_at = new Date("06/01/22 9:00 PM").toISOString()
+  const start_at = new Date("06/01/22 5:30 PM EST").toISOString()
+  const end_at = new Date("06/01/22 9:00 PM EST").toISOString()
 
   const message = {
       name,
