@@ -248,8 +248,8 @@ const createEvent = async(name, loc) => {
   	newdate.setDate(newdate.getDate() + 7)
   }
 
+  const nextday = newdate.getDate() + 1
   const start_at = newdate.toISOString()
-  const nextday = newdate.setDate(newdate.getDate() + 1)
   const end_at = nextday.toISOString()
 
   const message = {
