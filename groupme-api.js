@@ -233,18 +233,31 @@ const postPic = async(text) => {
 // Create event
 const createEvent = async(name, loc) => {
   console.log(`Creating ${name} event`)
-  var today = new Date()
-  day = today.getDay()
-  const start_at = new Date("06/01/22 5:30 PM EST").toISOString()
-  const end_at = new Date("06/01/22 9:00 PM EST").toISOString()
+
+  // Need to find the nearest specified day of week
+  let day = 2;
+  let currentdate = new Date()
+  let newdate = new Date(currentdate.getTime())
+  let deltadays = day - currentdate.getDay()
+
+  // First, adjust the date's day of the week to match the desired day
+  newdate.setDate(currentdate.getDate() + deltadays)
+
+  // Next, if the adjusted date is in the past, add 7 days
+  if (newdate < currentdate) {
+  	newdate.setDate(newdate.getDate() + 7)
+  }
+
+  const start_at = newdate.toISOString()
+  const end_at = newdate.setDate(newdate.getDate() + 1).toISOString()
 
   const message = {
       name,
       start_at,
       end_at,
       "is_all_day": false,
-      "timezone": "America/Chicago",
-      "location": {"name": loc},
+      "timezone": "America/New York",
+      "location": {"name": loc}
     }
 
     // Prep message as JSON and construct packet
