@@ -42,7 +42,7 @@ const respond = async (req, res) => {
 
       // Post event
       else if (eventregex.test(requesttext)) {
-        let paramarr = stripslash.split(":")
+        let paramarr = requesttext.split(":")
         await createEvent(paramarr[1], paramarr[2])
       }
 
