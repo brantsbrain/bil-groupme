@@ -237,28 +237,30 @@ const createEvent = async(name, loc) => {
   // Need to find the nearest specified day of week
   let day = 2;
   let currentdate = new Date()
-  let newdate = new Date(currentdate.getTime())
-  let nextday = new Date(currentdate.getTime())
+  let startdate = new Date(currentdate.getTime())
+  let enddate = new Date(currentdate.getTime())
   let deltadays = day - currentdate.getDay()
 
   const starttime = (17 * 60 * 60 * 1000) + (30 * 60 * 1000)
   const endtime = (19 * 60 * 60 * 1000)
 
   // First, adjust the date's day of the week to match the desired day
-  newdate.setDate(currentdate.getDate() + deltadays)
-  nextday.setDate(currentdate.getDate() + deltadays + 1)
+  startdate.setDate(currentdate.getDate() + deltadays)
+  enddate.setDate(currentdate.getDate() + deltadays + 1)
 
   // Next, if the adjusted date is in the past, add 7 days
-  if (newdate < currentdate) {
-  	newdate.setDate(newdate.getDate() + 7)
-    nextday.setDate(nextday.getDate() + 7)
+  if (startdate < currentdate) {
+  	startdate.setDate(startdate.getDate() + 7)
+    enddate.setDate(enddate.getDate() + 7)
   }
 
-  newdate.setTime(newdate.getTime() + starttime)
-  nextday.setTime(nextday.getTime() + endtime)
+  startdate.setHours(17)
+  startdate.setMinutes(30)
+  enddate.setHours(20)
+  enddate.setMinutes(0)
 
-  const start_at = newdate.toISOString()
-  const end_at = nextday.toISOString()
+  const start_at = startdate.toISOString()
+  const end_at = enddate.toISOString()
 
   const message = {
       name,
