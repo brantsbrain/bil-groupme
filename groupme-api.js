@@ -253,7 +253,7 @@ const createEvent = async(name, loc) => {
 
   // EST is 4 hours behind UTC
   startdate.setHours(21, 30, 0)
-  enddate.setHours(23, 30, 0)
+  enddate.setHours(0, 0, 0)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()

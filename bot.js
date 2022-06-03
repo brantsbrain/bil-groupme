@@ -42,8 +42,9 @@ const respond = async (req, res) => {
 
       // Post event
       else if (eventregex.test(requesttext)) {
-        let paramarr = requesttext.split(" ")
-        await createEvent(paramarr[1], paramarr[2])
+        let stripslash requesttext.split(" ")
+        let paramarr = stripslash[1].split(":")
+        await createEvent(paramarr[0], paramarr[1])
       }
 
       ////////// ADMIN CONTROLS //////////
