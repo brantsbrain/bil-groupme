@@ -3,6 +3,7 @@ const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
   ballersregex, mentionBallers,
+  soccerregex, soccloc,
   eventregex, createEvent,
   getAdmins, postPic,
   sendDm,
@@ -44,6 +45,11 @@ const respond = async (req, res) => {
       else if (eventregex.test(requesttext)) {
         let paramarr = requesttext.split(":")
         await createEvent(paramarr[1], paramarr[2])
+      }
+
+      // Post soccer event
+      else if (soccerregex.test(requesttext)) {
+        await createEvent("Soccer Tuesdays!", soccloc)
       }
 
       ////////// ADMIN CONTROLS //////////

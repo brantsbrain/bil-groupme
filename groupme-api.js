@@ -9,6 +9,7 @@ const baseurl = "https://api.groupme.com/"
 const helptext = "Kobe Commands:\n" +
                   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
                   "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
+                  "/soccer - Create soccer event for nearest Tuesday\n" +
                   "/help - Uhhh... you're here"
 
 ////////// ENVIRONMENT VARS //////////
@@ -17,11 +18,8 @@ const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
-// Sport vars
-const sportname = process.env.SPORT_NAME
-const sportloc = process.env.SPORT_LOC
-const sportday = process.env.SPORT_DAY
-const sporttime = process.env.SPORT_TIME
+// Optional
+const soccloc = process.env.SOCC_LOC
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -235,14 +233,14 @@ const postPic = async(text) => {
 const createEvent = async(name, loc) => {
   console.log(`Creating ${name} event`)
 
-  // Need to find the nearest specified day of week
+  // Need to find the nearest specified day of week (0 == Sun, 6 == Sat)
   let day = 2;
   let currentdate = new Date()
   let startdate = new Date(currentdate.getTime())
   let enddate = new Date(currentdate.getTime())
   let deltadays = day - currentdate.getDay()
 
-  // First, adjust the date's day of the week to match the desired day
+  // Adjust the date's day of the week to match the desired day
   startdate.setDate(currentdate.getDate() + deltadays)
   enddate.setDate(currentdate.getDate() + deltadays)
 
@@ -252,7 +250,7 @@ const createEvent = async(name, loc) => {
     enddate.setDate(enddate.getDate() + 7)
   }
 
-  // EST is 4 hours behind UTC
+  // EST is 4 hours behind UTC. Set to desired time
   startdate.setHours(21, 30, 0)
   enddate.setDate(enddate.getDate() + 1)
   enddate.setHours(0, 30, 0)
@@ -308,6 +306,7 @@ const getBots = async () => {
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
 const eventregex = /^(\s)*\/event/i
+const soccerregex = /^(\s)*\/soccer/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 
@@ -327,6 +326,8 @@ exports.mentionBallers = mentionBallers
 // Event
 exports.eventregex = eventregex
 exports.createEvent = createEvent
+exports.soccerregex = soccerregex
+exports.soccloc = soccloc
 
 // Send DM
 exports.sendDm = sendDm
