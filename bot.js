@@ -40,8 +40,10 @@ const respond = async (req, res) => {
         await createPost(helptext)
       }
 
+      // Post event
       else if (eventregex.test(requesttext)) {
-        await createEvent("Sportsball", "Test Location")
+        let paramarr = requesttext.split(" ")
+        await createEvent(paramarr[1], paramarr[2])
       }
 
       ////////// ADMIN CONTROLS //////////

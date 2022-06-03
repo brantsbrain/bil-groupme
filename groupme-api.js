@@ -241,14 +241,11 @@ const createEvent = async(name, loc) => {
   let enddate = new Date(currentdate.getTime())
   let deltadays = day - currentdate.getDay()
 
-  const starttime = (17 * 60 * 60 * 1000) + (30 * 60 * 1000)
-  const endtime = (19 * 60 * 60 * 1000)
-
   // First, adjust the date's day of the week to match the desired day
   startdate.setDate(currentdate.getDate() + deltadays)
   enddate.setDate(currentdate.getDate() + deltadays)
 
-  // Next, if the adjusted date is in the past, add 7 days
+  // If the adjusted date is in the past, add 7 days
   if (startdate < currentdate) {
   	startdate.setDate(startdate.getDate() + 7)
     enddate.setDate(enddate.getDate() + 7)
@@ -257,9 +254,6 @@ const createEvent = async(name, loc) => {
   // EST is 4 hours behind UTC
   startdate.setHours(21, 30, 0)
   enddate.setHours(23, 30, 0)
-
-  console.log(startdate)
-  console.log(enddate)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
