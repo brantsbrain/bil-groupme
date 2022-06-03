@@ -254,9 +254,9 @@ const createEvent = async(name, loc) => {
     nextday.setDate(nextday.getDate() + 7)
   }
 
-  newdate.setTime(starttime)
-  nextday.setTime(endtime)
-  
+  newdate.setTime(newdate.getTime() + starttime)
+  nextday.setTime(nextday.getTime() + endtime)
+
   const start_at = newdate.toISOString()
   const end_at = nextday.toISOString()
 
