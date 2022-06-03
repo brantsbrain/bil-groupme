@@ -246,7 +246,7 @@ const createEvent = async(name, loc) => {
 
   // First, adjust the date's day of the week to match the desired day
   startdate.setDate(currentdate.getDate() + deltadays)
-  enddate.setDate(currentdate.getDate() + deltadays + 1)
+  enddate.setDate(currentdate.getDate() + deltadays)
 
   // Next, if the adjusted date is in the past, add 7 days
   if (startdate < currentdate) {
@@ -254,10 +254,13 @@ const createEvent = async(name, loc) => {
     enddate.setDate(enddate.getDate() + 7)
   }
 
-  startdate.setHours(17)
-  startdate.setMinutes(30)
-  enddate.setHours(20)
-  enddate.setMinutes(0)
+  startdate.setHours(17, 30, 0)
+  // startdate.setMinutes(30)
+  enddate.setHours(20, 0, 0)
+  // enddate.setMinutes(0)
+
+  console.log(startdate)
+  console.log(enddate)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
