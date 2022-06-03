@@ -8,6 +8,7 @@ const https = require("https")
 const baseurl = "https://api.groupme.com/"
 const helptext = "Kobe Commands:\n" +
                   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
+                  "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
                   "/help - Uhhh... you're here"
 
 ////////// ENVIRONMENT VARS //////////
@@ -254,7 +255,7 @@ const createEvent = async(name, loc) => {
   // EST is 4 hours behind UTC
   startdate.setHours(21, 30, 0)
   enddate.setDate(enddate.getDate() + 1)
-  enddate.setHours(0, 0, 0)
+  enddate.setHours(0, 30, 0)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
