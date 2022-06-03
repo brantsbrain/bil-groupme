@@ -241,6 +241,9 @@ const createEvent = async(name, loc) => {
   let nextday = new Date(currentdate.getTime())
   let deltadays = day - currentdate.getDay()
 
+  const starttime = (17 * 60 * 60 * 1000) + (30 * 60 * 1000)
+  const endtime = (19 * 60 * 60 * 1000)
+
   // First, adjust the date's day of the week to match the desired day
   newdate.setDate(currentdate.getDate() + deltadays)
   nextday.setDate(currentdate.getDate() + deltadays + 1)
@@ -251,6 +254,9 @@ const createEvent = async(name, loc) => {
     nextday.setDate(nextday.getDate() + 7)
   }
 
+  newdate.setTime(starttime)
+  nextday.setTime(endtime)
+  
   const start_at = newdate.toISOString()
   const end_at = nextday.toISOString()
 
