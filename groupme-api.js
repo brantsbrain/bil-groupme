@@ -259,7 +259,7 @@ const createEvent = async(name, loc) => {
       start_at,
       end_at,
       "is_all_day": false,
-      "timezone": "America/New York",
+      "timezone": "America/Detroit",
       "location": {"name": loc}
     }
 
