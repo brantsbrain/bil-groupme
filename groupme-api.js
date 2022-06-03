@@ -8,6 +8,8 @@ const https = require("https")
 const baseurl = "https://api.groupme.com/"
 const helptext = "Kobe Commands:\n" +
                   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
+                  "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
+                  "/soccer - Create soccer event for nearest Tuesday\n" +
                   "/help - Uhhh... you're here"
 
 ////////// ENVIRONMENT VARS //////////
@@ -15,6 +17,9 @@ const helptext = "Kobe Commands:\n" +
 const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
+
+// Optional
+const soccloc = process.env.SOCC_LOC
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -225,8 +230,67 @@ const postPic = async(text) => {
 }
 
 // Create event
-const createEvent = async() => {
-  return
+const createEvent = async(name, loc) => {
+  console.log(`Creating ${name} event`)
+
+  // Need to find the nearest specified day of week (0 == Sun, 6 == Sat)
+  let day = 2;
+  let currentdate = new Date()
+  let startdate = new Date(currentdate.getTime())
+  let enddate = new Date(currentdate.getTime())
+  let deltadays = day - currentdate.getDay()
+
+  // Adjust the date's day of the week to match the desired day
+  startdate.setDate(currentdate.getDate() + deltadays)
+  enddate.setDate(currentdate.getDate() + deltadays)
+
+  // If the adjusted date is in the past, add 7 days
+  if (startdate < currentdate) {
+  	startdate.setDate(startdate.getDate() + 7)
+    enddate.setDate(enddate.getDate() + 7)
+  }
+
+  // EST is 4 hours behind UTC. Set to desired time
+  startdate.setHours(21, 30, 0)
+  enddate.setDate(enddate.getDate() + 1)
+  enddate.setHours(0, 30, 0)
+
+  const start_at = startdate.toISOString()
+  const end_at = enddate.toISOString()
+
+  const message = {
+      name,
+      start_at,
+      end_at,
+      "is_all_day": false,
+      "timezone": "America/Detroit",
+      "location": {"name": loc}
+    }
+
+    // Prep message as JSON and construct packet
+    const json = JSON.stringify(message)
+    const groupmeAPIOptions = {
+      agent: false,
+      host: "api.groupme.com",
+      path: `/v3/conversations/${groupid}/events/create`,
+      port: 443,
+      method: "POST",
+      headers: {
+        "Content-Length": json.length,
+        "Content-Type": "application/json",
+        "X-Access-Token": accesstoken
+      }
+    }
+
+    // Send request
+    const req = https.request(groupmeAPIOptions, response => {
+      let data = ""
+      response.on("data", chunk => (data += chunk))
+      response.on("end", () =>
+        console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+      )
+    })
+    req.end(json)
 }
 
 // Returns all your bots and their info
@@ -241,6 +305,8 @@ const getBots = async () => {
 
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
+const eventregex = /^(\s)*\/event/i
+const soccerregex = /^(\s)*\/soccer/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 
@@ -256,6 +322,12 @@ exports.helptext = helptext
 exports.getBallers = getBallers
 exports.ballersregex = ballersregex
 exports.mentionBallers = mentionBallers
+
+// Event
+exports.eventregex = eventregex
+exports.createEvent = createEvent
+exports.soccerregex = soccerregex
+exports.soccloc = soccloc
 
 // Send DM
 exports.sendDm = sendDm
