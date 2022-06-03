@@ -254,16 +254,16 @@ const createEvent = async(name, loc) => {
     enddate.setDate(enddate.getDate() + 7)
   }
 
-  startdate.setHours(17, 30, 0)
+  // startdate.setHours(17, 30, 0)
   // startdate.setMinutes(30)
-  enddate.setHours(20, 0, 0)
+  // enddate.setHours(20, 0, 0)
   // enddate.setMinutes(0)
 
   console.log(startdate)
   console.log(enddate)
 
-  const start_at = startdate.toISOString()
-  const end_at = enddate.toISOString()
+  const start_at = startdate.toISOString().setHours(17, 30, 0)
+  const end_at = enddate.toISOString().setHours(20,0,0)
 
   const message = {
       name,
