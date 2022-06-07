@@ -5,7 +5,7 @@ const {
   ballersregex, mentionBallers,
   soccerregex, soccloc,
   eventregex, createEvent,
-  getAdmins, postPic,
+  getAdmins,
   sendDm,
   coolregex, createPost
 } = require("./groupme-api")

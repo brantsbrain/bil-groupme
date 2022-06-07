@@ -117,6 +117,9 @@ const getBallers = async () => {
     if ("deleted_at" in eventarr[i]) {
       console.log(`Found deleted_at in ${JSON.stringify(eventarr[i])}`)
     }
+    else if (eventarr[i]["creator_id"] == "65856401") {
+      console.log("Created by Jamie... passing...")
+    }
     else {
       goodevent = eventarr[i]
       console.log(`Found good event: ${JSON.stringify(goodevent)}`)
