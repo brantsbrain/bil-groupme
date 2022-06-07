@@ -64,8 +64,8 @@ const sendDm = async (userid, slashtext) => {
       recipient_id,
       source_guid,
       text
-      }
     }
+  }
 
   // Prep message as JSON and construct packet
   const json = JSON.stringify(message)
@@ -234,7 +234,7 @@ const createEvent = async(name, loc) => {
   console.log(`Creating ${name} event`)
 
   // Need to find the nearest specified day of week (0 == Sun, 6 == Sat)
-  let day = 2;
+  let day = 2
   let currentdate = new Date()
   let startdate = new Date(currentdate.getTime())
   let enddate = new Date(currentdate.getTime())
