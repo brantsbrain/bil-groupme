@@ -53,7 +53,7 @@ const respond = async (req, res) => {
       }
 
       ////////// ADMIN CONTROLS //////////
-      // Only allow admins to mention ballers
+      // Mention ballers
       else if (ballersregex.test(requesttext)) {
         let adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
