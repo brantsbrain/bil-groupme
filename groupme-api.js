@@ -1,7 +1,7 @@
 ////////// IMPORTS //////////
 require("dotenv").config()
 const got = require("got")
-const { URL } = require("url")
+const {URL} = require("url")
 const https = require("https")
 
 ////////// INITIALIZE VARS //////////
@@ -20,6 +20,7 @@ const groupid = process.env.GROUP_ID
 
 // Optional
 const soccloc = process.env.SOCC_LOC
+const ignoremember = process.env.IGNORE_MEMBER
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -94,7 +95,8 @@ const sendDm = async (userid, slashtext) => {
 
 }
 
-// Get members from the nearest upcoming event
+// Get members from the nearest upcoming event that isn't deleted 
+// or created by ignoremember
 const getBallers = async () => {
   const limit = 5
   const date = new Date().getTime()
@@ -117,8 +119,8 @@ const getBallers = async () => {
     if ("deleted_at" in eventarr[i]) {
       console.log(`Found deleted_at in ${JSON.stringify(eventarr[i])}`)
     }
-    else if (eventarr[i]["creator_id"] == "65856401") {
-      console.log("Created by Jamie... passing...")
+    else if (eventarr[i]["creator_id"] == ignoremember) {
+      console.log("creator_id matches ignoremember... passing...")
     }
     else {
       goodevent = eventarr[i]
