@@ -151,15 +151,21 @@ const getNewbies = async () => {
   let newbiearr = []
 
   for (let i = 0; i < messagearr.length; i++) {
-    if (messagearr[i].event.type == "membership.announce.added") {
-      let addedusersarr = messagearr[i].event.data.added_users
-      for (let y = 0; y < addedusersarr.length; y++) {
-        newbiearr.push(addedusersarr[y].id)
+    try {
+      if (messagearr[i].event.type == "membership.announce.added") {
+        let addedusersarr = messagearr[i].event.data.added_users
+        for (let y = 0; y < addedusersarr.length; y++) {
+          newbiearr.push(addedusersarr[y].id)
+        }
+      }
+      else if (messagearr[i].event.type == "membership.announce.joined") {
+        newbiearr.push(messagearr[i].event.data.user.id)
       }
     }
-    else if (messagearr[i].event.type == "membership.announce.joined") {
-      newbiearr.push(messagearr[i].event.data.user.id)
+    catch (error) {
+      console.error(error)
     }
+    
   }
 
   return newbiearr
