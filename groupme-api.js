@@ -137,9 +137,10 @@ const getBallers = async () => {
   return memberarr
 }
 
-// Find users added/joined w/i the past 100 messages
+// Find users added/joined w/i the past x messages
 const getNewbies = async () => {
-  const getpath = `/v3/groups/${groupid}/messages?limit=100&token=${accesstoken}`
+  let limit = 50
+  const getpath = `/v3/groups/${groupid}/messages?limit=${limit}&token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
   const response = await got(desturl, {
       responseType: "json"
@@ -165,11 +166,9 @@ const getNewbies = async () => {
     catch (error) {
       console.error(error)
     }
-    
   }
 
   return newbiearr
-
 }
 
 // Get admins

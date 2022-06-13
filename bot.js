@@ -81,7 +81,7 @@ const respond = async (req, res) => {
           await mention(newbiestext, "newbies")
         }
         else {
-          await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
+          await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /newbies!`)
           console.log(`${sendername} attempted to run /newbies`)
         }
       }
