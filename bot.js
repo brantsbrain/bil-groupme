@@ -2,18 +2,28 @@
 const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
-  ballersregex, mentionBallers,
+  ballersregex, mention,
   soccerregex, soccloc,
   eventregex, createEvent,
   getAdmins,
-  sendDm,
+  sendDm, 
+  newbiesregex, newbiestext,
   coolregex, createPost
 } = require("./groupme-api")
+const nodeCron = require("node-cron")
 
 ////////// INITIALIZE VARS //////////
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+////////// CRON JOBS //////////
+// Adjust +4 hours for UTC
+// Post weekly on Monday 8:00 AM EST
+const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
+  console.log("Creating soccer event...")
+  createEvent("Soccer Tuesdays!", soccloc)
+})
 
 ////////// RESPOND //////////
 const respond = async (req, res) => {
@@ -57,11 +67,22 @@ const respond = async (req, res) => {
       else if (ballersregex.test(requesttext)) {
         let adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
-          await mentionBallers(requesttext)
+          await mention(requesttext, "ballers")
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
-          console.log(`${sendername} attempted to mention everybody`)
+          console.log(`${sendername} attempted to run /ballers`)
+        }
+      }
+
+      else if (newbiesregex.test(requesttext)) {
+        let adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          await mention(newbiestext, "newbies")
+        }
+        else {
+          await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /newbies!`)
+          console.log(`${sendername} attempted to run /newbies`)
         }
       }
 

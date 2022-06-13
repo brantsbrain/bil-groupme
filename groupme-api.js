@@ -10,6 +10,7 @@ const helptext = "Kobe Commands:\n" +
                   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
                   "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
                   "/soccer - Create soccer event for nearest Tuesday\n" +
+                  "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
                   "/help - Uhhh... you're here"
 
 ////////// ENVIRONMENT VARS //////////
@@ -21,6 +22,7 @@ const groupid = process.env.GROUP_ID
 // Optional
 const soccloc = process.env.SOCC_LOC
 const ignoremember = process.env.IGNORE_MEMBER
+const newbiestext = process.env.NEWBIES_TEXT
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -135,6 +137,40 @@ const getBallers = async () => {
   return memberarr
 }
 
+// Find users added/joined w/i the past x messages
+const getNewbies = async () => {
+  let limit = 50
+  const getpath = `/v3/groups/${groupid}/messages?limit=${limit}&token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+      responseType: "json"
+  })
+
+  console.log(response.body.response)
+
+  const messagearr = response.body.response.messages
+  let newbiearr = []
+
+  for (let i = 0; i < messagearr.length; i++) {
+    try {
+      if (messagearr[i].event.type == "membership.announce.added") {
+        let addedusersarr = messagearr[i].event.data.added_users
+        for (let y = 0; y < addedusersarr.length; y++) {
+          newbiearr.push(addedusersarr[y].id)
+        }
+      }
+      else if (messagearr[i].event.type == "membership.announce.joined") {
+        newbiearr.push(messagearr[i].event.data.user.id)
+      }
+    }
+    catch (error) {
+      console.error(error)
+    }
+  }
+
+  return newbiearr
+}
+
 // Get admins
 const getAdmins = async () => {
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
@@ -158,7 +194,7 @@ const getAdmins = async () => {
 }
 
 // Create mention post for people that replied going to the closest event
-const mentionBallers = async (slashtext) => {
+const mention = async (slashtext, group) => {
   console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
   let text = slashtext.replace("/", "@")
   const message = {
@@ -168,7 +204,13 @@ const mentionBallers = async (slashtext) => {
     }
 
   // Get member IDs as an array and push to message variable
-  let members = await getBallers()
+  if (group == "ballers") {
+    var members = await getBallers()
+  }
+  else if (group == "newbies") {
+    var members = await getNewbies()
+  }
+  
   for (let i = 0; i < members.length; i++) {
     message.attachments[0].loci.push([i, i + 1])
     message.attachments[0].user_ids.push(members[i])
@@ -314,6 +356,7 @@ const eventregex = /^(\s)*\/event/i
 const soccerregex = /^(\s)*\/soccer/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
+const newbiesregex = /^(\s)*\/newbies/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -326,7 +369,7 @@ exports.helptext = helptext
 // Ballers
 exports.getBallers = getBallers
 exports.ballersregex = ballersregex
-exports.mentionBallers = mentionBallers
+exports.mention = mention
 
 // Event
 exports.eventregex = eventregex
@@ -336,6 +379,10 @@ exports.soccloc = soccloc
 
 // Send DM
 exports.sendDm = sendDm
+
+// Newbie
+exports.newbiesregex = newbiesregex
+exports.newbiestext = newbiestext
 
 // Misc vars
 exports.coolregex = coolregex
