@@ -22,7 +22,7 @@ const sleep = (ms) => {
 // Post weekly on Monday 8:00 AM EST
 const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
   console.log("Creating soccer event...")
-  await createEvent("Soccer Tuesdays!", soccloc)
+  createEvent("Soccer Tuesdays!", soccloc)
 })
 
 ////////// RESPOND //////////
