@@ -79,7 +79,7 @@ const respond = async (req, res) => {
         let adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await createPost(newbiestext, await getNewbies())
-          await mention(newbiestext, "newbies")
+          // await mention(newbiestext, "newbies")
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /newbies!`)
