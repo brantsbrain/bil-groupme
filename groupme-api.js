@@ -42,8 +42,8 @@ const createPost = async (message, mentionids) => {
     const postPath = "/v3/bots/post"
     const desturl = new URL(postPath, baseurl)
 
-    // Prep message if longer than length limit
-    let messagelist = []
+    // Prep message as array to accomadate long messages 
+    let messagearr = []
     var currmess = ""
     for (let i = 0; i < message.length; i++) {
       if (currmess.length < 998) {
@@ -51,20 +51,20 @@ const createPost = async (message, mentionids) => {
       }
       else {
         console.log(`Message variable reached ${message.length}`)
-        messagelist.push(currmess)
+        messagearr.push(currmess)
         currmess = ""
         console.log(`Message variable reset to ${message.length}`)
       }
     }
     if (currmess.length > 0) {
-      messagelist.push(currmess)
+      messagearr.push(currmess)
     }
     
-    for (let i = 0; i < messagelist.length; i++) {
+    for (let i = 0; i < messagearr.length; i++) {
       // Send message w/ mentions
       if (mentionids) {
-        console.log(`Creating new mention (${messagelist[i].length}): ${messagelist[i]}`)
-        let text = messagelist[i].replace("/", "@")
+        console.log(`Creating new mention (${messagearr[i].length}): ${messagearr[i]}`)
+        let text = messagearr[i].replace("/", "@")
         var payload = {
             text,
             bot_id,
@@ -106,7 +106,7 @@ const createPost = async (message, mentionids) => {
       // Send regular message
       else {
         var payload = {
-          "text": messagelist[i],
+          "text": messagearr[i],
           bot_id
         }
         var response = await got.post(desturl, {
