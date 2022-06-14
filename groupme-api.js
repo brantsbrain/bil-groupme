@@ -37,12 +37,12 @@ if (!bot_id) {
 
 ////////// FUNCTIONS/METHODS //////////
 // Tell the bot to create a post within its group
-const createPost = async (message) => {
+const createPost = async (message, mentionids) => {
     console.log(`Creating new post (${message.length}): ${message}`)
     const postPath = "/v3/bots/post"
     const desturl = new URL(postPath, baseurl)
-    let messagelist = []
 
+    let messagelist = []
     let currmess = ""
     for (let i = 0; i < message.length; i++) {
       if (currmess.length < 999) {
@@ -58,17 +58,58 @@ const createPost = async (message) => {
     }
     
     for (let i = 0; i < messagelist.length; i++) {
-      const response = await got.post(desturl, {
-        json: {
-            "bot_id": bot_id,
-            "text": String(messagelist[i]),
-        },
+      if (mentionids) {
+        console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
+        let text = messagelist[i].replace("/", "@")
+        const payload = {
+            text,
+            bot_id,
+            attachments: [{ loci: [], type: "mentions", user_ids: [] }]
+          }
+
+        // Get member IDs as an array and push to message variable
+        if (group == "ballers") {
+          var members = await getBallers()
+        }
+        else if (group == "newbies") {
+          var members = await getNewbies()
+        }
+        
+        for (let i = 0; i < members.length; i++) {
+          payload.attachments[0].loci.push([i, i + 1])
+          payload.attachments[0].user_ids.push(members[i])
+        }
+
+        // Prep message as JSON and construct packet
+        /* const json = JSON.stringify(payload)
+        const groupmeAPIOptions = {
+          agent: false,
+          host: "api.groupme.com",
+          path: "/v3/bots/post",
+          port: 443,
+          method: "POST",
+          headers: {
+            "Content-Length": json.length,
+            "Content-Type": "application/json",
+            "X-Access-Token": accesstoken
+          }
+        } */
+      }
+      else {
+        payload = {
+          "text": messagelist[i],
+          bot_id
+        }
+      }
+    }
+
+    var response = await got.post(desturl, {
+      json: payload
     })
     
     const statusCode = response.statusCode
     if (statusCode !== 201) {
         console.log(`Error creating a post ${statusCode}`)
-    }
     }
 }
 
@@ -163,7 +204,7 @@ const getNewbies = async () => {
       responseType: "json"
   })
 
-  console.log(response.body.response)
+  // console.log(response.body.response)
 
   const messagearr = response.body.response.messages
   let newbiearr = []
