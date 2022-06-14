@@ -42,6 +42,7 @@ const createPost = async (message, mentionids) => {
     const postPath = "/v3/bots/post"
     const desturl = new URL(postPath, baseurl)
 
+    // Prep message if longer than length limit
     let messagelist = []
     var currmess = ""
     for (let i = 0; i < message.length; i++) {
@@ -60,6 +61,7 @@ const createPost = async (message, mentionids) => {
     }
     
     for (let i = 0; i < messagelist.length; i++) {
+      // Send message w/ mentions
       if (mentionids) {
         console.log(`Creating new mention (${messagelist[i].length}): ${messagelist[i]}`)
         let text = messagelist[i].replace("/", "@")
@@ -68,19 +70,13 @@ const createPost = async (message, mentionids) => {
             bot_id,
             attachments: [{ loci: [], type: "mentions", user_ids: [] }]
           }
-
-        // Get member IDs as an array and push to message variable
-        // if (group == "ballers") {
-        //   var members = await getBallers()
-        // }
-        // else if (group == "newbies") {
-        //   var members = await getNewbies()
-        // }
         
         for (let i = 0; i < mentionids.length; i++) {
           payload.attachments[0].loci.push([i, i + 1])
           payload.attachments[0].user_ids.push(mentionids[i])
         }
+
+        console.log(`Mentioning: ${payload.attachments[0].user_ids}`)
 
         // Prep message as JSON and construct packet
         const json = JSON.stringify(payload)
@@ -104,8 +100,15 @@ const createPost = async (message, mentionids) => {
             console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
           )
         })
+
+        const statusCode = response.statusCode
+        if (statusCode !== 201) {
+          console.log(`Error creating a post ${statusCode}`)
+        }
         req.end(json)
       }
+
+      // Send regular message
       else {
         var payload = {
           "text": messagelist[i],
@@ -114,14 +117,12 @@ const createPost = async (message, mentionids) => {
         var response = await got.post(desturl, {
           json: payload
         })
-      }
-    }
 
-    
-    
-    const statusCode = response.statusCode
-    if (statusCode !== 201) {
-        console.log(`Error creating a post ${statusCode}`)
+        const statusCode = response.statusCode
+        if (statusCode !== 201) {
+          console.log(`Error creating a post ${statusCode}`)
+        }
+      }
     }
 }
 
@@ -263,55 +264,6 @@ const getAdmins = async () => {
   return adminarr
 }
 
-// Create mention post for people that replied going to the closest event
-const mention = async (slashtext, group) => {
-  console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
-  let text = slashtext.replace("/", "@")
-  const message = {
-      text,
-      bot_id,
-      attachments: [{ loci: [], type: "mentions", user_ids: [] }]
-    }
-
-  // Get member IDs as an array and push to message variable
-  if (group == "ballers") {
-    var members = await getBallers()
-  }
-  else if (group == "newbies") {
-    var members = await getNewbies()
-  }
-  
-  for (let i = 0; i < members.length; i++) {
-    message.attachments[0].loci.push([i, i + 1])
-    message.attachments[0].user_ids.push(members[i])
-  }
-
-  // Prep message as JSON and construct packet
-  const json = JSON.stringify(message)
-  const groupmeAPIOptions = {
-    agent: false,
-    host: "api.groupme.com",
-    path: "/v3/bots/post",
-    port: 443,
-    method: "POST",
-    headers: {
-      "Content-Length": json.length,
-      "Content-Type": "application/json",
-      "X-Access-Token": accesstoken
-    }
-  }
-
-  // Send request
-  const req = https.request(groupmeAPIOptions, response => {
-    let data = ""
-    response.on("data", chunk => (data += chunk))
-    response.on("end", () =>
-      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
-    )
-  })
-  req.end(json)
-}
-
 // Post pic from URL
 const postPic = async(text) => {
   console.log(`Posting pic`)
@@ -439,7 +391,6 @@ exports.helptext = helptext
 // Ballers
 exports.getBallers = getBallers
 exports.ballersregex = ballersregex
-exports.mention = mention
 
 // Event
 exports.eventregex = eventregex
