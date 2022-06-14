@@ -36,7 +36,7 @@ if (!bot_id) {
 }
 
 ////////// FUNCTIONS/METHODS //////////
-// Tell the bot to create a post within its group
+// Create a post and mention users if ID array is provided
 const createPost = async (message, mentionids) => {
     console.log(`Creating new post (${message.length}): ${message}`)
     const postPath = "/v3/bots/post"
@@ -46,7 +46,7 @@ const createPost = async (message, mentionids) => {
     let messagearr = []
     var currmess = ""
     for (let i = 0; i < message.length; i++) {
-      if (currmess.length < 998) {
+      if (currmess.length < 999) {
         currmess += message[i]
       }
       else {
