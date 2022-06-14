@@ -45,7 +45,7 @@ const createPost = async (message) => {
 
     let currmess = ""
     for (let i = 0; i < message.length; i++) {
-      if (currmess.length < 1000) {
+      if (currmess.length < 999) {
         currmess += message[i]
       }
       else {
@@ -181,7 +181,7 @@ const getNewbies = async () => {
       }
     }
     catch (error) {
-      console.error(error)
+      // console.error(error)
     }
   }
 
