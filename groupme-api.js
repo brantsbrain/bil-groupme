@@ -45,7 +45,7 @@ const createPost = async (message, mentionids) => {
     let messagelist = []
     let currmess = ""
     for (let i = 0; i < message.length; i++) {
-      if (currmess.length < 999) {
+      if (currmess.length < 998) {
         currmess += message[i]
       }
       else {
