@@ -7,7 +7,7 @@ const {
   eventregex, createEvent,
   getAdmins,
   sendDm, 
-  newbiesregex, newbiestext,
+  newbiesregex, newbiestext, getNewbies,
   coolregex, createPost
 } = require("./groupme-api")
 const nodeCron = require("node-cron")
@@ -78,6 +78,7 @@ const respond = async (req, res) => {
       else if (newbiesregex.test(requesttext)) {
         let adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
+          await createPost(newbiestext, await getNewbies())
           await mention(newbiestext, "newbies")
         }
         else {

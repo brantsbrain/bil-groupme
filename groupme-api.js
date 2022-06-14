@@ -59,7 +59,7 @@ const createPost = async (message, mentionids) => {
     
     for (let i = 0; i < messagelist.length; i++) {
       if (mentionids) {
-        console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
+        console.log(`Creating new mention (${messagelist[i].length}): ${messagelist[i]}`)
         let text = messagelist[i].replace("/", "@")
         const payload = {
             text,
@@ -68,16 +68,16 @@ const createPost = async (message, mentionids) => {
           }
 
         // Get member IDs as an array and push to message variable
-        if (group == "ballers") {
-          var members = await getBallers()
-        }
-        else if (group == "newbies") {
-          var members = await getNewbies()
-        }
+        // if (group == "ballers") {
+        //   var members = await getBallers()
+        // }
+        // else if (group == "newbies") {
+        //   var members = await getNewbies()
+        // }
         
-        for (let i = 0; i < members.length; i++) {
+        for (let i = 0; i < mentionids.length; i++) {
           payload.attachments[0].loci.push([i, i + 1])
-          payload.attachments[0].user_ids.push(members[i])
+          payload.attachments[0].user_ids.push(mentionids[i])
         }
 
         // Prep message as JSON and construct packet
@@ -441,6 +441,7 @@ exports.sendDm = sendDm
 // Newbie
 exports.newbiesregex = newbiesregex
 exports.newbiestext = newbiestext
+exports.getNewbies = getNewbies
 
 // Misc vars
 exports.coolregex = coolregex
