@@ -49,8 +49,10 @@ const createPost = async (message, mentionids) => {
         currmess += message[i]
       }
       else {
+        console.log(`Message variable reached ${message.length}`)
         messagelist.push(currmess)
         currmess = ""
+        console.log(`Message variable reset to ${message.length}`)
       }
     }
     if (currmess.length > 0) {
