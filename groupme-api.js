@@ -43,7 +43,7 @@ const createPost = async (message, mentionids) => {
     const desturl = new URL(postPath, baseurl)
 
     let messagelist = []
-    let currmess = ""
+    var currmess = ""
     for (let i = 0; i < message.length; i++) {
       if (currmess.length < 998) {
         currmess += message[i]
@@ -83,7 +83,7 @@ const createPost = async (message, mentionids) => {
         }
 
         // Prep message as JSON and construct packet
-        /* const json = JSON.stringify(payload)
+        const json = JSON.stringify(payload)
         const groupmeAPIOptions = {
           agent: false,
           host: "api.groupme.com",
@@ -95,19 +95,29 @@ const createPost = async (message, mentionids) => {
             "Content-Type": "application/json",
             "X-Access-Token": accesstoken
           }
-        } */
+        }
+
+        const req = https.request(groupmeAPIOptions, response => {
+          let data = ""
+          response.on("data", chunk => (data += chunk))
+          response.on("end", () =>
+            console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+          )
+        })
+        req.end(json)
       }
       else {
         var payload = {
           "text": messagelist[i],
           bot_id
         }
+        var response = await got.post(desturl, {
+          json: payload
+        })
       }
     }
 
-    var response = await got.post(desturl, {
-      json: payload
-    })
+    
     
     const statusCode = response.statusCode
     if (statusCode !== 201) {
