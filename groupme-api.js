@@ -99,10 +99,6 @@ const createPost = async (message, mentionids) => {
           response.on("end", () =>
             console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
           )
-          const statusCode = response.statusCode
-          if (statusCode !== 201) {
-            console.log(`Error creating a post ${statusCode}`)
-          }
         })
         req.end(json)
       }
