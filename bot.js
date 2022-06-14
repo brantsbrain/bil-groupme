@@ -2,12 +2,11 @@
 const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
-  ballersregex, mention,
+  ballersregex, getBallers,
   soccerregex, soccloc,
   eventregex, createEvent,
-  getAdmins,
-  sendDm, 
-  newbiesregex, newbiestext,
+  getAdmins, sendDm, 
+  newbiesregex, newbiestext, getNewbies,
   coolregex, createPost
 } = require("./groupme-api")
 const nodeCron = require("node-cron")
@@ -67,7 +66,7 @@ const respond = async (req, res) => {
       else if (ballersregex.test(requesttext)) {
         let adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
-          await mention(requesttext, "ballers")
+          await createPost(requesttext, await getBallers())
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
@@ -75,10 +74,11 @@ const respond = async (req, res) => {
         }
       }
 
+      // Post newbies help text to recently joined/added members
       else if (newbiesregex.test(requesttext)) {
         let adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
-          await mention(newbiestext, "newbies")
+          await createPost(newbiestext, await getNewbies())
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /newbies!`)
