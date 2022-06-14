@@ -66,7 +66,7 @@ const respond = async (req, res) => {
       else if (ballersregex.test(requesttext)) {
         let adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
-          await createPost(ballersregex, await getBallers())
+          await createPost(requesttext, await getBallers())
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)

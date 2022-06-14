@@ -50,18 +50,17 @@ const createPost = async (message, mentionids) => {
         currmess += message[i]
       }
       else {
-        console.log(`Message variable reached ${message.length}`)
         messagearr.push(currmess)
         currmess = ""
-        console.log(`Message variable reset to ${message.length}`)
       }
     }
     if (currmess.length > 0) {
       messagearr.push(currmess)
     }
     
+    // Iterate through array as mentions or regular post
     for (let i = 0; i < messagearr.length; i++) {
-      // Send message w/ mentions
+      // Send message(s) w/ mention(s)
       if (mentionids) {
         console.log(`Creating new mention (${messagearr[i].length}): ${messagearr[i]}`)
         let text = messagearr[i].replace("/", "@")
@@ -72,9 +71,8 @@ const createPost = async (message, mentionids) => {
           }
         
           for (let i = 0; i < mentionids.length; i++) {
-            // payload.attachments[0].loci.push([i, i + 1])
-          payload.attachments[0].loci.push([0, messagearr[i].length])
-          payload.attachments[0].user_ids.push(mentionids[i])
+            payload.attachments[0].loci.push([0, messagearr[i].length])
+            payload.attachments[0].user_ids.push(mentionids[i])
         }
 
         console.log(`Mentioning: ${payload.attachments[0].user_ids}`)
@@ -104,7 +102,7 @@ const createPost = async (message, mentionids) => {
         req.end(json)
       }
 
-      // Send regular message
+      // Send regular message(s)
       else {
         var payload = {
           "text": messagearr[i],
@@ -248,11 +246,11 @@ const getAdmins = async () => {
 
   // Get admin details
   memberdict = response.body.response.members
-  console.log(JSON.stringify(memberdict))
+  console.log(`Members found: ${JSON.stringify(memberdict)}`)
   let adminarr = []
   for (const key of Object.entries(memberdict)) {
     if (key[1].roles.indexOf("admin") > -1) {
-      console.log(`Found: ${key[1].roles} - ${key[1].user_id} - ${key[1].nickname}`)
+      console.log(`Found admin: ${key[1].roles} - ${key[1].user_id} - ${key[1].nickname}`)
       adminarr.push(key[1].user_id)
     }
   }
