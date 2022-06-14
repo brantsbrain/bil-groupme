@@ -61,7 +61,7 @@ const createPost = async (message, mentionids) => {
       if (mentionids) {
         console.log(`Creating new mention (${messagelist[i].length}): ${messagelist[i]}`)
         let text = messagelist[i].replace("/", "@")
-        const payload = {
+        var payload = {
             text,
             bot_id,
             attachments: [{ loci: [], type: "mentions", user_ids: [] }]
@@ -96,7 +96,7 @@ const createPost = async (message, mentionids) => {
         } */
       }
       else {
-        payload = {
+        var payload = {
           "text": messagelist[i],
           bot_id
         }
