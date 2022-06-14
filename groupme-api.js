@@ -71,8 +71,9 @@ const createPost = async (message, mentionids) => {
             attachments: [{ loci: [], type: "mentions", user_ids: [] }]
           }
         
-        for (let i = 0; i < mentionids.length; i++) {
-          payload.attachments[0].loci.push([i, i + 1])
+          payload.attachments[0].loci.push([messagearr[i].length])
+          for (let i = 0; i < mentionids.length; i++) {
+          // payload.attachments[0].loci.push([i, i + 1])
           payload.attachments[0].user_ids.push(mentionids[i])
         }
 
