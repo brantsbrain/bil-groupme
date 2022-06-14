@@ -41,17 +41,34 @@ const createPost = async (message) => {
     console.log(`Creating new post (${message.length}): ${message}`)
     const postPath = "/v3/bots/post"
     const desturl = new URL(postPath, baseurl)
+    let messagelist = []
 
-    const response = await got.post(desturl, {
+    let currmess = ""
+    for (let i = 0; i < message.length; i++) {
+      if (currmess.length < 1000) {
+        currmess += message[i]
+      }
+      else {
+        messagelist.push(currmess)
+        currmess = ""
+      }
+    }
+    if (currmess.length > 0) {
+      messagelist.push(currmess)
+    }
+    
+    for (let i = 0; i < messagelist.length; i++) {
+      const response = await got.post(desturl, {
         json: {
             "bot_id": bot_id,
-            "text": String(message),
+            "text": String(messagelist[i]),
         },
     })
-
+    
     const statusCode = response.statusCode
     if (statusCode !== 201) {
         console.log(`Error creating a post ${statusCode}`)
+    }
     }
 }
 
