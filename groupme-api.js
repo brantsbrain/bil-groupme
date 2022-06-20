@@ -121,28 +121,29 @@ const createPost = async (message, mentionids) => {
 }
 
 // Send a DM to a provided user ID on host's behalf
-const sendDm = async (userid, text) => {
-  console.log(`Creating new DM (${text.length}): ${text}`)
+const sendDm = async (userid, message) => {
+  console.log(`Creating new DM (${message.length}): ${message}`)
   const recipient_id = userid
-  const source_guid = String(Math.random().toString(36).substring(2, 34))
-
+  
   // Prep message as array to accomadate long messages 
-  let messagearr = []
+  var messagearr = []
   var currmess = ""
-  for (let i = 0; i < text.length; i++) {
+  for (let i = 0; i < message.length; i++) {
     if (currmess.length < 999) {
-      currmess += text[i]
+      currmess += message[i]
     }
     else {
       messagearr.push(currmess)
+      console.log(`Maxed out currmess at ${currmess.length}`)
       currmess = ""
     }
   }
   if (currmess.length > 0) {
     messagearr.push(currmess)
   }
-
+  
   for (let i = 0; i < messagearr.length; i++) {
+    const source_guid = String(Math.random().toString(36).substring(2, 34))
     const message = {
       direct_message: {
         recipient_id,
@@ -176,7 +177,6 @@ const sendDm = async (userid, text) => {
     })
     req.end(json)
   }
-
 }
 
 // Get members from the nearest upcoming event that isn't deleted 
