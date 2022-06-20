@@ -65,7 +65,7 @@ const respond = async (req, res) => {
       else if (sendername == "GroupMe") {
         console.log("Sendername is GroupMe")
         if (requesttext.includes("added")) {
-          let name = requesttext.substring(requesttext.lastIndexOf("added") + 2, requesttext.lastIndexOf("to") - 3)
+          let name = requesttext.substring(requesttext.lastIndexOf("added") + 7, requesttext.lastIndexOf("to"))
           console.log(`Found ${name} in requesttext`)
           sendDm(getUserId(name), "Hello There")
         }
