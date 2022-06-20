@@ -63,15 +63,16 @@ const respond = async (req, res) => {
 
       // Send new members welcome DM
       else if (sendername == "GroupMe") {
-        console.log("Sendername is GroupMe")
         if (requesttext.includes("added")) {
           let name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
           console.log(`Found ${name} in requesttext`)
-          sendDm(await getUserId(name), "Hello There")
+          sendDm(await getUserId(name), newbiestext)
         }
         else if (requesttext.includes("joined")) {
+          let name = requesttext.substring(requesttext.lastIndexOf("joined") + 7, requesttext.lastIndexOf("to") - 1)
+          console.log(`Found ${name} in requesttext`)
+          sendDm(await getUserId(name), newbiestext)
         }
-        // console.log(`New member added/joined: ${JSON.stringify(request)}`)
       }
 
       ////////// ADMIN CONTROLS //////////
