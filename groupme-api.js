@@ -124,7 +124,7 @@ const createPost = async (message, mentionids) => {
 const sendDm = async (userid, slashtext) => {
   console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
   let text = slashtext.replace("/", "@")
-  const recipient_id = String(userid)
+  const recipient_id = userid
   const source_guid = String(Math.random().toString(36).substring(2,34))
 
   const message = {
@@ -245,7 +245,7 @@ const getAdmins = async () => {
   })
 
   // Get admin details
-  memberdict = response.body.response.members
+  let memberdict = response.body.response.members
   console.log(`Members found: ${JSON.stringify(memberdict)}`)
   let adminarr = []
   for (const key of Object.entries(memberdict)) {
@@ -256,6 +256,23 @@ const getAdmins = async () => {
   }
 
   return adminarr
+}
+
+const getUserId = async (name) => {
+  const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+      responseType: "json"
+  })
+
+  let memberdict = response.body.response.members
+  
+  for (const key of Object.entries(memberdict)) {
+    if (key[1].nickname == name) {
+      console.log(`Found ${name} with user id ${key[1].user_id}`)
+      return key[1].user_id
+    }
+  }
 }
 
 // Post pic from URL
@@ -394,6 +411,7 @@ exports.soccloc = soccloc
 
 // Send DM
 exports.sendDm = sendDm
+exports.getUserId = getUserId
 
 // Newbie
 exports.newbiesregex = newbiesregex
