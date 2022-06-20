@@ -273,6 +273,7 @@ const getUserId = async (name) => {
       return key[1].user_id
     }
   }
+  console.log(`Couldn't find user ID for ${name}`)
 }
 
 // Post pic from URL
