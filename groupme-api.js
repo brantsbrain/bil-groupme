@@ -13,6 +13,10 @@ const helptext = "Kobe Commands:\n" +
   "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
   "/help - Uhhh... you're here"
 
+const sleep = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 ////////// ENVIRONMENT VARS //////////
 // Required
 const bot_id = process.env.BOT_ID
@@ -60,6 +64,7 @@ const createPost = async (message, mentionids) => {
 
   // Iterate through array as mentions or regular post
   for (let i = 0; i < messagearr.length; i++) {
+    sleep(100)
     // Send message(s) w/ mention(s)
     if (mentionids) {
       console.log(`Creating new mention (${messagearr[i].length}): ${messagearr[i]}`)
@@ -136,6 +141,7 @@ const sendDm = async (userid, message) => {
       messagearr.push(currmess)
       console.log(`Maxed out currmess at ${currmess.length}`)
       currmess = ""
+      i -= 1
     }
   }
   if (currmess.length > 0) {
@@ -143,6 +149,7 @@ const sendDm = async (userid, message) => {
   }
   
   for (let i = 0; i < messagearr.length; i++) {
+    sleep(100)
     const source_guid = String(Math.random().toString(36).substring(2, 34))
     const message = {
       direct_message: {
