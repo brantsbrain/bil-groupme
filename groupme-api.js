@@ -122,7 +122,7 @@ const createPost = async (message, mentionids) => {
 
 // Send a DM to a provided user ID on host's behalf
 const sendDm = async (userid, slashtext) => {
-  console.log(`Creating new mention (${slashtext.length}): ${slashtext}`)
+  console.log(`Creating new DM (${slashtext.length}): ${slashtext}`)
   let text = slashtext.replace("/", "@")
   const recipient_id = userid
   const source_guid = String(Math.random().toString(36).substring(2,34))
@@ -259,6 +259,7 @@ const getAdmins = async () => {
 }
 
 const getUserId = async (name) => {
+  console.log(`Searching for user ID for ${name}...`)
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
   const response = await got(desturl, {
