@@ -149,7 +149,7 @@ const sendDm = async (userid, message) => {
   }
   
   for (let i = 0; i < messagearr.length; i++) {
-    sleep(100)
+    sleep(2000)
     const source_guid = String(Math.random().toString(36).substring(2, 34))
     const message = {
       direct_message: {
