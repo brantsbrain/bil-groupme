@@ -69,7 +69,7 @@ const respond = async (req, res) => {
           sendDm(await getUserId(name), newbiestext)
         }
         else if (requesttext.includes("joined")) {
-          let name = requesttext.substring(requesttext.lastIndexOf("joined") + 7, requesttext.lastIndexOf("to") - 1)
+          let name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
           console.log(`Found ${name} in requesttext`)
           sendDm(await getUserId(name), newbiestext)
         }
