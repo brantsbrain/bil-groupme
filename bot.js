@@ -5,7 +5,7 @@ const {
   ballersregex, getBallers,
   soccerregex, soccloc,
   eventregex, createEvent,
-  getAdmins, sendDm, 
+  getAdmins, sendDm, getUserId,
   newbiesregex, newbiestext, getNewbies,
   coolregex, createPost
 } = require("./groupme-api")
@@ -59,6 +59,20 @@ const respond = async (req, res) => {
       // Post soccer event
       else if (soccerregex.test(requesttext)) {
         await createEvent("Soccer Tuesdays!", soccloc)
+      }
+
+      // Send new members welcome DM
+      else if (sendername == "GroupMe") {
+        if (requesttext.includes("added")) {
+          let name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
+          console.log(`Found ${name} in requesttext`)
+          sendDm(await getUserId(name), newbiestext)
+        }
+        else if (requesttext.includes("joined")) {
+          let name = requesttext.substring(requesttext.lastIndexOf("joined") + 7, requesttext.lastIndexOf("to") - 1)
+          console.log(`Found ${name} in requesttext`)
+          sendDm(await getUserId(name), newbiestext)
+        }
       }
 
       ////////// ADMIN CONTROLS //////////
