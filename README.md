@@ -4,6 +4,8 @@ The heart behind this bot was to be able to moderate a large group of people loo
 
 The primary functionality of this app is `/ballers` which mentions only those people who have marked themselves as `Going` to the nearest upcoming event. GroupMe has a built-in mention feature, but, as it stands currently, a member would have to individually mention each desired member. `/ballers` compiles an array of members and mentions all these people with a simple `@ballers` instead.
 
+Another helpful feature is the automatic notification for new members; The bot will send a direct message to every new member that joins with the contents of `NEWBIES_TEXT`, a config variable added to Heroku. This text is best used as welcome message describing the group's purpose and any regular activities that occur in it.
+
 We are constantly looking for ways to improve on current functionality and implement new functionality. We know we're not JS pros! Please create an issue or submit a pull request if you'd like to contribute to the repo!
 
 ## Commands
@@ -29,7 +31,7 @@ We are constantly looking for ways to improve on current functionality and imple
 
 ### 1. Forking GitHub Repo
 
-1. Fork `brantsbrain/bil-groupme/prod` to your own GitHub account
+1. Fork the `prod` branch of `brantsbrain/bil-groupme` to your own GitHub account
 
 ### 2. Prepping Heroku App
 
