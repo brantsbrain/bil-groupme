@@ -429,10 +429,10 @@ const createSportsPoll = async () => {
   day.setHours(8, 0, 0)
   
   // Convert to number of seconds since 01/01/1970 
-  let expiration = day.getTime()
-  console.log(expiration)
-  console.log(typeof expiration)
-  expiration = (int)(expiration/1000)
+  let seconds = day.getTime()
+  console.log(seconds)
+  console.log(typeof seconds)
+  expiration = parseInt(expiration/1000, 10)
   console.log(expiration)
 
   const message = {
