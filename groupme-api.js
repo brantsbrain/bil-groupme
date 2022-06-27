@@ -422,11 +422,11 @@ const nearestDay = async (dayofweek) => {
 const createSportsPoll = async () => {
   console.log(`Creating poll...`)
 
-  // Get nearest Thursday at noon
+  // Get nearest Wednesday at 6:00 PM EST
   let day = await nearestDay(4)
   console.log(day)
   console.log(typeof day)
-  day.setHours(8, 0, 0)
+  day.setHours(22, 0, 0)
   
   // Convert to number of seconds since 01/01/1970 
   let milliseconds = day.getTime()
