@@ -475,8 +475,9 @@ const createSportsPoll = async () => {
 
 // Create Friday event
 const createFridayEvent = async () => {
-  const upcomingfriday = await nearestDay(5)
+  let upcomingfriday = await nearestDay(5)
   console.log(`Upcoming Friday: ${upcomingfriday}`)
+  upcomingfriday = new Date(upcomingfriday.getTime())
   console.log(`Upcoming Friday Get Date: ${upcomingfriday.getDate()}`)
   let lastthursday = new Date()
   lastthursday = new Date(lastthursday.getTime())
