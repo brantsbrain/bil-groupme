@@ -483,10 +483,12 @@ const createFridayEvent = async () => {
   // currentdate = new Date(currentdate.getTime())
   // console.log(`Current Date declared ${currentdate}`)
   
-  let lastthursday = new Date(upcomingfriday.getDate() - 8)
+  let lastthursday = new Date(upcomingfriday.getTime())
+  lastthursday.setDate(upcomingfriday.getDate() - 8)
   console.log(`Last Thursday: ${lastthursday}`)
 
   const end_at = lastthursday.toISOString()
+  console.log(end_at)
   const limit = 10
 
   const getevents = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
