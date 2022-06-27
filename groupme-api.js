@@ -424,6 +424,8 @@ const createSportsPoll = async () => {
 
   // Get nearest Thursday at noon
   let day = nearestDay(4)
+  console.log(day)
+  console.log(typeof day)
   day.setHours(8, 0, 0)
   
   // Convert to number of seconds since 01/01/1970 
