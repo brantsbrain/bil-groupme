@@ -11,6 +11,7 @@ const helptext = "Kobe Commands:\n" +
   "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
   "/soccer - Create soccer event for nearest Tuesday\n" +
   "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
+  "/sportspoll - Post preconfigured sports poll to expire nearest Wednesday 6:00 PM EST\n" + 
   "/help - Uhhh... you're here"
 
 const sleep = (ms) => {
@@ -25,6 +26,8 @@ const groupid = process.env.GROUP_ID
 
 // Optional
 const soccloc = process.env.SOCC_LOC
+const baskloc = process.env.BASK_LOC
+const vollloc = process.env.VOLL_LOC
 const ignoremember = process.env.IGNORE_MEMBER
 const newbiestext = process.env.NEWBIES_TEXT
 
@@ -336,11 +339,11 @@ const postPic = async (text) => {
 }
 
 // Create event
-const createEvent = async (name, loc) => {
+const createEvent = async (name, loc, dayofweek) => {
   console.log(`Creating ${name} event`)
 
   // Need to find the nearest specified day of week (0 == Sun, 6 == Sat)
-  let day = 2
+  let day = dayofweek
   let currentdate = new Date()
   let startdate = new Date(currentdate.getTime())
   let enddate = new Date(currentdate.getTime())
@@ -357,6 +360,7 @@ const createEvent = async (name, loc) => {
   }
 
   // EST is 4 hours behind UTC. Set to desired time
+  // Start at 5:30 PM and end at 8:30 PM
   startdate.setHours(21, 30, 0)
   enddate.setDate(enddate.getDate() + 1)
   enddate.setHours(0, 30, 0)
@@ -370,7 +374,7 @@ const createEvent = async (name, loc) => {
     end_at,
     "is_all_day": false,
     "timezone": "America/Detroit",
-    "location": { "name": loc }
+    "location": {"name": loc}
   }
 
   // Prep message as JSON and construct packet
@@ -424,16 +428,11 @@ const createSportsPoll = async () => {
 
   // Get nearest Wednesday at 6:00 PM EST
   let day = await nearestDay(4)
-  console.log(day)
-  console.log(typeof day)
   day.setHours(22, 0, 0)
   
   // Convert to number of seconds since 01/01/1970 
   let milliseconds = day.getTime()
-  console.log(milliseconds)
-  console.log(typeof milliseconds)
   let expiration = parseInt(milliseconds/1000, 10)
-  console.log(expiration)
 
   const message = {
     "subject": "Friday Sports Poll",
@@ -474,6 +473,40 @@ const createSportsPoll = async () => {
   req.end(json)
 }
 
+// Create Friday event
+const createFridayEvent = async () => {
+  const upcomingfriday = await nearestDay(5)
+  const lastthursday = upcomingfriday.getDate() - 8
+  const end_at = lastthursday.toISOString()
+  const limit = 10
+
+  const getevents = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
+  const desturl = new URL(getevents, baseurl)
+  const response = await got(desturl, {
+    responseType: "json"
+  })
+
+  console.log(response.body.response)
+
+  let eventarr = response.body.response.events
+
+  // Rotation is Basketball -> Volleyball -> Poll
+  for (let i = 0; i < eventarr.length; i++) {
+    if (eventarr[i].name.includes("Poll")) {
+      createEvent("Basketball It Up", baskloc, 6)
+      return
+    }
+    else if (eventarr[i].name.includes("Basketball")) {
+      createEvent("Volleyball!", vollloc, 6)
+      return
+    }
+    else {
+      createSportsPoll()
+      return
+    }
+  }
+}
+
 // Returns all your bots and their info
 const getBots = async () => {
   const grouppath = `/v3/bots?token=${accesstoken}`
@@ -510,6 +543,7 @@ exports.eventregex = eventregex
 exports.createEvent = createEvent
 exports.soccerregex = soccerregex
 exports.soccloc = soccloc
+exports.createFridayEvent = createFridayEvent
 
 // Send DM
 exports.sendDm = sendDm

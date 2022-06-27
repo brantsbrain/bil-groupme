@@ -4,7 +4,7 @@ const {
   helptext, helpregex,
   ballersregex, getBallers,
   soccerregex, soccloc,
-  eventregex, createEvent, 
+  eventregex, createEvent, createFridayEvent,
   createSportsPoll, sportspollregex,
   getAdmins, sendDm, getUserId,
   newbiesregex, newbiestext, getNewbies,
@@ -22,7 +22,13 @@ const sleep = (ms) => {
 // Post weekly on Monday 8:00 AM EST
 const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
   console.log("Creating soccer event...")
-  createEvent("Soccer Tuesdays!", soccloc)
+  createEvent("Soccer Tuesdays!", soccloc, 2)
+})
+
+// Post event or poll weekly on Tuesday at 8:00 AM EST
+const weeklySport = nodeCron.schedule("* * * * *", function weeklySport() {
+  console.log("Creating weekly sport event...")
+  createFridayEvent()
 })
 
 ////////// RESPOND //////////
@@ -54,12 +60,12 @@ const respond = async (req, res) => {
       // Post event
       else if (eventregex.test(requesttext)) {
         let paramarr = requesttext.split(":")
-        await createEvent(paramarr[1], paramarr[2])
+        await createEvent(paramarr[1], paramarr[2]), paramarr[3]
       }
 
       // Post soccer event
       else if (soccerregex.test(requesttext)) {
-        await createEvent("Soccer Tuesdays!", soccloc)
+        await createEvent("Soccer Tuesdays!", soccloc, 2)
       }
 
       // Post sports poll
