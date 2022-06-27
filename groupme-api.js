@@ -432,7 +432,7 @@ const createSportsPoll = async () => {
   let milliseconds = day.getTime()
   console.log(milliseconds)
   console.log(typeof milliseconds)
-  expiration = parseInt(milliseconds/1000, 10)
+  let expiration = parseInt(milliseconds/1000, 10)
   console.log(expiration)
 
   const message = {
