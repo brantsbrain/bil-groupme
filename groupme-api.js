@@ -399,6 +399,76 @@ const createEvent = async (name, loc) => {
   req.end(json)
 }
 
+// Return nearest day of the week based on input
+const nearestDay = async (dayofweek) => {
+  // Need to find the nearest specified day of week (0 == Sun, 6 == Sat)
+  let day = dayofweek
+  let currentdate = new Date()
+  let startdate = new Date(currentdate.getTime())
+  let deltadays = day - currentdate.getDay()
+
+  // Adjust the date's day of the week to match the desired day
+  startdate.setDate(currentdate.getDate() + deltadays)
+
+  // If the adjusted date is in the past, add 7 days
+  if (startdate < currentdate) {
+    startdate.setDate(startdate.getDate() + 7)
+  }
+
+  return startdate
+}
+
+// Create sports poll
+const createSportsPoll = async () => {
+  console.log(`Creating poll...`)
+
+  // Get nearest Thursday at noon
+  let day = nearestDay(4)
+  day.setHours(8, 0, 0)
+  
+  // Convert to number of seconds since 01/01/1970 
+  let expiration = day.getTime()
+  expiration = expiration/10
+
+  const message = {
+    "subject": "Friday Sports Poll",
+    "options": [
+      {"title": "Soccer"},
+      {"title": "Ultimate Frisbee"},
+      {"title": "Football"},
+      {"title": "Kickball"}
+    ],
+    "expiration": expiration,
+    "type": "multi",
+    "visibility": "public"
+  }
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: `/v3/poll/${groupid}`,
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "application/json",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
+}
+
 // Returns all your bots and their info
 const getBots = async () => {
   const grouppath = `/v3/bots?token=${accesstoken}`
@@ -416,6 +486,7 @@ const soccerregex = /^(\s)*\/soccer/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 const newbiesregex = /^(\s)*\/newbies/i
+const sportspollregex = /^(\s)*\/sportspoll/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -438,6 +509,10 @@ exports.soccloc = soccloc
 // Send DM
 exports.sendDm = sendDm
 exports.getUserId = getUserId
+
+// Sports poll
+exports.createSportsPoll = createSportsPoll
+exports.sportspollregex = sportspollregex
 
 // Newbie
 exports.newbiesregex = newbiesregex

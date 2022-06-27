@@ -4,7 +4,8 @@ const {
   helptext, helpregex,
   ballersregex, getBallers,
   soccerregex, soccloc,
-  eventregex, createEvent,
+  eventregex, createEvent, 
+  createSportsPoll, sportspollregex,
   getAdmins, sendDm, getUserId,
   newbiesregex, newbiestext, getNewbies,
   coolregex, createPost
@@ -59,6 +60,11 @@ const respond = async (req, res) => {
       // Post soccer event
       else if (soccerregex.test(requesttext)) {
         await createEvent("Soccer Tuesdays!", soccloc)
+      }
+
+      // Post sports poll
+      else if (sportspollregex.test(requesttext)) {
+        await createSportsPoll()
       }
 
       // Send new members welcome DM
