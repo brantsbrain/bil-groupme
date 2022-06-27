@@ -477,11 +477,13 @@ const createSportsPoll = async () => {
 const createFridayEvent = async () => {
   const upcomingfriday = await nearestDay(5)
   console.log(`Upcoming Friday: ${upcomingfriday}`)
+  console.log(`Upcoming Friday Get Date: ${upcomingfriday.getDate()}`)
   let lastthursday = new Date()
   lastthursday.setDate(upcomingfriday.getDate() - 8)
   console.log(`Last Thursday: ${lastthursday}`)
+
   const end_at = lastthursday.toISOString()
-  const limit = 20
+  const limit = 10
 
   const getevents = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
   const desturl = new URL(getevents, baseurl)
