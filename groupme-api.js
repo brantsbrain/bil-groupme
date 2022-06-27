@@ -479,6 +479,7 @@ const createFridayEvent = async () => {
   console.log(`Upcoming Friday: ${upcomingfriday}`)
   console.log(`Upcoming Friday Get Date: ${upcomingfriday.getDate()}`)
   let lastthursday = new Date()
+  console.log(`Last Thursday declared ${lastthursday}`)
   lastthursday.setDate(upcomingfriday.getDate() - 8)
   console.log(`Last Thursday: ${lastthursday}`)
 
