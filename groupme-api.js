@@ -491,7 +491,7 @@ const createFridayEvent = async () => {
   let eventarr = response.body.response.events
 
   // Rotation is Basketball -> Volleyball -> Poll
-  for (let i = 0; i < eventarr.length; i++) {
+  for (let i = (eventarr.length - 1); i >= 0; i--) {
     if (eventarr[i].name.includes("Poll")) {
       createEvent("Basketball It Up", baskloc, 6)
       return
