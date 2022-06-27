@@ -476,8 +476,10 @@ const createSportsPoll = async () => {
 // Create Friday event
 const createFridayEvent = async () => {
   const upcomingfriday = await nearestDay(5)
+  console.log(`Upcoming Friday: ${upcomingfriday}`)
   let lastthursday = new Date()
   lastthursday.setDate(upcomingfriday.getDate() - 8)
+  console.log(`Last Thursday: ${lastthursday}`)
   const end_at = lastthursday.toISOString()
   const limit = 20
 
