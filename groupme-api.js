@@ -493,16 +493,22 @@ const createFridayEvent = async () => {
   // Rotation is Basketball -> Volleyball -> Poll
   for (let i = (eventarr.length - 1); i >= 0; i--) {
     if (eventarr[i].name.includes("Poll")) {
+      console.log("Found poll event")
       createEvent("Basketball It Up", baskloc, 6)
       return
     }
     else if (eventarr[i].name.includes("Basketball")) {
+      console.log("Found basketball event")
       createEvent("Volleyball!", vollloc, 6)
       return
     }
-    else {
+    else if (eventarr[i].name.includes("Volleyball")) {
+      console.log("Found volleyball event")
       createSportsPoll()
       return
+    }
+    else {
+      console.log("Didn't find anything that matched criteria")
     }
   }
 }
