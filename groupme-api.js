@@ -18,6 +18,8 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+const sportpollarr = ["Soccer", "Ultimate Frisbee", "Football", "Kickball"]
+
 ////////// ENVIRONMENT VARS //////////
 // Required
 const bot_id = process.env.BOT_ID
@@ -434,6 +436,11 @@ const createSportsPoll = async () => {
   let milliseconds = day.getTime()
   let expiration = parseInt(milliseconds/1000, 10)
 
+  let options = []
+  for (let i = 0; i < sportpollarr.length; i++) {
+    options.push({"title": sportpollarr[i]})
+  }
+
   const message = {
     "subject": "Friday Sports Poll",
     "options": [
@@ -478,17 +485,12 @@ const createFridayEvent = async () => {
   let upcomingfriday = await nearestDay(5)
   upcomingfriday = new Date(upcomingfriday.getTime())
   console.log(`Upcoming Friday: ${upcomingfriday}`)
-
-  // let currentdate = new Date()
-  // currentdate = new Date(currentdate.getTime())
-  // console.log(`Current Date declared ${currentdate}`)
   
   let lastthursday = new Date(upcomingfriday.getTime())
   lastthursday.setDate(upcomingfriday.getDate() - 8)
   console.log(`Last Thursday: ${lastthursday}`)
 
   const end_at = lastthursday.toISOString()
-  console.log(end_at)
   const limit = 10
 
   const getevents = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
@@ -503,7 +505,7 @@ const createFridayEvent = async () => {
 
   // Rotation is Basketball -> Volleyball -> Poll
   for (let i = (eventarr.length - 1); i >= 0; i--) {
-    if (eventarr[i].name.includes("Poll")) {
+    if (sportpollarr.includes(eventarr[i].name)) {
       console.log("Found poll event")
       createEvent("Basketball It Up", baskloc, 6)
       return
