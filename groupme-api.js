@@ -423,14 +423,17 @@ const createSportsPoll = async () => {
   console.log(`Creating poll...`)
 
   // Get nearest Thursday at noon
-  let day = nearestDay(4)
+  let day = await nearestDay(4)
   console.log(day)
   console.log(typeof day)
   day.setHours(8, 0, 0)
   
   // Convert to number of seconds since 01/01/1970 
   let expiration = day.getTime()
+  console.log(expiration)
+  console.log(typeof expiration)
   expiration = expiration/10
+  console.log(expiration)
 
   const message = {
     "subject": "Friday Sports Poll",
