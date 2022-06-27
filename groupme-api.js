@@ -476,13 +476,14 @@ const createSportsPoll = async () => {
 // Create Friday event
 const createFridayEvent = async () => {
   let upcomingfriday = await nearestDay(5)
-  console.log(`Upcoming Friday: ${upcomingfriday}`)
   upcomingfriday = new Date(upcomingfriday.getTime())
-  console.log(`Upcoming Friday Get Date: ${upcomingfriday.getDate()}`)
-  let lastthursday = new Date()
-  lastthursday = new Date(lastthursday.getTime())
-  console.log(`Last Thursday declared ${lastthursday}`)
-  lastthursday.setDate(upcomingfriday.getDate() - 8)
+  console.log(`Upcoming Friday: ${upcomingfriday}`)
+
+  // let currentdate = new Date()
+  // currentdate = new Date(currentdate.getTime())
+  // console.log(`Current Date declared ${currentdate}`)
+  
+  let lastthursday = new Date(upcomingfriday.getDate() - 8)
   console.log(`Last Thursday: ${lastthursday}`)
 
   const end_at = lastthursday.toISOString()
