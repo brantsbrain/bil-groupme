@@ -478,7 +478,7 @@ const createFridayEvent = async () => {
   const upcomingfriday = await nearestDay(5)
   const lastthursday = new Date(upcomingfriday.getDate() - 8)
   const end_at = lastthursday.toISOString()
-  const limit = 10
+  const limit = 20
 
   const getevents = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
   const desturl = new URL(getevents, baseurl)
