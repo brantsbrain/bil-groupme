@@ -443,13 +443,8 @@ const createSportsPoll = async () => {
 
   const message = {
     "subject": "Friday Sports Poll",
-    "options": [
-      {"title": "Soccer"},
-      {"title": "Ultimate Frisbee"},
-      {"title": "Football"},
-      {"title": "Kickball"}
-    ],
-    "expiration": expiration,
+    options,
+    expiration,
     "type": "multi",
     "visibility": "public"
   }
@@ -507,12 +502,12 @@ const createFridayEvent = async () => {
   for (let i = (eventarr.length - 1); i >= 0; i--) {
     if (sportpollarr.includes(eventarr[i].name)) {
       console.log("Found poll event")
-      createEvent("Basketball It Up", baskloc, 6)
+      createEvent("Basketball It Up", baskloc, 5)
       return
     }
     else if (eventarr[i].name.includes("Basketball")) {
       console.log("Found basketball event")
-      createEvent("Volleyball!", vollloc, 6)
+      createEvent("Volleyball!", vollloc, 5)
       return
     }
     else if (eventarr[i].name.includes("Volleyball")) {
