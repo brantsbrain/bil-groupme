@@ -71,7 +71,7 @@ const createPost = async (message, mentionids) => {
   // Iterate through array as mentions or regular post
   for (let i = 0; i < messagearr.length; i++) {
     sleep(100)
-    // var text = messagearr[i].replace("/", "@")
+    var text = messagearr[i]
 
     // Send message(s) w/ mention(s)
     if (mentionids) {
