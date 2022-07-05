@@ -70,19 +70,20 @@ const createPost = async (message, mentionids) => {
   // Iterate through array as mentions or regular post
   for (let i = 0; i < messagearr.length; i++) {
     sleep(100)
+    var text = messagearr[i].replace("/", "@")
+
     // Send message(s) w/ mention(s)
     if (mentionids) {
       console.log(`Creating new mention (${messagearr[i].length}): ${messagearr[i]}`)
-      let text = messagearr[i].replace("/", "@")
       var payload = {
         text,
         bot_id,
         attachments: [{ loci: [], type: "mentions", user_ids: [] }]
       }
 
-      for (let i = 0; i < mentionids.length; i++) {
+      for (let y = 0; y < mentionids.length; y++) {
         payload.attachments[0].loci.push([0, messagearr[i].length])
-        payload.attachments[0].user_ids.push(mentionids[i])
+        payload.attachments[0].user_ids.push(mentionids[y])
       }
 
       console.log(`Mentioning: ${payload.attachments[0].user_ids}`)
@@ -154,7 +155,7 @@ const sendDm = async (userid, message) => {
   }
   
   for (let i = 0; i < messagearr.length; i++) {
-    sleep(2000)
+    sleep(5000)
     const source_guid = String(Math.random().toString(36).substring(2, 34))
     const message = {
       direct_message: {
