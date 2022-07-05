@@ -51,8 +51,9 @@ const createPost = async (message, mentionids) => {
   const postPath = "/v3/bots/post"
   const desturl = new URL(postPath, baseurl)
 
+  message = message.replace("/", "@")
   // Prep message as array to accomadate long messages 
-  let messagearr = []
+  var messagearr = []
   var currmess = ""
   for (let i = 0; i < message.length; i++) {
     if (currmess.length < 999) {
@@ -66,11 +67,11 @@ const createPost = async (message, mentionids) => {
   if (currmess.length > 0) {
     messagearr.push(currmess)
   }
-
+  
   // Iterate through array as mentions or regular post
   for (let i = 0; i < messagearr.length; i++) {
     sleep(100)
-    var text = messagearr[i].replace("/", "@")
+    // var text = messagearr[i].replace("/", "@")
 
     // Send message(s) w/ mention(s)
     if (mentionids) {
