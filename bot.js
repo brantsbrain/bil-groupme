@@ -26,10 +26,10 @@ const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
 })
 
 // Post event or poll weekly on Tuesday at 8:00 AM EST
-/* const weeklySport = nodeCron.schedule("0 12 * * 2", function weeklySport() {
+const weeklySport = nodeCron.schedule("0 12 * * 2", function weeklySport() {
   console.log("Creating weekly sport event...")
   createFridayEvent()
-}) */
+})
 
 ////////// RESPOND //////////
 const respond = async (req, res) => {
