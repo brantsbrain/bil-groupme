@@ -32,6 +32,7 @@ const baskloc = process.env.BASK_LOC
 const vollloc = process.env.VOLL_LOC
 const ignoremember = process.env.IGNORE_MEMBER
 const newbiestext = process.env.NEWBIES_TEXT
+const loguserid = process.env.LOG_USERID
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -302,10 +303,12 @@ const getUserId = async (name) => {
   for (const key of Object.entries(memberdict)) {
     if (key[1].nickname == name) {
       console.log(`Found ${name} with user id ${key[1].user_id}`)
+      sendDm(loguserid, `Found ${name} with user id ${key[1].user_id}`)
       return key[1].user_id
     }
   }
   console.log(`Couldn't find user ID for ${name}`)
+  sendDm(loguserid, `Couldn't find user ID for ${name}`)
 }
 
 // Post pic from URL
