@@ -18,7 +18,7 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const sportpollarr = ["Soccer", "Ultimate Frisbee", "Football", "Kickball"]
+const sportpollarr = ["Soccer", "Ultimate Frisbee", "Football", "Kickball", "Volleyball", "Basketball", "Wiffle Ball"]
 
 ////////// ENVIRONMENT VARS //////////
 // Required
@@ -522,6 +522,7 @@ const createFridayEvent = async () => {
     }
     else {
       console.log("Didn't find anything that matched criteria")
+      sendDm(loguserid, "Didn't find anything that matched criteria")
     }
   }
 }
@@ -567,6 +568,7 @@ exports.createFridayEvent = createFridayEvent
 // Send DM
 exports.sendDm = sendDm
 exports.getUserId = getUserId
+exports.loguserid = loguserid
 
 // Sports poll
 exports.createSportsPoll = createSportsPoll

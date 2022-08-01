@@ -6,7 +6,7 @@ const {
   soccerregex, soccloc,
   eventregex, createEvent, createFridayEvent,
   createSportsPoll, sportspollregex,
-  getAdmins, sendDm, getUserId,
+  getAdmins, sendDm, getUserId, loguserid,
   newbiesregex, newbiestext, getNewbies,
   coolregex, createPost
 } = require("./groupme-api")
@@ -28,6 +28,7 @@ const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
 // Post event or poll weekly on Tuesday at 8:00 AM EST
 /* const weeklySport = nodeCron.schedule("0 12 * * 2", function weeklySport() {
   console.log("Creating weekly sport event...")
+  sendDm(loguserid, "Attempting to create Friday event...")
   createFridayEvent()
 }) */
 
@@ -96,7 +97,9 @@ const respond = async (req, res) => {
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
+          await sendDm(loguserid, `${sendername} attempted to run /ballers`)
           console.log(`${sendername} attempted to run /ballers`)
+
         }
       }
 
