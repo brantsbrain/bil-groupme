@@ -54,7 +54,11 @@ const createPost = async (message, mentionids) => {
   const postPath = "/v3/bots/post"
   const desturl = new URL(postPath, baseurl)
 
-  message = message.replace("/", "@")
+  // Keep from endless loop in mentions
+  if (message[0] == "/") {
+    message = message.replace("/", "@")
+  }
+  
   // Prep message as array to accomadate long messages 
   var messagearr = []
   var currmess = ""
