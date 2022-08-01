@@ -12,6 +12,7 @@ const helptext = "Kobe Commands:\n" +
   "/soccer - Create soccer event for nearest Tuesday\n" +
   "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
   "/sportspoll - Post preconfigured sports poll to expire nearest Wednesday 6:00 PM EST\n" + 
+  "/locations - Post all previous locations of sports\n" +
   "/help - Uhhh... you're here"
 
 const sleep = (ms) => {
@@ -32,6 +33,7 @@ const baskloc = process.env.BASK_LOC
 const vollloc = process.env.VOLL_LOC
 const ignoremember = process.env.IGNORE_MEMBER
 const newbiestext = process.env.NEWBIES_TEXT
+const locationtext = process.env.LOCATION_TEXT
 const loguserid = process.env.LOG_USERID
 
 ////////// CHECK ENV VARS //////////
@@ -545,6 +547,7 @@ const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 const newbiesregex = /^(\s)*\/newbies/i
 const sportspollregex = /^(\s)*\/sportspoll/i
+const locationsregex = /^(\s)*\/locations/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -564,6 +567,8 @@ exports.createEvent = createEvent
 exports.soccerregex = soccerregex
 exports.soccloc = soccloc
 exports.createFridayEvent = createFridayEvent
+exports.locationsregex = locationsregex
+exports.locationtext = locationtext
 
 // Send DM
 exports.sendDm = sendDm
