@@ -6,6 +6,7 @@ const {
   soccerregex, soccloc,
   eventregex, createEvent, createFridayEvent,
   createSportsPoll, sportspollregex,
+  locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid,
   newbiesregex, newbiestext, getNewbies,
   coolregex, createPost
@@ -86,6 +87,11 @@ const respond = async (req, res) => {
           console.log(`Found ${name} in requesttext`)
           sendDm(await getUserId(name), newbiestext)
         }
+      }
+
+      // Post previous sports locations
+      else if (locationsregex.test(requesttext)) {
+        await createPost(locationtext)
       }
 
       ////////// ADMIN CONTROLS //////////
