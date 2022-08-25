@@ -20,6 +20,7 @@ const sleep = (ms) => {
 }
 
 const sportpollarr = ["Soccer", "Ultimate Frisbee", "Football", "Kickball", "Volleyball", "Basketball", "Wiffle Ball"]
+const frisportrot = ["Basketball", "Volleyball", "Soccer", "Poll"]
 
 ////////// ENVIRONMENT VARS //////////
 // Required
@@ -163,7 +164,7 @@ const sendDm = async (userid, message) => {
   }
   
   for (let i = 0; i < messagearr.length; i++) {
-    sleep(5000)
+    sleep(60000)
     const source_guid = String(Math.random().toString(36).substring(2, 34))
     const message = {
       direct_message: {
@@ -486,50 +487,35 @@ const createSportsPoll = async () => {
   req.end(json)
 }
 
-// Create Friday event
+// Create Friday event or poll depending on week
 const createFridayEvent = async () => {
-  let upcomingfriday = await nearestDay(5)
+  // Get nearest Friday
+  const upcomingfriday = await nearestDay(5)
   upcomingfriday = new Date(upcomingfriday.getTime())
-  console.log(`Upcoming Friday: ${upcomingfriday}`)
+
+  // Create base EPOCH date and find number of weeks since EPOCH
+  const epoch = new Date(0)
+  const msinweek = 1000 * 60 * 60 * 24 * 7
+  const diff = (upcomingfriday - epoch) / msinweek
   
-  let lastthursday = new Date(upcomingfriday.getTime())
-  lastthursday.setDate(upcomingfriday.getDate() - 8)
-  console.log(`Last Thursday: ${lastthursday}`)
+  // Use length of frisportrot in modulo calculations
+  const numsports = frisportrot.length
 
-  const end_at = lastthursday.toISOString()
-  const limit = 10
-
-  const getevents = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
-  const desturl = new URL(getevents, baseurl)
-  const response = await got(desturl, {
-    responseType: "json"
-  })
-
-  console.log(response.body.response)
-
-  let eventarr = response.body.response.events
-
-  // Rotation is Basketball -> Volleyball -> Poll
-  for (let i = (eventarr.length - 1); i >= 0; i--) {
-    if (sportpollarr.includes(eventarr[i].name)) {
-      console.log("Found poll event")
-      createEvent("Basketball It Up", baskloc, 5)
-      return
-    }
-    else if (eventarr[i].name.includes("Basketball")) {
-      console.log("Found basketball event")
-      createEvent("Volleyball!", vollloc, 5)
-      return
-    }
-    else if (eventarr[i].name.includes("Volleyball")) {
-      console.log("Found volleyball event")
-      createSportsPoll()
-      return
-    }
-    else {
-      console.log("Didn't find anything that matched criteria")
-      sendDm(loguserid, "Didn't find anything that matched criteria")
-    }
+  // Use modulo to find the index of the next sport/poll
+  if (diff % numsports == 0) {
+    createEvent("Basketball It Up", baskloc, 5)
+  }
+  else if (diff % numsports == 1) {
+    createEvent("Volleyball!", vollloc, 5)
+  }
+  else if (diff % numsports == 2) {
+    createEvent("Soccerrrr", soccloc, 5)
+  }
+  else if (diff % numsports == 3) {
+    createSportsPoll()
+  }
+  else {
+    sendDm(loguserid, "Modulo out of bounds or other error...")
   }
 }
 

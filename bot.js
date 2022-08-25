@@ -26,12 +26,12 @@ const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
   createEvent("Soccer Tuesdays!", soccloc, 2)
 })
 
-// Post event or poll weekly on Tuesday at 8:00 AM EST
-/* const weeklySport = nodeCron.schedule("0 12 * * 2", function weeklySport() {
+// Post event or poll weekly on Wednesday at 8:00 AM EST
+  const weeklySport = nodeCron.schedule("0 12 * * 3", function weeklySport() {
   console.log("Creating weekly sport event...")
   sendDm(loguserid, "Attempting to create Friday event...")
   createFridayEvent()
-}) */
+})
 
 ////////// RESPOND //////////
 const respond = async (req, res) => {
