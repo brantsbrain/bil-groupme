@@ -6,6 +6,8 @@ The primary functionality of this app is `/ballers` which mentions only those pe
 
 Another helpful feature is the automatic notification for new members; The bot will send a direct message to every new member that joins with the contents of `NEWBIES_TEXT`, a config variable added to Heroku. This text is best used as welcome message describing the group's purpose and any regular activities that occur in it.
 
+Currently the bot automatically posts a soccer event every Monday morning at 8:00 AM EST for the following Tuesday at 5:30 PM EST.
+
 We are constantly looking for ways to improve on current functionality and implement new functionality. We know we're not JS pros! Please create an issue or submit a pull request if you'd like to contribute to the repo!
 
 ## Commands
@@ -13,6 +15,8 @@ We are constantly looking for ways to improve on current functionality and imple
 | Command Usage | Purpose |
 | ------------- | ------- |
 | `/ballers [message to mention ballers]` | Mentions all members who have marked themselves as `Going` to the nearest upcoming event |
+| `/sportspoll` | Posts a poll with the contents of the `sportspollarr` as options for members to vote on |
+| `/locations` | Posts a list of sports locations laid out in the LOCATION_TEXT CONFIG VAR |
 | `/event [:name:location]` | Creates an event hardcoded for the nearest Tuesday 5:30 - 8:30 PM EST (for now) |
 | `/soccer` | Creates a soccer event on the nearest upcoming Tuesday at `SOCC_LOC` 5:30 - 8:30 PM EST |
 | `/help` | Posts an abbreviated version of the above commands' usage
