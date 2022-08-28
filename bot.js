@@ -79,12 +79,12 @@ const respond = async (req, res) => {
       else if (sendername == "GroupMe") {
         if (requesttext.includes("added")) {
           let name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
-          console.log(`Found ${name} in requesttext`)
+          console.log(`Found '${name}' in requesttext`)
           sendDm(await getUserId(name), newbiestext)
         }
         else if (requesttext.includes("joined")) {
           let name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
-          console.log(`Found ${name} in requesttext`)
+          console.log(`Found '${name}' in requesttext`)
           sendDm(await getUserId(name), newbiestext)
         }
       }

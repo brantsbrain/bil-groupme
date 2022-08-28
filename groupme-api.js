@@ -314,7 +314,7 @@ const getUserId = async (name) => {
     }
   }
   console.log(`Couldn't find user ID for ${name}`)
-  sendDm(loguserid, `Couldn't find user ID for ${name}`)
+  sendDm(loguserid, `Couldn't find user ID for '${name}'`)
 }
 
 // Post pic from URL
@@ -439,9 +439,9 @@ const nearestDay = async (dayofweek) => {
 const createSportsPoll = async () => {
   console.log(`Creating poll...`)
 
-  // Get nearest Wednesday at 6:00 PM EST
+  // Get nearest Thursday at 4:00 PM EST
   let day = await nearestDay(4)
-  day.setHours(22, 0, 0)
+  day.setHours(20, 0, 0)
   
   // Convert to number of seconds since 01/01/1970 
   let milliseconds = day.getTime()
