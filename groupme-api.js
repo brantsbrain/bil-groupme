@@ -413,9 +413,9 @@ const nearestDay = async (dayofweek) => {
 const createSportsPoll = async () => {
   console.log(`Creating poll...`)
 
-  // Get nearest Thursday at 4:00 PM EST
+  // Get nearest Thursday at 12:00 PM EST
   let day = await nearestDay(4)
-  day.setHours(20, 0, 0)
+  day.setHours(16, 0, 0)
   
   // Convert to number of seconds since 01/01/1970 
   let milliseconds = day.getTime()
@@ -471,25 +471,8 @@ const createFridayEvent = async () => {
   const msinweek = 1000 * 60 * 60 * 24 * 7
   const diff = (upcomingfriday - epoch) / msinweek
   
-  // Use length of frisportrot in modulo calculations
-  const numsports = frisportrot.length
-
-  // Use modulo to find the index of the next sport/poll
-  /* if (diff % numsports == 0) {
-    createEvent("Basketball It Up", baskloc, 5)
-  }
-  else if (diff % numsports == 1) {
-    createEvent("Volleyball!", vollloc, 5)
-  }
-  else if (diff % numsports == 2) {
-    createEvent("Soccerrrr", soccloc, 5)
-  }
-  else if (diff % numsports == 3) {
-    createSportsPoll()
-  }
-  else {
-    sendDm(loguserid, "Modulo out of bounds or other error...")
-  } */
+  // Use count value in sportjson in modulo calculations
+  const numsports = sportjson.count
 
   // Use modulo to navigate sportjson
   position = diff % numsports
@@ -550,6 +533,7 @@ exports.loguserid = loguserid
 // Sports poll
 exports.createSportsPoll = createSportsPoll
 exports.sportspollregex = sportspollregex
+exports.sportjson = sportjson
 
 // Newbie
 exports.newbiesregex = newbiesregex
