@@ -9,7 +9,7 @@ const {
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid,
   newbiestext,
-  coolregex, createPost, sportjson
+  coolregex, createPost, sportjson, getPollWinner
 } = require("./groupme-api")
 const nodeCron = require("node-cron")
 
@@ -76,9 +76,11 @@ const respond = async (req, res) => {
       }
 
       // Post winning event from sports poll
-      else if (requesttext.includes("'Friday Sports Poll' has finished")) {
+      else if (requesttext.includes("'Friday Sports Poll' has expired")) {
+        winner = await getPollWinner()
+        console.log(`Looking for ${winner}`)
         for (let i = 0; i < sportjson.poll.length; i ++) {
-          if (requesttext.includes(sportjson.poll[i].name)) {
+          if (winner.includes(sportjson.poll[i].name)) {
             console.log(`Found ${sportjson.poll[i].name}. Creating event...`)
             await createEvent[sportjson.poll[i].name, sportjson.poll[i].location, 5]
             break

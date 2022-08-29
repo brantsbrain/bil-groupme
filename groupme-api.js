@@ -421,11 +421,13 @@ const createSportsPoll = async () => {
   let milliseconds = day.getTime()
   let expiration = parseInt(milliseconds/1000, 10)
 
+  // Setup options array
   let options = []
   for (let i = 0; i < sportjson.poll.length; i++) {
     options.push({"title": sportjson.poll[i].id})
   }
 
+  // Prep poll
   const message = {
     "subject": "Friday Sports Poll",
     options,
@@ -476,12 +478,38 @@ const createFridayEvent = async () => {
 
   // Use modulo to navigate sportjson
   position = diff % numsports
-  if (position == 3) {
+  if (position == numsports - 1) {
     createSportsPoll()
   }
   else {
     createEvent(sportjson.sports[position])
   }
+}
+
+const getPollWinner = async () => {
+  winner = ""
+  mostvotes = 0
+
+  // Get list of polls
+  const getpath = `/v3/poll/${groupid}?token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+    responseType: "json"
+  })
+
+  // Drill to options dictionary
+  const mostrecentpolloptions = response.body.response.polls.data[0].options
+  console.log(`Poll responses found: ${JSON.stringify(mostrecentpolloptions)}`)
+
+  // Iterate latest poll for most voted sport
+  for (let i = 0; i < mostrecentpolloptions.length; i++) {
+    if (mostrecentpolloptions[i].votes && mostrecentpolloptions[i].votes > mostvotes) {
+      mostvotes = mostrecentpolloptions[i].votes
+      winner = mostrecentpolloptions[i].title
+    }
+  }
+
+  return winner
 }
 
 // Returns all your bots and their info
@@ -534,6 +562,7 @@ exports.loguserid = loguserid
 exports.createSportsPoll = createSportsPoll
 exports.sportspollregex = sportspollregex
 exports.sportjson = sportjson
+exports.getPollWinner = getPollWinner
 
 // Newbie
 exports.newbiesregex = newbiesregex
