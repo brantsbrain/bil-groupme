@@ -83,7 +83,6 @@ const respond = async (req, res) => {
           if (winner.includes(sportjson.poll[i].id)) {
             console.log(`Found ${sportjson.poll[i].id}. Creating event...`)
             await createEvent[sportjson.poll[i].id, sportjson.poll[i].location, 5]
-            break
           }
         }
       }
