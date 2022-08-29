@@ -167,7 +167,7 @@ const sendDm = async (userid, message) => {
   }
   
   for (let i = 0; i < messagearr.length; i++) {
-    sleep(60000)
+    sleep(10000)
     const source_guid = String(Math.random().toString(36).substring(2, 34))
     const message = {
       direct_message: {
@@ -242,40 +242,6 @@ const getBallers = async () => {
   console.log(`Mentioning this array: ${memberarr}`)
 
   return memberarr
-}
-
-// Find users added/joined w/i the past x messages
-const getNewbies = async () => {
-  let limit = 50
-  const getpath = `/v3/groups/${groupid}/messages?limit=${limit}&token=${accesstoken}`
-  const desturl = new URL(getpath, baseurl)
-  const response = await got(desturl, {
-    responseType: "json"
-  })
-
-  // console.log(response.body.response)
-
-  const messagearr = response.body.response.messages
-  let newbiearr = []
-
-  for (let i = 0; i < messagearr.length; i++) {
-    try {
-      if (messagearr[i].event.type == "membership.announce.added") {
-        let addedusersarr = messagearr[i].event.data.added_users
-        for (let y = 0; y < addedusersarr.length; y++) {
-          newbiearr.push(addedusersarr[y].id)
-        }
-      }
-      else if (messagearr[i].event.type == "membership.announce.joined") {
-        newbiearr.push(messagearr[i].event.data.user.id)
-      }
-    }
-    catch (error) {
-      // console.error(error)
-    }
-  }
-
-  return newbiearr
 }
 
 // Get admins

@@ -31,8 +31,8 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
 
 | Tool | Website | Purpose |
 | ---- | ------- | ------- |
-| GitHub Account | [www.github.com](www.github.com) | Hosts the JS code that deploys to Heroku |
-| GroupMe Developer Account | [dev.groupme.com](dev.groupme.com) | Integrates bot into GroupMe chats and forwards messages to Heroku callback URL |
+| GitHub Account | [www.github.com](www.github.com) | Hosts the JS code that deploys to GCP |
+| GroupMe Developer Account | [dev.groupme.com](dev.groupme.com) | Integrates bot into GroupMe chats and forwards messages to GCP callback URL |
 | Google Cloud Platform (GCP) Account | [cloud.google.com](cloud.google.com) | Used to receive messages from GroupMe bot and respond using JS app
 
 ### 1. Forking GitHub Repo
