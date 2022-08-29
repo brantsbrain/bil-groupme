@@ -79,10 +79,10 @@ const respond = async (req, res) => {
       else if (requesttext.includes("'Friday Sports Poll' has expired")) {
         winner = await getPollWinner()
         console.log(`Looking for ${winner}`)
-        for (let i = 0; i < sportjson.poll.length; i ++) {
-          if (winner.includes(sportjson.poll[i].name)) {
-            console.log(`Found ${sportjson.poll[i].name}. Creating event...`)
-            await createEvent[sportjson.poll[i].name, sportjson.poll[i].location, 5]
+        for (let i = 0; i < sportjson.poll.length; i++) {
+          if (winner.includes(sportjson.poll[i].id)) {
+            console.log(`Found ${sportjson.poll[i].id}. Creating event...`)
+            await createEvent[sportjson.poll[i].id, sportjson.poll[i].location, 5]
             break
           }
         }

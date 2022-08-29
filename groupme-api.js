@@ -498,7 +498,7 @@ const getPollWinner = async () => {
     responseType: "json"
   })
 
-  // Drill to options dictionary
+  // Drill to options dictionary of most recent poll
   const mostrecentpolloptions = response.body.response.polls[0].data.options
   console.log(`Poll responses found: ${JSON.stringify(mostrecentpolloptions)}`)
 
