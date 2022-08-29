@@ -486,6 +486,7 @@ const createFridayEvent = async () => {
   }
 }
 
+// Return winner of most recent poll
 const getPollWinner = async () => {
   winner = ""
   mostvotes = 0
@@ -498,7 +499,7 @@ const getPollWinner = async () => {
   })
 
   // Drill to options dictionary
-  const mostrecentpolloptions = response.body.response.polls.data[0].options
+  const mostrecentpolloptions = response.body.response.polls[0].data.options
   console.log(`Poll responses found: ${JSON.stringify(mostrecentpolloptions)}`)
 
   // Iterate latest poll for most voted sport
