@@ -8,7 +8,7 @@ const {
   createSportsPoll, sportspollregex,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid,
-  newbiesregex, newbiestext, getNewbies,
+  newbiesregex, newbiestext,
   coolregex, createPost
 } = require("./groupme-api")
 const nodeCron = require("node-cron")
@@ -106,18 +106,6 @@ const respond = async (req, res) => {
           await sendDm(loguserid, `${sendername} attempted to run /ballers`)
           console.log(`${sendername} attempted to run /ballers`)
 
-        }
-      }
-
-      // Post newbies help text to recently joined/added members
-      else if (newbiesregex.test(requesttext)) {
-        let adminarr = await getAdmins()
-        if (adminarr.indexOf(senderid) > -1) {
-          await createPost(newbiestext, await getNewbies())
-        }
-        else {
-          await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /newbies!`)
-          console.log(`${sendername} attempted to run /newbies`)
         }
       }
 

@@ -40,6 +40,10 @@ const newbiestext = process.env.NEWBIES_TEXT
 const locationtext = process.env.LOCATION_TEXT
 const loguserid = process.env.LOG_USERID
 
+// Sport JSON
+const sportjsonvar = process.env.SPORT_JSON
+const sportjson = JSON.parse(sportjsonvar)
+
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
   console.log("ENV: 'ACCESS_TOKEN' is undefined")
@@ -418,8 +422,8 @@ const createSportsPoll = async () => {
   let expiration = parseInt(milliseconds/1000, 10)
 
   let options = []
-  for (let i = 0; i < sportpollarr.length; i++) {
-    options.push({"title": sportpollarr[i]})
+  for (let i = 0; i < sportjson.poll.length; i++) {
+    options.push({"title": sportjson.poll[i].id})
   }
 
   const message = {
@@ -471,7 +475,7 @@ const createFridayEvent = async () => {
   const numsports = frisportrot.length
 
   // Use modulo to find the index of the next sport/poll
-  if (diff % numsports == 0) {
+  /* if (diff % numsports == 0) {
     createEvent("Basketball It Up", baskloc, 5)
   }
   else if (diff % numsports == 1) {
@@ -485,6 +489,15 @@ const createFridayEvent = async () => {
   }
   else {
     sendDm(loguserid, "Modulo out of bounds or other error...")
+  } */
+
+  // Use modulo to navigate sportjson
+  position = diff % numsports
+  if (position == 3) {
+    createSportsPoll()
+  }
+  else {
+    createEvent(sportjson.sports[position])
   }
 }
 
@@ -541,7 +554,6 @@ exports.sportspollregex = sportspollregex
 // Newbie
 exports.newbiesregex = newbiesregex
 exports.newbiestext = newbiestext
-exports.getNewbies = getNewbies
 
 // Misc vars
 exports.coolregex = coolregex
