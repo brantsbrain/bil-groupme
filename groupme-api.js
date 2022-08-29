@@ -22,9 +22,6 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const sportpollarr = ["Soccer", "Ultimate Frisbee", "Football", "Kickball", "Volleyball", "Basketball", "Wiffle Ball"]
-const frisportrot = ["Basketball", "Volleyball", "Soccer", "Poll"]
-
 ////////// ENVIRONMENT VARS //////////
 // Required
 const bot_id = process.env.BOT_ID
@@ -33,8 +30,6 @@ const groupid = process.env.GROUP_ID
 
 // Optional
 const soccloc = process.env.SOCC_LOC
-const baskloc = process.env.BASK_LOC
-const vollloc = process.env.VOLL_LOC
 const ignoremember = process.env.IGNORE_MEMBER
 const newbiestext = process.env.NEWBIES_TEXT
 const locationtext = process.env.LOCATION_TEXT
@@ -477,7 +472,7 @@ const createFridayEvent = async () => {
   const numsports = sportjson.count
 
   // Use modulo to navigate sportjson
-  position = diff % numsports
+  const position = diff % numsports
   if (position == numsports - 1) {
     createSportsPoll()
   }
