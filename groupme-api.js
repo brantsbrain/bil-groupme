@@ -13,7 +13,10 @@ const helptext = "Kobe Commands:\n" +
   "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
   "/sportspoll - Post preconfigured sports poll to expire nearest Wednesday 6:00 PM EST\n" + 
   "/locations - Post all previous locations of sports\n" +
-  "/help - Uhhh... you're here"
+  "/help - Uhhh... you're here\n\n" +
+  
+  "Navigating GroupMe:\n" +
+  "RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to the desired event"
 
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
