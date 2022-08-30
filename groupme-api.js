@@ -475,11 +475,14 @@ const createFridayEvent = async () => {
   // Get nearest Friday
   const upcomingfriday = await nearestDay(5)
   upcomingfriday = new Date(upcomingfriday.getTime())
+  console.log(upcomingfriday)
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
+  console.log(epoch)
   const msinweek = 1000 * 60 * 60 * 24 * 7
   const diff = (upcomingfriday - epoch) / msinweek
+  console.log(diff)
 
   // Use modulo to navigate sportjson
   const position = diff % sportjson.count
