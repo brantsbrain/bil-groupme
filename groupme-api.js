@@ -5,7 +5,10 @@ const { URL } = require("url")
 const https = require("https")
 
 ////////// INITIALIZE VARS //////////
+// Used to access GroupMe API
 const baseurl = "https://api.groupme.com/"
+
+// Posted w/ /help in chat
 const helptext = "Kobe Commands:\n" +
   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
   "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
@@ -18,19 +21,27 @@ const helptext = "Kobe Commands:\n" +
   "Navigating GroupMe:\n" +
   "RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to the desired event"
 
+  // Title for sports poll created every sportjson.count weeks
+  const sportspolltitle = "Friday Sports Poll"
+
+  // Allow delay for GroupMe API to update
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 ////////// ENVIRONMENT VARS //////////
-// Required
+// Needed for interaction w/ GroupMe bot
 const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
-// Optional
+// Optional for ignoring events from a particular user
 const ignoremember = process.env.IGNORE_MEMBER
+
+// Simple string of possible sport locations
 const locationtext = process.env.LOCATION_TEXT
+
+// You can't DM yourself, so user id to send log messages to
 const loguserid = process.env.LOG_USERID
 
 // Replace ` with two newlines since GCP only takes one-line ENV variables
@@ -426,7 +437,7 @@ const createSportsPoll = async () => {
 
   // Prep poll
   const message = {
-    "subject": "Friday Sports Poll",
+    "subject": sportspolltitle,
     options,
     expiration,
     "type": "multi",
@@ -558,6 +569,7 @@ exports.createSportsPoll = createSportsPoll
 exports.sportspollregex = sportspollregex
 exports.sportjson = sportjson
 exports.getPollWinner = getPollWinner
+exports.sportspolltitle = sportspolltitle
 
 // Newbie
 exports.newbiesregex = newbiesregex

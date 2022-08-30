@@ -5,7 +5,7 @@ const {
   ballersregex, getBallers,
   soccerregex,
   eventregex, createEvent, createFridayEvent,
-  createSportsPoll, sportspollregex,
+  createSportsPoll, sportspollregex, sportspolltitle,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid,
   newbiestext, testregex,
@@ -62,7 +62,7 @@ const respond = async (req, res) => {
       // Post event
       else if (eventregex.test(requesttext)) {
         let paramarr = requesttext.split(":")
-        await createEvent(paramarr[1], paramarr[2]), paramarr[3]
+        await createEvent(paramarr[1], paramarr[2], paramarr[3])
       }
 
       // Post soccer event
@@ -76,12 +76,11 @@ const respond = async (req, res) => {
       }
 
       // Post winning event from sports poll
-      else if (requesttext.includes("'Friday Sports Poll' has expired")) {
+      else if (requesttext.includes(`'${sportspolltitle}' has expired`)) {
         winner = await getPollWinner()
         console.log(`Looking for ${winner}`)
         for (let i = 0; i < sportjson.poll.length; i++) {
           if (winner.includes(sportjson.poll[i].id)) {
-            console.log(`Found ${sportjson.poll[i].id}. Creating event...`)
             await createEvent(sportjson.poll[i].name, sportjson.poll[i].location, 5)
           }
         }

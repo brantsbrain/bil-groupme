@@ -1,0 +1,27 @@
+{
+    "count": 3,
+    "sports": [
+        {
+            "id": "Basketball",
+            "name": "Hoop there it is",
+            "location": "123 Main Street"
+        },
+        {
+            "id": "Soccer",
+            "name": "Soccuh",
+            "location": "456 2nd Street"
+        }
+    ],
+    "poll": [
+        {
+            "id": "Soccer",
+            "name": "Soccuh",
+            "location": "456 2nd Street"
+        },
+        {
+            "id": "Football",
+            "name": "Pigskin Toss",
+            "location": "789 3rd Street"
+        }
+    ]
+}
