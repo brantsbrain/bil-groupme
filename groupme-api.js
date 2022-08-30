@@ -11,15 +11,20 @@ const baseurl = "https://api.groupme.com/"
 // Posted w/ /help in chat
 const helptext = "Kobe Commands:\n" +
   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
-  "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
+  // "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
   "/soccer - Create soccer event for nearest Tuesday\n" +
-  "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
+  // "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
   "/sportspoll - Post preconfigured sports poll to expire nearest Wednesday 6:00 PM EST\n" + 
   "/locations - Post all previous locations of sports\n" +
   "/help - Uhhh... you're here\n\n" +
   
   "Navigating GroupMe:\n" +
-  "RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to the desired event"
+  "Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n"
+  "RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to the desired event\n\n" +
+
+  "Automated Features:\n" + 
+  "Soccer Tuesdays - Mondays at 8:00 AM EST a soccer event is created for the following Tuesday at 5:30 PM EST\n" +
+  "Friday Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following Friday's sport. The current rotation is basketball > volleyball > soccer > poll. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created."
 
   // Title for sports poll created every sportjson.count weeks
   const sportspolltitle = "Friday Sports Poll"
@@ -38,15 +43,17 @@ const groupid = process.env.GROUP_ID
 // Optional for ignoring events from a particular user
 const ignoremember = process.env.IGNORE_MEMBER
 
-// Simple string of possible sport locations
-const locationtext = process.env.LOCATION_TEXT
-
-// You can't DM yourself, so user id to send log messages to
+// You can't DM yourself, so provide user id to send log messages to
 const loguserid = process.env.LOG_USERID
 
-// Replace ` with two newlines since GCP only takes one-line ENV variables
+// Replace ` w/ two newlines since GCP only takes one-line ENV variables
 const onelinenewbiestext = process.env.NEWBIES_TEXT
-const newbiestext = onelinenewbiestext.replace(/`/g,"\n\n")
+const newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
+
+// Replace ` w/ two newlines and ~ w/ one newline since GCP only takes one-line ENV variables
+const onelinelocationtext = process.env.LOCATION_TEXT
+let locationtext = onelinelocationtext.replace(/`/g, "\n\n")
+locationtext = locationtext.replace(/~/g, "\n")
 
 // Sport JSON
 const sportjsonvar = process.env.SPORT_JSON
