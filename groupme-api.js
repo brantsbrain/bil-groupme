@@ -29,11 +29,13 @@ const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
 // Optional
-const soccloc = process.env.SOCC_LOC
 const ignoremember = process.env.IGNORE_MEMBER
-const newbiestext = process.env.NEWBIES_TEXT
 const locationtext = process.env.LOCATION_TEXT
 const loguserid = process.env.LOG_USERID
+
+// Replace ` with two newlines since GCP only takes one-line ENV variables
+const onelinenewbiestext = process.env.NEWBIES_TEXT
+const newbiestext = onelinenewbiestext.replace(/`/g,"\n\n")
 
 // Sport JSON
 const sportjsonvar = process.env.SPORT_JSON
@@ -467,17 +469,14 @@ const createFridayEvent = async () => {
   const epoch = new Date(0)
   const msinweek = 1000 * 60 * 60 * 24 * 7
   const diff = (upcomingfriday - epoch) / msinweek
-  
-  // Use count value in sportjson in modulo calculations
-  const numsports = sportjson.count
 
   // Use modulo to navigate sportjson
-  const position = diff % numsports
-  if (position == numsports - 1) {
+  const position = diff % sportjson.count
+  if (position == sportjson.count - 1) {
     createSportsPoll()
   }
   else {
-    createEvent(sportjson.sports[position])
+    createEvent(sportjson.sports[position].name, sportjson.sports[position].location, 5)
   }
 }
 
@@ -527,6 +526,7 @@ const coolregex = /^(\s)*\/cool/i
 const newbiesregex = /^(\s)*\/newbies/i
 const sportspollregex = /^(\s)*\/sportspoll/i
 const locationsregex = /^(\s)*\/locations/i
+const testregex = /^(\s)*\/test/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -569,3 +569,4 @@ exports.coolregex = coolregex
 exports.getBots = getBots
 exports.createPost = createPost
 exports.getAdmins = getAdmins
+exports.testregex = testregex

@@ -8,7 +8,7 @@ const {
   createSportsPoll, sportspollregex,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid,
-  newbiestext,
+  newbiestext, testregex,
   coolregex, createPost, sportjson, getPollWinner
 } = require("./groupme-api")
 const nodeCron = require("node-cron")
@@ -67,7 +67,7 @@ const respond = async (req, res) => {
 
       // Post soccer event
       else if (soccerregex.test(requesttext)) {
-        await createEvent("Soccer Tuesdays!", soccloc, 2)
+        await createEvent("Soccer Tuesdays!", sportjson.sports[3].location, 2)
       }
 
       // Post sports poll
@@ -104,6 +104,11 @@ const respond = async (req, res) => {
       // Post previous sports locations
       else if (locationsregex.test(requesttext)) {
         await createPost(locationtext)
+      }
+
+      // Test regex
+      else if (testregex.test(requesttext)) {
+        await sendDm(loguserid, newbiestext)
       }
 
       ////////// ADMIN CONTROLS //////////
