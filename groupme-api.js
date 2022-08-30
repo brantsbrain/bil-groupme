@@ -12,24 +12,24 @@ const baseurl = "https://api.groupme.com/"
 const helptext = "Kobe Commands:\n" +
   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
   // "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
-  "/soccer - Create soccer event for nearest Tuesday\n" +
   // "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
-  "/sportspoll - Post preconfigured sports poll to expire nearest Wednesday 6:00 PM EST\n" + 
+  "/sportspoll - Post preconfigured sports poll to expire nearest Wednesday 6:00 PM EST\n" +
   "/locations - Post all previous locations of sports\n" +
+  "/soccer - Create soccer event for nearest Tuesday\n" +
   "/help - Uhhh... you're here\n\n" +
-  
+
   "Navigating GroupMe:\n" +
   "Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n"
   "RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to the desired event\n\n" +
 
-  "Automated Features:\n" + 
+  "Automated Features:\n" +
   "Soccer Tuesdays - Mondays at 8:00 AM EST a soccer event is created for the following Tuesday at 5:30 PM EST\n" +
   "Friday Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following Friday's sport. The current rotation is basketball > volleyball > soccer > poll. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created."
 
-  // Title for sports poll created every sportjson.count weeks
-  const sportspolltitle = "Friday Sports Poll"
+// Title for sports poll created every sportjson.count weeks
+const sportspolltitle = "Friday Sports Poll"
 
-  // Allow delay for GroupMe API to update
+// Allow delay for GroupMe API to update
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
@@ -81,7 +81,7 @@ const createPost = async (message, mentionids) => {
   if (message[0] == "/") {
     message = message.replace("/", "@")
   }
-  
+
   // Prep message as array to accomadate long messages 
   var messagearr = []
   var currmess = ""
@@ -97,7 +97,7 @@ const createPost = async (message, mentionids) => {
   if (currmess.length > 0) {
     messagearr.push(currmess)
   }
-  
+
   // Iterate through array as mentions or regular post
   for (let i = 0; i < messagearr.length; i++) {
     sleep(100)
@@ -166,7 +166,7 @@ const createPost = async (message, mentionids) => {
 const sendDm = async (userid, message) => {
   console.log(`Creating new DM (${message.length}): ${message}`)
   const recipient_id = userid
-  
+
   // Prep message as array to accomadate long messages 
   var messagearr = []
   var currmess = ""
@@ -184,7 +184,7 @@ const sendDm = async (userid, message) => {
   if (currmess.length > 0) {
     messagearr.push(currmess)
   }
-  
+
   for (let i = 0; i < messagearr.length; i++) {
     sleep(10000)
     const source_guid = String(Math.random().toString(36).substring(2, 34))
@@ -192,7 +192,7 @@ const sendDm = async (userid, message) => {
       direct_message: {
         recipient_id,
         source_guid,
-        "text" : messagearr[i]
+        "text": messagearr[i]
       }
     }
 
@@ -376,7 +376,7 @@ const createEvent = async (name, loc, dayofweek) => {
     end_at,
     "is_all_day": false,
     "timezone": "America/Detroit",
-    "location": {"name": loc}
+    "location": { "name": loc }
   }
 
   // Prep message as JSON and construct packet
@@ -431,15 +431,15 @@ const createSportsPoll = async () => {
   // Get nearest Thursday at 12:00 PM EST
   let day = await nearestDay(4)
   day.setHours(16, 0, 0)
-  
+
   // Convert to number of seconds since 01/01/1970 
   let milliseconds = day.getTime()
-  let expiration = parseInt(milliseconds/1000, 10)
+  let expiration = parseInt(milliseconds / 1000, 10)
 
   // Setup options array
   let options = []
   for (let i = 0; i < sportjson.poll.length; i++) {
-    options.push({"title": sportjson.poll[i].id})
+    options.push({ "title": sportjson.poll[i].id })
   }
 
   // Prep poll
@@ -486,13 +486,16 @@ const createFridayEvent = async () => {
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
-  console.log(epoch)
+  console.log(`EPOCH: ${epoch}`)
   const msinweek = 1000 * 60 * 60 * 24 * 7
   const diff = (upcomingfriday - epoch) / msinweek
-  console.log(diff)
+  console.log(`(Friday - EPOCH) / ms in week: ${diff}`)
+  const floordiff = Math.floor(diff)
+  console.log(`Math.floor(diff): ${floordiff}`)
 
   // Use modulo to navigate sportjson
-  const position = diff % sportjson.count
+  const position = floordiff % sportjson.count
+  console.log(`Position: ${position}`)
   if (position == sportjson.count - 1) {
     createSportsPoll()
   }
