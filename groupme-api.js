@@ -544,7 +544,6 @@ exports.ballersregex = ballersregex
 exports.eventregex = eventregex
 exports.createEvent = createEvent
 exports.soccerregex = soccerregex
-exports.soccloc = soccloc
 exports.createFridayEvent = createFridayEvent
 exports.locationsregex = locationsregex
 exports.locationtext = locationtext

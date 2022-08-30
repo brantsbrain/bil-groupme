@@ -3,7 +3,7 @@ const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
   ballersregex, getBallers,
-  soccerregex, soccloc,
+  soccerregex,
   eventregex, createEvent, createFridayEvent,
   createSportsPoll, sportspollregex,
   locationsregex, locationtext,
@@ -23,7 +23,7 @@ const sleep = (ms) => {
 // Post weekly on Monday 8:00 AM EST
 const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
   console.log("Creating soccer event...")
-  createEvent("Soccer Tuesdays!", soccloc, 2)
+  createEvent("Soccer Tuesdays!", sportjson.sports[3].location, 2)
 })
 
 // Post event or poll weekly on Wednesday at 8:00 AM EST
