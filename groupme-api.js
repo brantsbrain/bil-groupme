@@ -11,9 +11,7 @@ const baseurl = "https://api.groupme.com/"
 // Posted w/ /help in chat
 const helptext = "Kobe Commands:\n" +
   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
-  // "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
-  // "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
-  "/sportspoll - Post preconfigured sports poll to expire nearest Wednesday 6:00 PM EST\n" +
+  "/sportspoll - Post preconfigured sports poll to expire nearest Thursday 12:00 PM EST\n" +
   "/locations - Post all previous locations of sports\n" +
   "/soccer - Create soccer event for nearest Tuesday\n" +
   "/help - Uhhh... you're here\n\n" +
@@ -285,7 +283,7 @@ const getAdmins = async () => {
   return adminarr
 }
 
-const getUserId = async (name) => {
+const getUserId = async (name, attempt) => {
   console.log(`Searching for user ID for ${name}...`)
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
@@ -295,15 +293,22 @@ const getUserId = async (name) => {
 
   let memberdict = response.body.response.members
 
-  for (const key of Object.entries(memberdict)) {
-    if (key[1].nickname == name) {
-      console.log(`Found ${name} with user id ${key[1].user_id}`)
-      sendDm(loguserid, `Found ${name} with user id ${key[1].user_id}`)
-      return key[1].user_id
+  // Try finding the user ID three times
+  if (attempt <= 3){
+    for (const key of Object.entries(memberdict)) {
+      if (key[1].nickname == name) {
+        console.log(`Found ${name} with user id ${key[1].user_id}`)
+        sendDm(loguserid, `Found ${name} with user id ${key[1].user_id}`)
+        return key[1].user_id
+      }
     }
+    sleep(10000)
+    await getUserId(name, attempt + 1)
   }
-  console.log(`Couldn't find user ID for ${name}`)
-  sendDm(loguserid, `Couldn't find user ID for '${name}'`)
+  if (attempt == 3) {
+    console.log(`Couldn't find user ID for ${name}`)
+    sendDm(loguserid, `Couldn't find user ID for '${name}'`)
+  }
 }
 
 // Post pic from URL

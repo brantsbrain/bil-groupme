@@ -26,7 +26,7 @@ const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
 })
 
 // Post event or poll weekly on Wednesday at 8:00 AM EST
-const weeklySport = nodeCron.schedule("0 13 * * 3", function weeklySport() {
+const weeklySport = nodeCron.schedule("0 12 * * 3", function weeklySport() {
   sendDm(loguserid, "Attempting to create Friday event...")
   createFridayEvent()
 })
@@ -96,12 +96,12 @@ const respond = async (req, res) => {
         if (requesttext.includes("added")) {
           let name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
           console.log(`Found '${name}' in requesttext`)
-          sendDm(await getUserId(name), newbiestext)
+          sendDm(await getUserId(name, 1), newbiestext)
         }
         else if (requesttext.includes("joined")) {
           let name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
           console.log(`Found '${name}' in requesttext`)
-          sendDm(await getUserId(name), newbiestext)
+          sendDm(await getUserId(name, 1), newbiestext)
         }
       }
 
