@@ -480,14 +480,14 @@ const createSportsPoll = async () => {
 // Create Friday event or poll depending on week
 const createFridayEvent = async () => {
   // Get nearest Friday
-  const upcomingfriday = await nearestDay(5)
+  let upcomingfriday = await nearestDay(5)
   upcomingfriday = new Date(upcomingfriday.getTime())
   console.log(upcomingfriday)
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
   console.log(`EPOCH: ${epoch}`)
-  const msinweek = 1000 * 60 * 60 * 24 * 7
+  const msinweek = 604800000
   const diff = (upcomingfriday - epoch) / msinweek
   console.log(`(Friday - EPOCH) / ms in week: ${diff}`)
   const floordiff = Math.floor(diff)
@@ -506,8 +506,8 @@ const createFridayEvent = async () => {
 
 // Return winner of most recent poll
 const getPollWinner = async () => {
-  winner = ""
-  mostvotes = 0
+  let winnerarr = []
+  let mostvotes = -1
 
   // Get list of polls
   const getpath = `/v3/poll/${groupid}?token=${accesstoken}`
@@ -522,13 +522,23 @@ const getPollWinner = async () => {
 
   // Iterate latest poll for most voted sport
   for (let i = 0; i < mostrecentpolloptions.length; i++) {
-    if (mostrecentpolloptions[i].votes && mostrecentpolloptions[i].votes > mostvotes) {
+    // Empty winnerarr, push the current winner, and update mostvotes
+    if (mostrecentpolloptions[i].votes && mostrecentpolloptions[i].votes != 0 && mostrecentpolloptions[i].votes > mostvotes) {
+      winnerarr = []
+      winnerarr.push(mostrecentpolloptions[i].title)
       mostvotes = mostrecentpolloptions[i].votes
-      winner = mostrecentpolloptions[i].title
+    }
+    // Add the tied winner
+    else if (mostrecentpolloptions[i].votes && mostrecentpolloptions[i].votes != 0 && mostrecentpolloptions[i].votes == mostvotes) {
+      winnerarr.push(mostrecentpolloptions[i].title)
     }
   }
 
-  return winner
+  // If there was only one winner, return it. Otherwise return null and handle in bot.js
+  if (winnerarr.length == 1) {
+    return winnerarr
+  }
+  return null
 }
 
 // Returns all your bots and their info

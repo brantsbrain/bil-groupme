@@ -26,7 +26,7 @@ const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
 })
 
 // Post event or poll weekly on Wednesday at 8:00 AM EST
-  const weeklySport = nodeCron.schedule("0 12 * * 3", function weeklySport() {
+const weeklySport = nodeCron.schedule("0 13 * * 3", function weeklySport() {
   sendDm(loguserid, "Attempting to create Friday event...")
   createFridayEvent()
 })
@@ -75,11 +75,18 @@ const respond = async (req, res) => {
 
       // Post winning event from sports poll
       else if (requesttext.includes(`'${sportspolltitle}' has expired`)) {
-        winner = await getPollWinner()
-        console.log(`Looking for ${winner}`)
-        for (let i = 0; i < sportjson.poll.length; i++) {
-          if (winner.includes(sportjson.poll[i].id)) {
-            await createEvent(sportjson.poll[i].name, sportjson.poll[i].location, 5)
+        const winner = await getPollWinner()
+        
+        if (winner == null) {
+          console.log("Poll tied! Resolve manually...")
+          await sendDm(loguserid, "Poll tied! Resolve manually...")
+        }
+        else {
+          console.log(`Looking for ${winner}`)
+          for (let i = 0; i < sportjson.poll.length; i++) {
+            if (winner.includes(sportjson.poll[i].id)) {
+              await createEvent(sportjson.poll[i].name, sportjson.poll[i].location, 5)
+            }
           }
         }
       }
