@@ -505,7 +505,7 @@ const createFridayEvent = async () => {
   // Use modulo to navigate sportjson
   const position = floordiff % sportjson.count
   console.log(`Position: ${position}`)
-  if (position == sportjson.count - 1) {
+  if (position == 2) {
     createSportsPoll()
   }
   else {
@@ -570,7 +570,7 @@ const getNextSport = async () => {
   // Use modulo to navigate sportjson
   const position = floordiff % sportjson.count
   console.log(`Position: ${position}`)
-  if (position == sportjson.count - 1) {
+  if (position == 2) {
     await createPost("This week is a poll. Hang tight until Wednesday at 8:00 AM!")
   }
   else {
