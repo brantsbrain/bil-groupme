@@ -554,7 +554,7 @@ const getNextSport = async () => {
   // Get nearest Friday
   let upcomingfriday = await nearestDay(5)
   upcomingfriday = new Date(upcomingfriday.getTime())
-  console.log(upcomingfriday)
+  console.log(`Upcoming Friday: ${upcomingfriday}`)
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
@@ -572,8 +572,8 @@ const getNextSport = async () => {
     await createPost("This week is a poll. Hang tight until Wednesday at 8:00 AM!")
   }
   else {
-    sportkey = Object.keys(sportjson.sports)[position]
-    await createPost(`This week is ${sportjson.sports.sportkey.name}. Hang tight until Wednesday at 8:00 AM!`)
+    let sportkey = Object.keys(sportjson.sports)[position]
+    await createPost(`This week is ${sportjson.sports[sportkey].name}. Hang tight until Wednesday at 8:00 AM!`)
   }
 }
 
