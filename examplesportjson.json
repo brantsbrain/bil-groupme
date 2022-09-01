@@ -6,6 +6,10 @@
             "name": "Basketball it up!",
             "location": "123 Main St"
         },
+        "Poll":
+        {
+            "placeholder": "placeholder"
+        },
         "Volleyball": {
             "id": "Volleyball",
             "name": "Volleyballin",

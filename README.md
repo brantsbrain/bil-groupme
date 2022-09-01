@@ -71,6 +71,8 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
     | NEWBIES_TEXT              | Welcome message auto-sent to new members |
     | LOCATION_TEXT             | String of sports locations listed using `/locations` |
     | SPORT_JSON                | Structured as seen in `examplesportjson.json` |
+    | AUTO_TUES                 | Simple true/false string for auto-creating Tuesday events |
+    | AUTO_FRI                  | Simple true/false string for auto-creating Friday events |
     
 
 5. Click `Create`

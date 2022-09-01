@@ -43,6 +43,10 @@ const groupid = process.env.GROUP_ID
 const autotuesstr = process.env.AUTO_TUES
 const autofristr = process.env.AUTO_FRI
 
+// Convert true/false string to boolean
+const autotues = (autotuesstr === "true")
+const autofri = (autofristr === "true")
+
 // Optional for ignoring events from a particular user
 const ignoremember = process.env.IGNORE_MEMBER
 
@@ -72,6 +76,9 @@ if (!groupid) {
 if (!bot_id) {
   console.log("ENV: 'BOT_ID' is undefined")
 }
+
+// Print state of auto vars
+console.log(`Auto-Tuesdays is: ${autotues}\nAuto-Fridays is: ${autofri}`)
 
 ////////// FUNCTIONS/METHODS //////////
 // Create a post and mention users if ID array is provided
@@ -628,8 +635,8 @@ exports.nextregex = nextregex
 exports.getNextSport = getNextSport
 
 // Auto-Create Events
-exports.autotuesstr = autotuesstr
-exports.autofristr = autofristr
+exports.autotues = autotues
+exports.autofri = autofri
 
 // Send DM
 exports.sendDm = sendDm

@@ -4,7 +4,7 @@ const {
   helptext, helpregex,
   ballersregex, getBallers,
   soccerregex,
-  autofristr, autotuesstr,
+  autofri, autotues,
   eventregex, createEvent, createFridayEvent,
   nextregex, getNextSport,
   createSportsPoll, sportspollregex, sportspolltitle,
@@ -20,16 +20,12 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-// Convert true/false string to boolean
-const autotues = (autotuesstr === "true")
-const autofri = (autofristr === "true")
-
 ////////// CRON JOBS //////////
 // Adjust +4 hours for UTC
 // Post weekly on Monday 8:00 AM EST
 const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
   if (autotues) {
-    createEvent("Soccer Tuesdays!", sportjson.sports["soccer"].location, 2)
+    createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
   }
   else {
     console.log("Auto weeklySocc turned off...")
@@ -81,7 +77,7 @@ const respond = async (req, res) => {
 
       // Post soccer event
       else if (soccerregex.test(requesttext)) {
-        await createEvent("Soccer Tuesdays!", sportjson.sports[3].location, 2)
+        await createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
       }
 
       // Post sports poll
@@ -131,6 +127,7 @@ const respond = async (req, res) => {
         await sendDm(loguserid, newbiestext)
       }
 
+      // Post next upcoming Friday sport
       else if (nextregex.test(requesttext)) {
         await getNextSport()
       }
