@@ -443,9 +443,12 @@ const createSportsPoll = async () => {
 
   // Setup options array
   let options = []
-  for (let i = 0; i < sportjson.poll.length; i++) {
-    options.push({"title": sportjson.poll[i].id})
-  }
+  for (const [key, val] of Object.entries(sportjson.poll)) {
+    options.push({"title": val.id})
+  } 
+  // for (let i = 0; i < sportjson.poll.length; i++) {
+  //   options.push({"title": sportjson.poll[i].id})
+  // }
 
   // Prep poll
   const message = {
