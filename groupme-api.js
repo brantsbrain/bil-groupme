@@ -572,7 +572,8 @@ const getNextSport = async () => {
     await createPost("This week is a poll. Hang tight until Wednesday at 8:00 AM!")
   }
   else {
-    await createPost(`This week is ${sportjson.sports[position].name}. Hang tight until Wednesday at 8:00 AM!`)
+    sportkey = Object.keys(sportjson.sports)[position]
+    await createPost(`This week is ${sportjson.sports.sportkey.name}. Hang tight until Wednesday at 8:00 AM!`)
   }
 }
 
