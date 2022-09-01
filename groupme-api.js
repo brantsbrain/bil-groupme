@@ -14,6 +14,7 @@ const helptext = "Kobe Commands:\n" +
   "/sportspoll - Post preconfigured sports poll to expire nearest Thursday 12:00 PM EST\n" +
   "/locations - Post all previous locations of sports\n" +
   "/soccer - Create soccer event for nearest Tuesday\n" +
+  "/next - Post the next upcoming Friday sport\n" +
   "/help - Uhhh... you're here\n\n" +
 
   "Navigating GroupMe:\n" +
@@ -508,7 +509,8 @@ const createFridayEvent = async () => {
     createSportsPoll()
   }
   else {
-    createEvent(sportjson.sports[position].name, sportjson.sports[position].location, 5)
+    let sportkey = Object.keys(sportjson.sports)[position]
+    createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, 5)
   }
 }
 
@@ -573,7 +575,7 @@ const getNextSport = async () => {
   }
   else {
     let sportkey = Object.keys(sportjson.sports)[position]
-    await createPost(`This week is ${sportjson.sports[sportkey].name}. Hang tight until Wednesday at 8:00 AM!`)
+    await createPost(`This Friday's sport: ${sportjson.sports[sportkey].id}. Hang tight until Wednesday at 8:00 AM for the event!`)
   }
 }
 
