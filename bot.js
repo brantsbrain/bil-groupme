@@ -83,9 +83,9 @@ const respond = async (req, res) => {
         }
         else {
           console.log(`Looking for ${winner}`)
-          for (let i = 0; i < sportjson.poll.length; i++) {
-            if (winner.includes(sportjson.poll[i].id)) {
-              await createEvent(sportjson.poll[i].name, sportjson.poll[i].location, 5)
+          for (const [key, val] of Object.entries(sportjson.poll)) {
+            if (key == winner) {
+              await createEvent(val.name, val.location, 5)
             }
           }
         }
