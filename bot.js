@@ -4,7 +4,8 @@ const {
   helptext, helpregex,
   ballersregex, getBallers,
   soccerregex,
-  eventregex, createEvent, createFridayEvent, 
+  autofristr, autotuesstr,
+  eventregex, createEvent, createFridayEvent,
   nextregex, getNextSport,
   createSportsPoll, sportspollregex, sportspolltitle,
   locationsregex, locationtext,
@@ -19,17 +20,31 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+// Convert true/false string to boolean
+const autotues = (autotuesstr === "true")
+const autofri = (autofristr === "true")
+
 ////////// CRON JOBS //////////
 // Adjust +4 hours for UTC
 // Post weekly on Monday 8:00 AM EST
 const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
-  createEvent("Soccer Tuesdays!", sportjson.sports["soccer"].location, 2)
+  if (autotues) {
+    createEvent("Soccer Tuesdays!", sportjson.sports["soccer"].location, 2)
+  }
+  else {
+    console.log("Auto weeklySocc turned off...")
+  }
 })
 
 // Post event or poll weekly on Wednesday at 8:00 AM EST
 const weeklySport = nodeCron.schedule("0 12 * * 3", function weeklySport() {
-  sendDm(loguserid, "Attempting to create Friday event...")
-  createFridayEvent()
+  if (autofri) {
+    sendDm(loguserid, "Attempting to create Friday event...")
+    createFridayEvent()
+  }
+  else {
+    console.log("Auto weeklySport turned off...")
+  }
 })
 
 ////////// RESPOND //////////
@@ -77,7 +92,7 @@ const respond = async (req, res) => {
       // Post winning event from sports poll
       else if (requesttext.includes(`'${sportspolltitle}' has expired`)) {
         const winner = await getPollWinner()
-        
+
         if (winner == null) {
           console.log("Poll tied! Resolve manually...")
           await sendDm(loguserid, "Poll tied! Resolve manually...")

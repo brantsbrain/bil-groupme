@@ -39,6 +39,10 @@ const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
+// Auto-Create Events
+const autotuesstr = process.env.AUTO_TUES
+const autofristr = process.env.AUTO_FRI
+
 // Optional for ignoring events from a particular user
 const ignoremember = process.env.IGNORE_MEMBER
 
@@ -506,11 +510,11 @@ const createFridayEvent = async () => {
   const position = floordiff % sportjson.count
   console.log(`Position: ${position}`)
   if (position == 2) {
-    createSportsPoll()
+    await createSportsPoll()
   }
   else {
     let sportkey = Object.keys(sportjson.sports)[position]
-    createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, 5)
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, 5)
   }
 }
 
@@ -622,6 +626,10 @@ exports.locationsregex = locationsregex
 exports.locationtext = locationtext
 exports.nextregex = nextregex
 exports.getNextSport = getNextSport
+
+// Auto-Create Events
+exports.autotuesstr = autotuesstr
+exports.autofristr = autofristr
 
 // Send DM
 exports.sendDm = sendDm
