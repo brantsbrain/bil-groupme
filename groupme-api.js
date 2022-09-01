@@ -284,7 +284,7 @@ const getAdmins = async () => {
 }
 
 const getUserId = async (name, attempt) => {
-  console.log(`Searching for user ID for ${name}...`)
+  console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
   const response = await got(desturl, {
@@ -303,7 +303,10 @@ const getUserId = async (name, attempt) => {
       }
     }
     sleep(10000)
-    await getUserId(name, attempt + 1)
+    userid = await getUserId(name, attempt + 1)
+    if (userid) {
+      return userid
+    }
   }
   if (attempt == 3) {
     console.log(`Couldn't find user ID for ${name}`)
@@ -546,6 +549,33 @@ const getPollWinner = async () => {
   return null
 }
 
+// Get next sport in rotation
+const getNextSport = async () => {
+  // Get nearest Friday
+  let upcomingfriday = await nearestDay(5)
+  upcomingfriday = new Date(upcomingfriday.getTime())
+  console.log(upcomingfriday)
+
+  // Create base EPOCH date and find number of weeks since EPOCH
+  const epoch = new Date(0)
+  console.log(`EPOCH: ${epoch}`)
+  const msinweek = 604800000
+  const diff = (upcomingfriday - epoch) / msinweek
+  console.log(`(Friday - EPOCH) / ms in week: ${diff}`)
+  const floordiff = Math.floor(diff)
+  console.log(`Math.floor(diff): ${floordiff}`)
+
+  // Use modulo to navigate sportjson
+  const position = floordiff % sportjson.count
+  console.log(`Position: ${position}`)
+  if (position == sportjson.count - 1) {
+    await createPost("This week is a poll. Hang tight until Wednesday at 8:00 AM!")
+  }
+  else {
+    await createPost(`This week is ${sportjson.sports[position].name}. Hang tight until Wednesday at 8:00 AM!`)
+  }
+}
+
 // Returns all your bots and their info
 const getBots = async () => {
   const grouppath = `/v3/bots?token=${accesstoken}`
@@ -566,6 +596,7 @@ const newbiesregex = /^(\s)*\/newbies/i
 const sportspollregex = /^(\s)*\/sportspoll/i
 const locationsregex = /^(\s)*\/locations/i
 const testregex = /^(\s)*\/test/i
+const nextregex = /^(\s)*\/next/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -586,6 +617,8 @@ exports.soccerregex = soccerregex
 exports.createFridayEvent = createFridayEvent
 exports.locationsregex = locationsregex
 exports.locationtext = locationtext
+exports.nextregex = nextregex
+exports.getNextSport = getNextSport
 
 // Send DM
 exports.sendDm = sendDm

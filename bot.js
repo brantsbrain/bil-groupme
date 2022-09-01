@@ -4,7 +4,8 @@ const {
   helptext, helpregex,
   ballersregex, getBallers,
   soccerregex,
-  eventregex, createEvent, createFridayEvent,
+  eventregex, createEvent, createFridayEvent, 
+  nextregex, getNextSport,
   createSportsPoll, sportspollregex, sportspolltitle,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid,
@@ -113,6 +114,10 @@ const respond = async (req, res) => {
       // Test regex
       else if (testregex.test(requesttext)) {
         await sendDm(loguserid, newbiestext)
+      }
+
+      else if (nextregex.test(requesttext)) {
+        await getNextSport()
       }
 
       ////////// ADMIN CONTROLS //////////

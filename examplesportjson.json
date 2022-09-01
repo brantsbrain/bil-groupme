@@ -1,27 +1,57 @@
 {
-    "count": 3,
-    "sports": [
-        {
+    "count": 4,
+    "sports": {
+        "Basketball": {
             "id": "Basketball",
-            "name": "Hoop there it is",
-            "location": "123 Main Street"
+            "name": "Basketball it up!",
+            "location": "123 Main St"
         },
-        {
+        "Volleyball": {
+            "id": "Volleyball",
+            "name": "Volleyballin",
+            "location": "321 Main St"
+        },
+        "Soccer": {
             "id": "Soccer",
-            "name": "Soccuh",
-            "location": "456 2nd Street"
+            "name": "Soccer Friday!",
+            "location": "456 2nd St"
         }
-    ],
-    "poll": [
-        {
+    },
+    "poll": {
+        "Soccer": {
             "id": "Soccer",
-            "name": "Soccuh",
-            "location": "456 2nd Street"
+            "name": "Soccer Y'all",
+            "location": "456 2nd St"
         },
-        {
+        "Ultimate Frisbee": {
+            "id": "Ultimate Frisbee",
+            "name": "Circle in Air Game",
+            "location": "654 2nd St"
+        },
+        "Football": {
             "id": "Football",
-            "name": "Pigskin Toss",
-            "location": "789 3rd Street"
+            "name": "The 'Ol Pigskin",
+            "location": "654 2nd St"
+        },
+        "Kickball": {
+            "id": "Kickball",
+            "name": "Kick the Ball Really Far Game",
+            "location": "789 3rd St"
+        },
+        "Volleyball": {
+            "id": "Volleyball",
+            "name": "Volleyballin",
+            "location": "321 Main St"
+        },
+        "Basketball": {
+            "id": "Basketball",
+            "name": "Basketball it up!",
+            "location": "123 Main St"
+        },
+        "Wiffle Ball": {
+            "id": "Wiffle Ball",
+            "name": "Wiffle Ballers",
+            "location": "789 3rd St"
         }
-    ]
+    }
 }
