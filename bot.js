@@ -8,7 +8,7 @@ const {
   nextregex, getNextSport, getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex, sportspolltitle,
   locationsregex, locationtext,
-  getAdmins, sendDm, getUserId, loguserid,
+  getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex,
   coolregex, createPost, sportjson, getPollWinner
 } = require("./groupme-api")
@@ -128,6 +128,9 @@ const respond = async (req, res) => {
                 await sleep(10000)
               }
             }
+            else {
+              console.log("Already found user...")
+            }
           }
         }
       }
@@ -150,6 +153,11 @@ const respond = async (req, res) => {
       // Post current sport rotation
       else if (sportrotregex.test(requesttext)) {
         await createPost(await getSportRotation())
+      }
+
+      // Mention all admins
+      else if (adminregex.test(requesttext)) {
+        await createPost(requesttext, await getAdmins())
       }
 
       //////////////////// ADMIN CONTROLS ////////////////////

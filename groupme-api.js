@@ -602,6 +602,7 @@ const locationsregex = /^(\s)*\/locations/i
 const testregex = /^(\s)*\/test/i
 const nextregex = /^(\s)*\/next/i
 const sportrotregex = /^(\s)*\/rotation/i
+const adminregex = /^(\s)*\/admin/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -650,3 +651,4 @@ exports.coolregex = coolregex
 exports.createPost = createPost
 exports.getAdmins = getAdmins
 exports.testregex = testregex
+exports.adminregex = adminregex
