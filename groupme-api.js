@@ -3,27 +3,11 @@ require("dotenv").config()
 const got = require("got")
 const { URL } = require("url")
 const https = require("https")
+const helptext = require("./helptext.js")
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
 const baseurl = "https://api.groupme.com/"
-
-// Posted w/ /help in chat
-const helptext = "Kobe Commands:\n" +
-  "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
-  "/sportspoll - Post preconfigured sports poll to expire nearest Thursday 12:00 PM EST\n" +
-  "/locations - Post all previous locations of sports\n" +
-  "/soccer - Create soccer event for nearest Tuesday\n" +
-  "/next - Post the next upcoming Friday sport\n" +
-  "/help - Uhhh... you're here\n\n" +
-
-  "Navigating GroupMe:\n" +
-  "Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n"
-  "RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to the desired event\n\n" +
-
-  "Automated Features:\n" +
-  "Soccer Tuesdays - Mondays at 8:00 AM EST a soccer event is created for the following Tuesday at 5:30 PM EST\n" +
-  "Friday Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following Friday's sport. The current rotation is basketball > volleyball > soccer > poll. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created."
 
 // Title for sports poll created every sportjson.count weeks
 const sportspolltitle = "Friday Sports Poll"
@@ -59,8 +43,7 @@ let locationtext = onelinelocationtext.replace(/`/g, "\n\n")
 locationtext = locationtext.replace(/~/g, "\n")
 
 // Sport JSON
-const sportjsonvar = process.env.SPORT_JSON
-const sportjson = JSON.parse(sportjsonvar)
+const sportjson = JSON.parse(process.env.SPORT_JSON)
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -511,10 +494,11 @@ const createFridayEvent = async () => {
   console.log(`Poll position: ${pollpos}`)
 
   if (position == pollpos) {
+    await createPost("Reminder to only vote for the sport(s) you would attend if it won!")
     await createSportsPoll()
   }
   else {
-    let sportkey = Object.keys(sportjson.sports)[position]
+    const sportkey = Object.keys(sportjson.sports)[position]
     await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, 5)
   }
 }
@@ -603,8 +587,6 @@ const getBots = async () => {
 
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
-const eventregex = /^(\s)*\/event/i
-const soccerregex = /^(\s)*\/soccer/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 const newbiesregex = /^(\s)*\/newbies/i
@@ -626,9 +608,7 @@ exports.getBallers = getBallers
 exports.ballersregex = ballersregex
 
 // Event
-exports.eventregex = eventregex
 exports.createEvent = createEvent
-exports.soccerregex = soccerregex
 exports.createFridayEvent = createFridayEvent
 exports.locationsregex = locationsregex
 exports.locationtext = locationtext

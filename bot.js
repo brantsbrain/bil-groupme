@@ -72,12 +72,8 @@ const respond = async (req, res) => {
 
       // Post winning event from sports poll
       else if (requesttext.includes(`'${sportspolltitle}' has expired`)) {
-        if (requesttext.includes(`a tie`)) {
-          console.log("Caught poll tied through text. Resolve manually...")
-          await sendDm(loguserid, "Caught poll tied through text. Resolve manually...")
-        }
-        else if (await getPollWinner()) {
-          const winner = await getPollWinner()
+        const winner = await getPollWinner()
+        if (winner) {
           console.log(`Looking for ${winner}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winner) {
