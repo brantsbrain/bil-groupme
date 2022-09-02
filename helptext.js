@@ -1,7 +1,6 @@
-// Posted w/ /help in chat
 const helptext = "Kobe Commands:\n" +
   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
-  "/sportspoll - Post preconfigured sports poll to expire nearest Thursday 12:00 PM EST\n" +
+  // "/sportspoll - Post preconfigured sports poll to expire nearest Thursday 12:00 PM EST\n" +
   "/locations - Post all previous locations of sports\n" +
   "/rotation - Post the current sport rotation\n" +
   "/next - Post the next upcoming Friday sport\n" +
@@ -13,6 +12,6 @@ const helptext = "Kobe Commands:\n" +
 
   "Automated Features:\n" +
   "Soccer Tuesdays - Mondays at 8:00 AM EST a soccer event is created for the following Tuesday at 5:30 PM EST\n" +
-  "Friday Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following Friday's sport. The current rotation is basketball > volleyball > soccer > poll. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created."
+  "Friday Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following Friday's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created."
 
 exports.helptext = helptext

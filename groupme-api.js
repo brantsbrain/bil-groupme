@@ -178,7 +178,7 @@ const sendDm = async (userid, message) => {
   }
 
   for (let i = 0; i < messagearr.length; i++) {
-    sleep(10000)
+    await sleep(10000)
     const source_guid = String(Math.random().toString(36).substring(2, 34))
     const message = {
       direct_message: {
@@ -567,11 +567,11 @@ const getNextSport = async () => {
   console.log(`Poll position: ${pollpos}`)
 
   if (position == pollpos) {
-    await createPost("This week is a poll. Hang tight until Wednesday at 8:00 AM!")
+    await createPost("Next up is a poll. Hang tight until Wednesday at 8:00 AM!")
   }
   else {
-    let sportkey = Object.keys(sportjson.sports)[position]
-    await createPost(`This Friday's sport: ${sportjson.sports[sportkey].id}. Hang tight until Wednesday at 8:00 AM for the event!`)
+    const sportkey = Object.keys(sportjson.sports)[position]
+    await createPost(`Next sport: ${sportjson.sports[sportkey].id}. Hang tight until Wednesday at 8:00 AM for the event!`)
   }
 }
 
