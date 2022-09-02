@@ -3,9 +3,8 @@ const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
   ballersregex, getBallers,
-  soccerregex,
   autofri, autotues,
-  eventregex, createEvent, createFridayEvent,
+  createEvent, createFridayEvent,
   nextregex, getNextSport,
   createSportsPoll, sportspollregex, sportspolltitle,
   locationsregex, locationtext,
@@ -19,6 +18,9 @@ const nodeCron = require("node-cron")
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+// Find admins
+const adminarr = await getAdmins()
 
 ////////// CRON JOBS //////////
 // Adjust +4 hours for UTC
@@ -35,7 +37,6 @@ const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
 // Post event or poll weekly on Wednesday at 8:00 AM EST
 const weeklySport = nodeCron.schedule("0 12 * * 3", function weeklySport() {
   if (autofri) {
-    sendDm(loguserid, "Attempting to create Friday event...")
     createFridayEvent()
   }
   else {
@@ -58,7 +59,7 @@ const respond = async (req, res) => {
       res.writeHead(200)
       await sleep(1500)
 
-      ////////// BASE CONTROLS //////////
+      //////////////////// BASE CONTROLS ////////////////////
       // Post a cool face
       if (coolregex.test(requesttext)) {
         await createCoolFaceMessage()
@@ -69,37 +70,24 @@ const respond = async (req, res) => {
         await createPost(helptext)
       }
 
-      // Post event
-      else if (eventregex.test(requesttext)) {
-        let paramarr = requesttext.split(":")
-        await createEvent(paramarr[1], paramarr[2], paramarr[3])
-      }
-
-      // Post soccer event
-      else if (soccerregex.test(requesttext)) {
-        await createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
-      }
-
-      // Post sports poll
-      else if (sportspollregex.test(requesttext)) {
-        await createSportsPoll()
-      }
-
       // Post winning event from sports poll
       else if (requesttext.includes(`'${sportspolltitle}' has expired`)) {
-        const winner = await getPollWinner()
-
-        if (winner == null) {
-          console.log("Poll tied! Resolve manually...")
-          await sendDm(loguserid, "Poll tied! Resolve manually...")
+        if (requesttext.includes(`a tie`)) {
+          console.log("Caught poll tied through text. Resolve manually...")
+          await sendDm(loguserid, "Caught poll tied through text. Resolve manually...")
         }
-        else {
+        else if (await getPollWinner()) {
+          const winner = await getPollWinner()
           console.log(`Looking for ${winner}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winner) {
               await createEvent(val.name, val.location, 5)
             }
           }
+        }
+        else {
+          console.log("Caught poll tied through null return. Resolve manually...")
+          await sendDm(loguserid, "Caught poll tied through null return. Resolve manually...")
         }
       }
 
@@ -132,12 +120,12 @@ const respond = async (req, res) => {
         await getNextSport()
       }
 
-      ////////// ADMIN CONTROLS //////////
+      //////////////////// ADMIN CONTROLS ////////////////////
       // Mention ballers
       else if (ballersregex.test(requesttext)) {
-        let adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await createPost(requesttext, await getBallers())
+          console.log("Admin ran /ballers")
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
@@ -145,10 +133,22 @@ const respond = async (req, res) => {
           console.log(`${sendername} attempted to run /ballers`)
         }
       }
+      // Post sports poll
+      else if (sportspollregex.test(requesttext)) {
+        if (adminarr.indexOf(senderid) > -1) {
+          await createSportsPoll()
+          console.log("Admin ran /sportspoll")
+        }
+        else {
+          await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)
+          await sendDm(loguserid, `${sendername} attempted to run /ballers`)
+          console.log(`${sendername} attempted to run /sportspoll`)
+        }
+      }
 
       ////////// NO CONDITIONS MET //////////
       else {
-        console.log("Just chilling... doing nothing...")
+        console.log("requesttext didn't match and regex...")
       }
 
       res.end()

@@ -502,7 +502,7 @@ const createFridayEvent = async () => {
   // Get nearest Friday
   let upcomingfriday = await nearestDay(5)
   upcomingfriday = new Date(upcomingfriday.getTime())
-  console.log(upcomingfriday)
+  console.log(`Upcoming Friday: ${upcomingfriday}`)
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
@@ -515,8 +515,13 @@ const createFridayEvent = async () => {
 
   // Use modulo to navigate sportjson
   const position = floordiff % sportjson.count
-  console.log(`Position: ${position}`)
-  if (position == 2) {
+  console.log(`Sport Position: ${position}`)
+
+  // Get position of Poll in sportjson
+  const pollpos = Object.keys(sportjson.sports).indexOf("Poll")
+  console.log(`Poll position: ${pollpos}`)
+
+  if (position == pollpos) {
     await createSportsPoll()
   }
   else {
@@ -545,12 +550,14 @@ const getPollWinner = async () => {
   for (let i = 0; i < mostrecentpolloptions.length; i++) {
     // Empty winnerarr, push the current winner, and update mostvotes
     if (mostrecentpolloptions[i].votes && mostrecentpolloptions[i].votes != 0 && mostrecentpolloptions[i].votes > mostvotes) {
+      console.log(`Resetting winnerarr, pushing ${mostrecentpolloptions[i].title}, and setting mostvotes to ${mostrecentpolloptions[i].votes}`)
       winnerarr = []
       winnerarr.push(mostrecentpolloptions[i].title)
       mostvotes = mostrecentpolloptions[i].votes
     }
     // Add the tied winner
     else if (mostrecentpolloptions[i].votes && mostrecentpolloptions[i].votes != 0 && mostrecentpolloptions[i].votes == mostvotes) {
+      console.log(`Found tie. Adding ${mostrecentpolloptions[i].title}`)
       winnerarr.push(mostrecentpolloptions[i].title)
     }
   }
@@ -559,7 +566,7 @@ const getPollWinner = async () => {
   if (winnerarr.length == 1) {
     return winnerarr
   }
-  return null
+  return false
 }
 
 // Get next sport in rotation
@@ -580,8 +587,13 @@ const getNextSport = async () => {
 
   // Use modulo to navigate sportjson
   const position = floordiff % sportjson.count
-  console.log(`Position: ${position}`)
-  if (position == 2) {
+  console.log(`Sport Position: ${position}`)
+
+  // Get position of Poll in sportjson
+  const pollpos = Object.keys(sportjson.sports).indexOf("Poll")
+  console.log(`Poll position: ${pollpos}`)
+
+  if (position == pollpos) {
     await createPost("This week is a poll. Hang tight until Wednesday at 8:00 AM!")
   }
   else {
