@@ -20,7 +20,10 @@ const sleep = (ms) => {
 }
 
 // Find admins
-const adminarr = await getAdmins()
+const adminarr = getAdmins()
+
+// Max attempts to find user id
+const maxattempts = 3
 
 ////////// CRON JOBS //////////
 // Adjust +4 hours for UTC
@@ -93,15 +96,46 @@ const respond = async (req, res) => {
 
       // Send new members welcome DM
       else if (sendername == "GroupMe") {
+        let found = false
         if (requesttext.includes("added")) {
           let name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
           console.log(`Found '${name}' in requesttext`)
-          sendDm(await getUserId(name, 1), `Hey ${name}! ${newbiestext}`)
+
+          // Search for user id maxattempts times
+          for (let attempt = 1; attempt <= maxattempts; attempt += 1) {
+            console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
+            if (!found) {
+              userid = await getUserId(name)
+              if (userid) {
+                await sendDm(userid, `Hey ${name}! ${newbiestext}`)
+                found = true
+              }
+              else {
+                attempt += 1
+                await sleep(10000)
+              }
+            }
+          }
         }
         else if (requesttext.includes("joined")) {
           let name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
           console.log(`Found '${name}' in requesttext`)
-          sendDm(await getUserId(name, 1), `Hey ${name}! ${newbiestext}`)
+
+          // Search for user id maxattempts times
+          for (let attempt = 1; attempt <= maxattempts; attempt += 1) {
+            console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
+            if (!found) {
+              userid = await getUserId(name)
+              if (userid) {
+                await sendDm(userid, `Hey ${name}! ${newbiestext}`)
+                found = true
+              }
+              else {
+                attempt += 1
+                await sleep(10000)
+              }
+            }
+          }
         }
       }
 

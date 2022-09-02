@@ -295,8 +295,7 @@ const getAdmins = async () => {
   return adminarr
 }
 
-const getUserId = async (name, attempt) => {
-  console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
+const getUserId = async (name) => {
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
   const response = await got(desturl, {
@@ -305,25 +304,16 @@ const getUserId = async (name, attempt) => {
 
   let memberdict = response.body.response.members
 
-  // Try finding the user ID three times
-  if (attempt <= 3){
-    for (const key of Object.entries(memberdict)) {
-      if (key[1].nickname == name) {
-        console.log(`Found ${name} with user id ${key[1].user_id}`)
-        sendDm(loguserid, `Found ${name} with user id ${key[1].user_id}`)
-        return key[1].user_id
-      }
-    }
-    sleep(10000)
-    userid = await getUserId(name, attempt + 1)
-    if (userid) {
-      return userid
+  for (const key of Object.entries(memberdict)) {
+    if (key[1].nickname == name) {
+      console.log(`Found ${name} with user id ${key[1].user_id}`)
+      sendDm(loguserid, `Found ${name} with user id ${key[1].user_id}`)
+      return key[1].user_id
     }
   }
-  if (attempt == 3) {
-    console.log(`Couldn't find user ID for ${name}`)
-    sendDm(loguserid, `Couldn't find user ID for '${name}'`)
-  }
+  console.log(`Couldn't find user ID for ${name}`)
+  sendDm(loguserid, `Couldn't find user ID for '${name}'`)
+  return false
 }
 
 // Post pic from URL
