@@ -3,6 +3,7 @@ const helptext = "Kobe Commands:\n" +
   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
   "/sportspoll - Post preconfigured sports poll to expire nearest Thursday 12:00 PM EST\n" +
   "/locations - Post all previous locations of sports\n" +
+  "/rotation - Post the current sport rotation\n" +
   "/next - Post the next upcoming Friday sport\n" +
   "/help - Uhhh... you're here\n\n" +
 
