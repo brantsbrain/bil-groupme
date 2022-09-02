@@ -40,12 +40,8 @@ const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
 // Auto-Create Events
-const autotuesstr = process.env.AUTO_TUES
-const autofristr = process.env.AUTO_FRI
-
-// Convert true/false string to boolean
-const autotues = (autotuesstr === "true")
-const autofri = (autofristr === "true")
+const autotues = (process.env.AUTO_TUES === "true")
+const autofri = (process.env.AUTO_FRI === "true")
 
 // Optional for ignoring events from a particular user
 const ignoremember = process.env.IGNORE_MEMBER
@@ -76,9 +72,12 @@ if (!groupid) {
 if (!bot_id) {
   console.log("ENV: 'BOT_ID' is undefined")
 }
-
-// Print state of auto vars
-console.log(`Auto-Tuesdays is: ${autotues}\nAuto-Fridays is: ${autofri}`)
+if (!autotues) {
+  console.log("ENV: 'AUTO_TUES' is missing or set to false")
+}
+if (!autofri) {
+  console.log("ENV: 'AUTO_FRI' is missing or set to false")
+}
 
 ////////// FUNCTIONS/METHODS //////////
 // Create a post and mention users if ID array is provided

@@ -19,9 +19,6 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-// Find admins
-const adminarr = getAdmins()
-
 // Max attempts to find user id
 const maxattempts = 3
 
@@ -157,6 +154,7 @@ const respond = async (req, res) => {
       //////////////////// ADMIN CONTROLS ////////////////////
       // Mention ballers
       else if (ballersregex.test(requesttext)) {
+        const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await createPost(requesttext, await getBallers())
           console.log("Admin ran /ballers")
@@ -169,6 +167,7 @@ const respond = async (req, res) => {
       }
       // Post sports poll
       else if (sportspollregex.test(requesttext)) {
+        const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await createSportsPoll()
           console.log("Admin ran /sportspoll")
@@ -182,7 +181,7 @@ const respond = async (req, res) => {
 
       ////////// NO CONDITIONS MET //////////
       else {
-        console.log("requesttext didn't match and regex...")
+        console.log("requesttext didn't match any regex...")
       }
 
       res.end()
