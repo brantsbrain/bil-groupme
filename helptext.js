@@ -3,12 +3,11 @@ const helptext = "Kobe Commands:\n" +
   "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
   "/sportspoll - Post preconfigured sports poll to expire nearest Thursday 12:00 PM EST\n" +
   "/locations - Post all previous locations of sports\n" +
-  "/soccer - Create soccer event for nearest Tuesday\n" +
   "/next - Post the next upcoming Friday sport\n" +
   "/help - Uhhh... you're here\n\n" +
 
   "Navigating GroupMe:\n" +
-  "Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n"
+  "Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n" +
   "RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to the desired event\n\n" +
 
   "Automated Features:\n" +

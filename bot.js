@@ -5,7 +5,7 @@ const {
   ballersregex, getBallers,
   autofri, autotues,
   createEvent, createFridayEvent,
-  nextregex, getNextSport,
+  nextregex, getNextSport, getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex, sportspolltitle,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid,
@@ -145,6 +145,11 @@ const respond = async (req, res) => {
       // Post next upcoming Friday sport
       else if (nextregex.test(requesttext)) {
         await getNextSport()
+      }
+
+      // Post current sport rotation
+      else if (sportrotregex.test(requesttext)) {
+        await createPost(await getSportRotation())
       }
 
       //////////////////// ADMIN CONTROLS ////////////////////

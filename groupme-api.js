@@ -575,14 +575,21 @@ const getNextSport = async () => {
   }
 }
 
-// Returns all your bots and their info
-const getBots = async () => {
-  const grouppath = `/v3/bots?token=${accesstoken}`
-  const desturl = new URL(grouppath, baseurl)
-  const response = await got(desturl, {
-    responseType: "json"
-  })
-  console.log(response.body.response)
+// Get sports rotation
+const getSportRotation = async () => {
+  const sportarr = Object.keys(sportjson.sports)
+  let sportrot = "Our current sport rotation is: "
+
+  for (let i = 0; i < sportarr.length; i++) {
+    if (i == sportarr.length - 1) {
+      sportrot += `${sportarr[i]}`
+    }
+    else {
+      sportrot += `${sportarr[i]} > `
+    }
+  }
+
+  return sportrot
 }
 
 ////////// REGEX //////////
@@ -594,6 +601,7 @@ const sportspollregex = /^(\s)*\/sportspoll/i
 const locationsregex = /^(\s)*\/locations/i
 const testregex = /^(\s)*\/test/i
 const nextregex = /^(\s)*\/next/i
+const sportrotregex = /^(\s)*\/rotation/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -614,6 +622,8 @@ exports.locationsregex = locationsregex
 exports.locationtext = locationtext
 exports.nextregex = nextregex
 exports.getNextSport = getNextSport
+exports.getSportRotation = getSportRotation
+exports.sportrotregex = sportrotregex
 
 // Auto-Create Events
 exports.autotues = autotues
