@@ -3,7 +3,7 @@ require("dotenv").config()
 const got = require("got")
 const { URL } = require("url")
 const https = require("https")
-const helptext = require("./helptext.js")
+const helptext = require("./helptext")
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
