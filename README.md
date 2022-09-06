@@ -14,10 +14,9 @@ We are constantly looking for ways to improve on current functionality and imple
 
 | Command Usage                             | Purpose |
 | ---------------------------------------   | ------- |
-| `/ballers [message to mention ballers]`   | Mentions all members who have marked themselves as `Going` to the nearest upcoming event |
-| `/sportspoll`                             | Posts a poll with the contents of the `SPORT_JSON` environment variable as options for members to vote on |
+| `/admins [message to admins]`             | Mentions all admins with message |
+| `/ballers [message to mention ballers]`   | Mentions all members who have marked themselves as `Going` to the nearest upcoming event (admin-only) |
 | `/locations`                              | Posts a list of sports locations laid out in the `LOCATION_TEXT` environment variable |
-| `/soccer`                                 | Creates a soccer event on the nearest upcoming Tuesday at 5:30 - 8:30 PM EST |
 | `/help`                                   | Posts an abbreviated version of the above commands' usage as well as basic GroupMe navigation tips and automated features
 
 ---
@@ -67,7 +66,7 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
     | ACCESS_TOKEN              | [dev.groupme.com](dev.groupme.com) > Access Token |
     | BOT_ID                    | [dev.groupme.com](dev.groupme.com) > Bots > Created Bot > Bot ID |
     | GROUP_ID                  | [dev.groupme.com](dev.groupme.com) > Bots > Created Bot > Group Id |
-    | IGNORE_MEMBER (Optional)  | GroupMe user ID for a member's events to ignore |
+    | IGNORE_MEMBERS            | CSV user IDs to ignore when scraping events |
     | NEWBIES_TEXT              | Welcome message auto-sent to new members |
     | LOCATION_TEXT             | String of sports locations listed using `/locations` |
     | SPORT_JSON                | Structured as seen in `examplesportjson.json` |

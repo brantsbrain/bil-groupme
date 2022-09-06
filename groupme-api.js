@@ -11,6 +11,7 @@ const baseurl = "https://api.groupme.com/"
 
 // Title for sports poll created every sportjson.count weeks
 const sportspolltitle = "Friday Sports Poll"
+const tiebreakertitle = "6 Hour Tiebreaker Poll"
 
 // Allow delay for GroupMe API to update
 const sleep = (ms) => {
@@ -27,8 +28,9 @@ const groupid = process.env.GROUP_ID
 const autotues = (process.env.AUTO_TUES === "true")
 const autofri = (process.env.AUTO_FRI === "true")
 
-// Optional for ignoring events from a particular user
-const ignoremember = process.env.IGNORE_MEMBER
+// Optional for ignoring events from particular user id(s) separated by comma
+const ignoremembersstr = process.env.IGNORE_MEMBERS
+const ignorememberarr = ignoremembersstr.split(",")
 
 // You can't DM yourself, so provide user id to send log messages to
 const loguserid = process.env.LOG_USERID
@@ -216,7 +218,7 @@ const sendDm = async (userid, message) => {
 }
 
 // Get members from the nearest upcoming event that isn't deleted 
-// or created by ignoremember
+// or created by member in ignorememberarr
 const getBallers = async () => {
   const limit = 5
   const date = new Date().getTime()
@@ -239,8 +241,8 @@ const getBallers = async () => {
     if ("deleted_at" in eventarr[i]) {
       console.log(`Found deleted_at in ${JSON.stringify(eventarr[i])}`)
     }
-    else if (eventarr[i]["creator_id"] == ignoremember) {
-      console.log("creator_id matches ignoremember... passing...")
+    else if (ignorememberarr.includes(eventarr[i]["creator_id"])) {
+      console.log("creator_id in ignorememberarr... passing...")
     }
     else {
       goodevent = eventarr[i]
@@ -535,11 +537,60 @@ const getPollWinner = async () => {
     }
   }
 
-  // If there was only one winner, return it. Otherwise return null and handle in bot.js
-  if (winnerarr.length == 1) {
-    return winnerarr
+  return winnerarr
+}
+
+// Create a single-vote poll for only the tied sports
+const createTiedPoll = async (tiedarr) => {
+  console.log(`Creating tied poll...`)
+
+  // Get nearest Thursday at 6:00 PM EST
+  let day = await nearestDay(4)
+  day.setHours(22, 0, 0)
+
+  // Convert to number of seconds since 01/01/1970 
+  let milliseconds = day.getTime()
+  let expiration = parseInt(milliseconds / 1000, 10)
+
+  // Setup options array
+  let options = []
+  for (let i = 0; i < tiedarr.length; i++) {
+    options.push({"title": tiedarr[i]})
+  } 
+
+  // Prep poll
+  const message = {
+    "subject": tiebreakertitle,
+    options,
+    expiration,
+    "type": "single",
+    "visibility": "public"
   }
-  return false
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: `/v3/poll/${groupid}`,
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "application/json",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
 }
 
 // Get next sport in rotation
@@ -603,6 +654,7 @@ const testregex = /^(\s)*\/test/i
 const nextregex = /^(\s)*\/next/i
 const sportrotregex = /^(\s)*\/rotation/i
 const adminregex = /^(\s)*\/admin/i
+const versionregex = /^(\s)*\/version/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -641,10 +693,13 @@ exports.sportspollregex = sportspollregex
 exports.sportjson = sportjson
 exports.getPollWinner = getPollWinner
 exports.sportspolltitle = sportspolltitle
+exports.tiebreakertitle = tiebreakertitle
+exports.createTiedPoll = createTiedPoll
 
 // Newbie
 exports.newbiesregex = newbiesregex
 exports.newbiestext = newbiestext
+exports.versionregex = versionregex
 
 // Misc vars
 exports.coolregex = coolregex

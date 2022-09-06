@@ -5,11 +5,13 @@ const {
   ballersregex, getBallers,
   autofri, autotues,
   createEvent, createFridayEvent,
-  nextregex, getNextSport, getSportRotation, sportrotregex,
+  nextregex, getNextSport, 
+  getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex, sportspolltitle,
+  createTiedPoll, tiebreakertitle,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
-  newbiestext, testregex,
+  newbiestext, testregex, versionregex,
   coolregex, createPost, sportjson, getPollWinner
 } = require("./groupme-api")
 const nodeCron = require("node-cron")
@@ -18,6 +20,9 @@ const nodeCron = require("node-cron")
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+// Manually adjust as versions improve
+const version = "May I Take Your Hat Sir?"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -65,6 +70,11 @@ const respond = async (req, res) => {
         await createCoolFaceMessage()
       }
 
+      // Post version defined in bot
+      else if (versionregex.test(requesttext)) {
+        await createPost(`Current Version: ${version}`)
+      }
+
       // Post help text
       else if (helpregex.test(requesttext)) {
         await createPost(helptext)
@@ -72,18 +82,37 @@ const respond = async (req, res) => {
 
       // Post winning event from sports poll
       else if (requesttext.includes(`'${sportspolltitle}' has expired`)) {
-        const winner = await getPollWinner()
-        if (winner) {
-          console.log(`Looking for ${winner}`)
+        // If the poll tied, getPollWinner() returns false
+        const winnerarr = await getPollWinner()
+        if (winnerarr.length == 1) {
+          console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
-            if (key == winner) {
+            if (key == winnerarr[0]) {
               await createEvent(val.name, val.location, 5)
             }
           }
         }
         else {
-          console.log("Caught poll tied through null return. Resolve manually...")
-          await sendDm(loguserid, "Caught poll tied through null return. Resolve manually...")
+          console.log("Poll tied. Creating new poll...")
+          await sendDm(loguserid, "Poll tied. Creating new poll...")
+          await createTiedPoll(winnerarr)
+        }
+      }
+
+      // Handle tiebreaker poll
+      else if (requesttext.includes(`'${tiebreakertitle}' has expired`)) {
+        const winnerarr = await getPollWinner()
+        if (winnerarr.length == 1) {
+          console.log(`Looking for ${winnerarr[0]}`)
+          for (const [key, val] of Object.entries(sportjson.poll)) {
+            if (key == winnerarr[0]) {
+              await createEvent(val.name, val.location, 5)
+            }
+          }
+        }
+        else {
+          console.log("Tiebreaker tied. Resolve manually...")
+          await sendDm(loguserid, "Tiebreaker tied. Resolve manually...")
         }
       }
 
@@ -107,6 +136,9 @@ const respond = async (req, res) => {
                 attempt += 1
                 await sleep(10000)
               }
+            }
+            else {
+              console.log("Already found user...")
             }
           }
         }

@@ -1,9 +1,9 @@
 const helptext = "Kobe Commands:\n" +
-  "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
-  // "/sportspoll - Post preconfigured sports poll to expire nearest Thursday 12:00 PM EST\n" +
-  "/locations - Post all previous locations of sports\n" +
-  "/rotation - Post the current sport rotation\n" +
+  "/admins [message] - Mention the admins with a pressing question/comment\n" +
   "/next - Post the next upcoming Friday sport\n" +
+  "/rotation - Post the current sport rotation\n" +
+  "/locations - Post all previous locations of sports\n" +
+  "/ballers [message] - Mention all people going to nearest upcoming event (admins only)\n" +
   "/help - Uhhh... you're here\n\n" +
 
   "Navigating GroupMe:\n" +
@@ -12,6 +12,6 @@ const helptext = "Kobe Commands:\n" +
 
   "Automated Features:\n" +
   "Soccer Tuesdays - Mondays at 8:00 AM EST a soccer event is created for the following Tuesday at 5:30 PM EST\n" +
-  "Friday Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following Friday's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created."
+  "Friday Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following Friday's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created. Ties must be resolved manually."
 
 exports.helptext = helptext
