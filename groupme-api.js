@@ -9,7 +9,7 @@ const {helptext} = require("./helptext")
 // Used to access GroupMe API
 const baseurl = "https://api.groupme.com/"
 
-// Title for sports poll created every sportjson.count weeks
+// Titles for sports polls
 const sportspolltitle = "Friday Sports Poll"
 const tiebreakertitle = "6 Hour Tiebreaker Poll"
 

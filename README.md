@@ -13,8 +13,10 @@ We are constantly looking for ways to improve on current functionality and imple
 ## Commands
 
 | Command Usage                             | Purpose |
-| ---------------------------------------   | ------- |
+| ----------------------------------------- | ------- |
 | `/admins [message to admins]`             | Mentions all admins with message |
+| `/next`                                   | Posts the next upcoming sport in the rotation |
+| `/rotation`                               | Posts the full current rotation of sports |
 | `/ballers [message to mention ballers]`   | Mentions all members who have marked themselves as `Going` to the nearest upcoming event (admin-only) |
 | `/locations`                              | Posts a list of sports locations laid out in the `LOCATION_TEXT` environment variable |
 | `/help`                                   | Posts an abbreviated version of the above commands' usage as well as basic GroupMe navigation tips and automated features
@@ -75,7 +77,7 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
     
 
 5. Click `Create`
-6. The app will run through deploying. Once it's finished, copy the URL in the upper portion of the screen and return to the bot at `dev.groupme.com` and edit it to paste the URL into the `Callback URL` field.
+6. The app will run through deploying. Once it's finished, copy the URL in the upper portion of the screen and return to the bot at [dev.groupme.com](dev.groupme.com) and edit it to paste the URL into the `Callback URL` field.
 
 ### 5. Testing
 

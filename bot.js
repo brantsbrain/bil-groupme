@@ -22,7 +22,7 @@ const sleep = (ms) => {
 }
 
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir?"
+const version = "May I Take Your Hat Sir? 1.1"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -82,7 +82,6 @@ const respond = async (req, res) => {
 
       // Post winning event from sports poll
       else if (requesttext.includes(`'${sportspolltitle}' has expired`)) {
-        // If the poll tied, getPollWinner() returns false
         const winnerarr = await getPollWinner()
         if (winnerarr.length == 1) {
           console.log(`Looking for ${winnerarr[0]}`)
@@ -93,8 +92,8 @@ const respond = async (req, res) => {
           }
         }
         else {
-          console.log("Poll tied. Creating new poll...")
-          await sendDm(loguserid, "Poll tied. Creating new poll...")
+          console.log("Poll tied. Creating tiebreaker poll...")
+          await sendDm(loguserid, "Poll tied. Creating tiebreaker poll...")
           await createTiedPoll(winnerarr)
         }
       }
