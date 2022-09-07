@@ -63,7 +63,7 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
 
 1. Expand the `Container, Connections, Security` section and add these Environment Variables:
 
-    | Environment Variable      | Location |
+    | Environment Variable      | Value    |
     | ---------------------     | -------- |
     | ACCESS_TOKEN              | [dev.groupme.com](dev.groupme.com) > Access Token |
     | BOT_ID                    | [dev.groupme.com](dev.groupme.com) > Bots > Created Bot > Bot ID |
@@ -77,7 +77,7 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
     
 
 5. Click `Create`
-6. The app will run through deploying. Once it's finished, copy the URL in the upper portion of the screen and return to the bot at [dev.groupme.com](dev.groupme.com) and edit it to paste the URL into the `Callback URL` field.
+6. The app will run through deploying. Once it's finished, copy the URL next to the `Region` in the upper portion of the screen and return to the bot at [dev.groupme.com](dev.groupme.com) and edit it to paste the URL into the `Callback URL` field.
 
 ### 5. Testing
 
