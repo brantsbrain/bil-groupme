@@ -3,38 +3,49 @@ require("dotenv").config()
 const got = require("got")
 const { URL } = require("url")
 const https = require("https")
+const {helptext} = require("./helptext")
 
 ////////// INITIALIZE VARS //////////
+// Used to access GroupMe API
 const baseurl = "https://api.groupme.com/"
-const helptext = "Kobe Commands:\n" +
-  "/ballers - Mention all people going to nearest upcoming event (admin only)\n" +
-  "/event[:name:location] - Create an event hardcoded for nearest Tuesday 5:30 - 8:30 PM EST (for now)\n" +
-  "/soccer - Create soccer event for nearest Tuesday\n" +
-  "/newbies - Posts sparknotes of BIL stuff (admin-only)\n" +
-  "/sportspoll - Post preconfigured sports poll to expire nearest Wednesday 6:00 PM EST\n" + 
-  "/locations - Post all previous locations of sports\n" +
-  "/help - Uhhh... you're here"
 
+// Titles for sports polls
+const sportspolltitle = "Friday Sports Poll"
+const tiebreakertitle = "6 Hour Tiebreaker Poll"
+
+// Allow delay for GroupMe API to update
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const sportpollarr = ["Soccer", "Ultimate Frisbee", "Football", "Kickball", "Volleyball", "Basketball", "Wiffle Ball"]
-
 ////////// ENVIRONMENT VARS //////////
-// Required
+// Needed for interaction w/ GroupMe bot
 const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
-// Optional
-const soccloc = process.env.SOCC_LOC
-const baskloc = process.env.BASK_LOC
-const vollloc = process.env.VOLL_LOC
-const ignoremember = process.env.IGNORE_MEMBER
-const newbiestext = process.env.NEWBIES_TEXT
-const locationtext = process.env.LOCATION_TEXT
+// Auto-Create Events
+const autotues = (process.env.AUTO_TUES === "true")
+const autofri = (process.env.AUTO_FRI === "true")
+
+// Optional for ignoring events from particular user id(s) separated by comma
+const ignoremembersstr = process.env.IGNORE_MEMBERS
+const ignorememberarr = ignoremembersstr.split(",")
+
+// You can't DM yourself, so provide user id to send log messages to
 const loguserid = process.env.LOG_USERID
+
+// Replace ` w/ two newlines since GCP only takes one-line ENV variables
+const onelinenewbiestext = process.env.NEWBIES_TEXT
+const newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
+
+// Replace ` w/ two newlines and ~ w/ one newline since GCP only takes one-line ENV variables
+const onelinelocationtext = process.env.LOCATION_TEXT
+let locationtext = onelinelocationtext.replace(/`/g, "\n\n")
+locationtext = locationtext.replace(/~/g, "\n")
+
+// Sport JSON
+const sportjson = JSON.parse(process.env.SPORT_JSON)
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -45,6 +56,12 @@ if (!groupid) {
 }
 if (!bot_id) {
   console.log("ENV: 'BOT_ID' is undefined")
+}
+if (!autotues) {
+  console.log("ENV: 'AUTO_TUES' is missing or set to false")
+}
+if (!autofri) {
+  console.log("ENV: 'AUTO_FRI' is missing or set to false")
 }
 
 ////////// FUNCTIONS/METHODS //////////
@@ -58,7 +75,7 @@ const createPost = async (message, mentionids) => {
   if (message[0] == "/") {
     message = message.replace("/", "@")
   }
-  
+
   // Prep message as array to accomadate long messages 
   var messagearr = []
   var currmess = ""
@@ -74,7 +91,7 @@ const createPost = async (message, mentionids) => {
   if (currmess.length > 0) {
     messagearr.push(currmess)
   }
-  
+
   // Iterate through array as mentions or regular post
   for (let i = 0; i < messagearr.length; i++) {
     sleep(100)
@@ -143,7 +160,7 @@ const createPost = async (message, mentionids) => {
 const sendDm = async (userid, message) => {
   console.log(`Creating new DM (${message.length}): ${message}`)
   const recipient_id = userid
-  
+
   // Prep message as array to accomadate long messages 
   var messagearr = []
   var currmess = ""
@@ -161,15 +178,15 @@ const sendDm = async (userid, message) => {
   if (currmess.length > 0) {
     messagearr.push(currmess)
   }
-  
+
   for (let i = 0; i < messagearr.length; i++) {
-    sleep(5000)
+    await sleep(10000)
     const source_guid = String(Math.random().toString(36).substring(2, 34))
     const message = {
       direct_message: {
         recipient_id,
         source_guid,
-        "text" : messagearr[i]
+        "text": messagearr[i]
       }
     }
 
@@ -201,7 +218,7 @@ const sendDm = async (userid, message) => {
 }
 
 // Get members from the nearest upcoming event that isn't deleted 
-// or created by ignoremember
+// or created by member in ignorememberarr
 const getBallers = async () => {
   const limit = 5
   const date = new Date().getTime()
@@ -224,8 +241,8 @@ const getBallers = async () => {
     if ("deleted_at" in eventarr[i]) {
       console.log(`Found deleted_at in ${JSON.stringify(eventarr[i])}`)
     }
-    else if (eventarr[i]["creator_id"] == ignoremember) {
-      console.log("creator_id matches ignoremember... passing...")
+    else if (ignorememberarr.includes(eventarr[i]["creator_id"])) {
+      console.log("creator_id in ignorememberarr... passing...")
     }
     else {
       goodevent = eventarr[i]
@@ -238,40 +255,6 @@ const getBallers = async () => {
   console.log(`Mentioning this array: ${memberarr}`)
 
   return memberarr
-}
-
-// Find users added/joined w/i the past x messages
-const getNewbies = async () => {
-  let limit = 50
-  const getpath = `/v3/groups/${groupid}/messages?limit=${limit}&token=${accesstoken}`
-  const desturl = new URL(getpath, baseurl)
-  const response = await got(desturl, {
-    responseType: "json"
-  })
-
-  // console.log(response.body.response)
-
-  const messagearr = response.body.response.messages
-  let newbiearr = []
-
-  for (let i = 0; i < messagearr.length; i++) {
-    try {
-      if (messagearr[i].event.type == "membership.announce.added") {
-        let addedusersarr = messagearr[i].event.data.added_users
-        for (let y = 0; y < addedusersarr.length; y++) {
-          newbiearr.push(addedusersarr[y].id)
-        }
-      }
-      else if (messagearr[i].event.type == "membership.announce.joined") {
-        newbiearr.push(messagearr[i].event.data.user.id)
-      }
-    }
-    catch (error) {
-      // console.error(error)
-    }
-  }
-
-  return newbiearr
 }
 
 // Get admins
@@ -297,7 +280,6 @@ const getAdmins = async () => {
 }
 
 const getUserId = async (name) => {
-  console.log(`Searching for user ID for ${name}...`)
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
   const response = await got(desturl, {
@@ -314,7 +296,8 @@ const getUserId = async (name) => {
     }
   }
   console.log(`Couldn't find user ID for ${name}`)
-  sendDm(loguserid, `Couldn't find user ID for ${name}`)
+  sendDm(loguserid, `Couldn't find user ID for '${name}'`)
+  return false
 }
 
 // Post pic from URL
@@ -387,7 +370,7 @@ const createEvent = async (name, loc, dayofweek) => {
     end_at,
     "is_all_day": false,
     "timezone": "America/Detroit",
-    "location": {"name": loc}
+    "location": { "name": loc }
   }
 
   // Prep message as JSON and construct packet
@@ -439,21 +422,23 @@ const nearestDay = async (dayofweek) => {
 const createSportsPoll = async () => {
   console.log(`Creating poll...`)
 
-  // Get nearest Wednesday at 6:00 PM EST
+  // Get nearest Thursday at 12:00 PM EST
   let day = await nearestDay(4)
-  day.setHours(22, 0, 0)
-  
+  day.setHours(16, 0, 0)
+
   // Convert to number of seconds since 01/01/1970 
   let milliseconds = day.getTime()
-  let expiration = parseInt(milliseconds/1000, 10)
+  let expiration = parseInt(milliseconds / 1000, 10)
 
+  // Setup options array
   let options = []
-  for (let i = 0; i < sportpollarr.length; i++) {
-    options.push({"title": sportpollarr[i]})
-  }
+  for (const [key, val] of Object.entries(sportjson.poll)) {
+    options.push({"title": val.id})
+  } 
 
+  // Prep poll
   const message = {
-    "subject": "Friday Sports Poll",
+    "subject": sportspolltitle,
     options,
     expiration,
     "type": "multi",
@@ -486,72 +471,190 @@ const createSportsPoll = async () => {
   req.end(json)
 }
 
-// Create Friday event
+// Create Friday event or poll depending on week
 const createFridayEvent = async () => {
+  // Get nearest Friday
   let upcomingfriday = await nearestDay(5)
   upcomingfriday = new Date(upcomingfriday.getTime())
   console.log(`Upcoming Friday: ${upcomingfriday}`)
-  
-  let lastthursday = new Date(upcomingfriday.getTime())
-  lastthursday.setDate(upcomingfriday.getDate() - 8)
-  console.log(`Last Thursday: ${lastthursday}`)
 
-  const end_at = lastthursday.toISOString()
-  const limit = 10
+  // Create base EPOCH date and find number of weeks since EPOCH
+  const epoch = new Date(0)
+  console.log(`EPOCH: ${epoch}`)
+  const msinweek = 604800000
+  const diff = (upcomingfriday - epoch) / msinweek
+  console.log(`(Friday - EPOCH) / ms in week: ${diff}`)
+  const floordiff = Math.floor(diff)
+  console.log(`Math.floor(diff): ${floordiff}`)
 
-  const getevents = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
-  const desturl = new URL(getevents, baseurl)
-  const response = await got(desturl, {
-    responseType: "json"
-  })
+  // Use modulo to navigate sportjson
+  const position = floordiff % sportjson.count
+  console.log(`Sport Position: ${position}`)
 
-  console.log(response.body.response)
+  // Get position of Poll in sportjson
+  const pollpos = Object.keys(sportjson.sports).indexOf("Poll")
+  console.log(`Poll position: ${pollpos}`)
 
-  let eventarr = response.body.response.events
-
-  // Rotation is Basketball -> Volleyball -> Poll
-  for (let i = (eventarr.length - 1); i >= 0; i--) {
-    if (sportpollarr.includes(eventarr[i].name)) {
-      console.log("Found poll event")
-      createEvent("Basketball It Up", baskloc, 5)
-      return
-    }
-    else if (eventarr[i].name.includes("Basketball")) {
-      console.log("Found basketball event")
-      createEvent("Volleyball!", vollloc, 5)
-      return
-    }
-    else if (eventarr[i].name.includes("Volleyball")) {
-      console.log("Found volleyball event")
-      createSportsPoll()
-      return
-    }
-    else {
-      console.log("Didn't find anything that matched criteria")
-      sendDm(loguserid, "Didn't find anything that matched criteria")
-    }
+  if (position == pollpos) {
+    await createPost("Reminder to only vote for the sport(s) you would attend if it won!")
+    await createSportsPoll()
+  }
+  else {
+    const sportkey = Object.keys(sportjson.sports)[position]
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, 5)
   }
 }
 
-// Returns all your bots and their info
-const getBots = async () => {
-  const grouppath = `/v3/bots?token=${accesstoken}`
-  const desturl = new URL(grouppath, baseurl)
+// Return winner of most recent poll
+const getPollWinner = async () => {
+  let winnerarr = []
+  let mostvotes = -1
+
+  // Get list of polls
+  const getpath = `/v3/poll/${groupid}?token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
   const response = await got(desturl, {
     responseType: "json"
   })
-  console.log(response.body.response)
+
+  // Drill to options dictionary of most recent poll
+  const mostrecentpolloptions = response.body.response.polls[0].data.options
+  console.log(`Poll responses found: ${JSON.stringify(mostrecentpolloptions)}`)
+
+  // Iterate latest poll for most voted sport
+  for (let i = 0; i < mostrecentpolloptions.length; i++) {
+    // Empty winnerarr, push the current winner, and update mostvotes
+    if (mostrecentpolloptions[i].votes && mostrecentpolloptions[i].votes != 0 && mostrecentpolloptions[i].votes > mostvotes) {
+      console.log(`Resetting winnerarr, pushing ${mostrecentpolloptions[i].title}, and setting mostvotes to ${mostrecentpolloptions[i].votes}`)
+      winnerarr = []
+      winnerarr.push(mostrecentpolloptions[i].title)
+      mostvotes = mostrecentpolloptions[i].votes
+    }
+    // Add the tied winner
+    else if (mostrecentpolloptions[i].votes && mostrecentpolloptions[i].votes != 0 && mostrecentpolloptions[i].votes == mostvotes) {
+      console.log(`Found tie. Adding ${mostrecentpolloptions[i].title}`)
+      winnerarr.push(mostrecentpolloptions[i].title)
+    }
+  }
+
+  return winnerarr
+}
+
+// Create a single-vote poll for only the tied sports
+const createTiedPoll = async (tiedarr) => {
+  console.log(`Creating tied poll...`)
+
+  // Get nearest Thursday at 6:00 PM EST
+  let day = await nearestDay(4)
+  day.setHours(22, 0, 0)
+
+  // Convert to number of seconds since 01/01/1970 
+  let milliseconds = day.getTime()
+  let expiration = parseInt(milliseconds / 1000, 10)
+
+  // Setup options array
+  let options = []
+  for (let i = 0; i < tiedarr.length; i++) {
+    options.push({"title": tiedarr[i]})
+  } 
+
+  // Prep poll
+  const message = {
+    "subject": tiebreakertitle,
+    options,
+    expiration,
+    "type": "single",
+    "visibility": "public"
+  }
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: `/v3/poll/${groupid}`,
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "application/json",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
+}
+
+// Get next sport in rotation
+const getNextSport = async () => {
+  // Get nearest Friday
+  let upcomingfriday = await nearestDay(5)
+  upcomingfriday = new Date(upcomingfriday.getTime())
+  console.log(`Upcoming Friday: ${upcomingfriday}`)
+
+  // Create base EPOCH date and find number of weeks since EPOCH
+  const epoch = new Date(0)
+  console.log(`EPOCH: ${epoch}`)
+  const msinweek = 604800000
+  const diff = (upcomingfriday - epoch) / msinweek
+  console.log(`(Friday - EPOCH) / ms in week: ${diff}`)
+  const floordiff = Math.floor(diff)
+  console.log(`Math.floor(diff): ${floordiff}`)
+
+  // Use modulo to navigate sportjson
+  const position = floordiff % sportjson.count
+  console.log(`Sport Position: ${position}`)
+
+  // Get position of Poll in sportjson
+  const pollpos = Object.keys(sportjson.sports).indexOf("Poll")
+  console.log(`Poll position: ${pollpos}`)
+
+  if (position == pollpos) {
+    await createPost("Next up is a poll. Hang tight until Wednesday at 8:00 AM!")
+  }
+  else {
+    const sportkey = Object.keys(sportjson.sports)[position]
+    await createPost(`Next sport: ${sportjson.sports[sportkey].id}. Hang tight until Wednesday at 8:00 AM for the event!`)
+  }
+}
+
+// Get sports rotation
+const getSportRotation = async () => {
+  const sportarr = Object.keys(sportjson.sports)
+  let sportrot = "Our current sport rotation is: "
+
+  for (let i = 0; i < sportarr.length; i++) {
+    if (i == sportarr.length - 1) {
+      sportrot += `${sportarr[i]}`
+    }
+    else {
+      sportrot += `${sportarr[i]} > `
+    }
+  }
+
+  return sportrot
 }
 
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
-const eventregex = /^(\s)*\/event/i
-const soccerregex = /^(\s)*\/soccer/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 const newbiesregex = /^(\s)*\/newbies/i
 const sportspollregex = /^(\s)*\/sportspoll/i
 const locationsregex = /^(\s)*\/locations/i
+const testregex = /^(\s)*\/test/i
+const nextregex = /^(\s)*\/next/i
+const sportrotregex = /^(\s)*\/rotation/i
+const adminregex = /^(\s)*\/admin/i
+const versionregex = /^(\s)*\/version/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -566,13 +669,18 @@ exports.getBallers = getBallers
 exports.ballersregex = ballersregex
 
 // Event
-exports.eventregex = eventregex
 exports.createEvent = createEvent
-exports.soccerregex = soccerregex
-exports.soccloc = soccloc
 exports.createFridayEvent = createFridayEvent
 exports.locationsregex = locationsregex
 exports.locationtext = locationtext
+exports.nextregex = nextregex
+exports.getNextSport = getNextSport
+exports.getSportRotation = getSportRotation
+exports.sportrotregex = sportrotregex
+
+// Auto-Create Events
+exports.autotues = autotues
+exports.autofri = autofri
 
 // Send DM
 exports.sendDm = sendDm
@@ -582,14 +690,20 @@ exports.loguserid = loguserid
 // Sports poll
 exports.createSportsPoll = createSportsPoll
 exports.sportspollregex = sportspollregex
+exports.sportjson = sportjson
+exports.getPollWinner = getPollWinner
+exports.sportspolltitle = sportspolltitle
+exports.tiebreakertitle = tiebreakertitle
+exports.createTiedPoll = createTiedPoll
 
 // Newbie
 exports.newbiesregex = newbiesregex
 exports.newbiestext = newbiestext
-exports.getNewbies = getNewbies
+exports.versionregex = versionregex
 
 // Misc vars
 exports.coolregex = coolregex
-exports.getBots = getBots
 exports.createPost = createPost
 exports.getAdmins = getAdmins
+exports.testregex = testregex
+exports.adminregex = adminregex

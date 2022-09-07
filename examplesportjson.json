@@ -1,0 +1,61 @@
+{
+    "count": 4,
+    "sports": {
+        "Basketball": {
+            "id": "Basketball",
+            "name": "Basketball it up!",
+            "location": "123 Main St"
+        },
+        "Poll":
+        {
+            "placeholder": "placeholder"
+        },
+        "Volleyball": {
+            "id": "Volleyball",
+            "name": "Volleyballin",
+            "location": "321 Main St"
+        },
+        "Soccer": {
+            "id": "Soccer",
+            "name": "Soccer Friday!",
+            "location": "456 2nd St"
+        }
+    },
+    "poll": {
+        "Soccer": {
+            "id": "Soccer",
+            "name": "Soccer Y'all",
+            "location": "456 2nd St"
+        },
+        "Ultimate Frisbee": {
+            "id": "Ultimate Frisbee",
+            "name": "Circle in Air Game",
+            "location": "654 2nd St"
+        },
+        "Football": {
+            "id": "Football",
+            "name": "The 'Ol Pigskin",
+            "location": "654 2nd St"
+        },
+        "Kickball": {
+            "id": "Kickball",
+            "name": "Kick the Ball Really Far Game",
+            "location": "789 3rd St"
+        },
+        "Volleyball": {
+            "id": "Volleyball",
+            "name": "Volleyballin",
+            "location": "321 Main St"
+        },
+        "Basketball": {
+            "id": "Basketball",
+            "name": "Basketball it up!",
+            "location": "123 Main St"
+        },
+        "Wiffle Ball": {
+            "id": "Wiffle Ball",
+            "name": "Wiffle Ballers",
+            "location": "789 3rd St"
+        }
+    }
+}
