@@ -488,7 +488,8 @@ const createFridayEvent = async () => {
   console.log(`Math.floor(diff): ${floordiff}`)
 
   // Use modulo to navigate sportjson
-  const position = floordiff % sportjson.count
+  const sportarrlen = Object.keys(sportjson.sports).length
+  const position = floordiff % sportarrlen
   console.log(`Sport Position: ${position}`)
 
   // Get position of Poll in sportjson
@@ -610,7 +611,8 @@ const getNextSport = async () => {
   console.log(`Math.floor(diff): ${floordiff}`)
 
   // Use modulo to navigate sportjson
-  const position = floordiff % sportjson.count
+  const sportarrlen = Object.keys(sportjson.sports).length
+  const position = floordiff % sportarrlen
   console.log(`Sport Position: ${position}`)
 
   // Get position of Poll in sportjson

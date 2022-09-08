@@ -123,7 +123,7 @@ const respond = async (req, res) => {
           console.log(`Found '${name}' in requesttext`)
 
           // Search for user id maxattempts times
-          for (let attempt = 1; attempt <= maxattempts; attempt += 1) {
+          for (let attempt = 1; attempt <= maxattempts; attempt++) {
             console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
             if (!found) {
               userid = await getUserId(name)
@@ -132,7 +132,6 @@ const respond = async (req, res) => {
                 found = true
               }
               else {
-                attempt += 1
                 await sleep(10000)
               }
             }
@@ -146,7 +145,7 @@ const respond = async (req, res) => {
           console.log(`Found '${name}' in requesttext`)
 
           // Search for user id maxattempts times
-          for (let attempt = 1; attempt <= maxattempts; attempt += 1) {
+          for (let attempt = 1; attempt <= maxattempts; attempt++) {
             console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
             if (!found) {
               userid = await getUserId(name)
@@ -155,7 +154,6 @@ const respond = async (req, res) => {
                 found = true
               }
               else {
-                attempt += 1
                 await sleep(10000)
               }
             }
