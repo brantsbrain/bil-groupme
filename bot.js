@@ -62,7 +62,7 @@ const respond = async (req, res) => {
     console.log(typeof req)
     console.log(req.headers)
     const headerkeys = Object.keys(req.headers)
-    if (headerkeys.indexOf("SOCCER") > -1) {
+    if (headerkeys.indexOf("soccer") > -1) {
       console.log("Found SOCCER header...")
     }
 
