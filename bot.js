@@ -31,28 +31,6 @@ const maxattempts = 3
 const tuesheader = "tuessoccer"
 const friheader = "frisports"
 
-/* ////////// CRON JOBS //////////
-// Adjust +4 hours for UTC
-// Post weekly on Monday 8:00 AM EST
-const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
-  if (autotues) {
-    createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
-  }
-  else {
-    console.log("Auto weeklySocc turned off...")
-  }
-})
-
-// Post event or poll weekly on Wednesday at 8:00 AM EST
-const weeklySport = nodeCron.schedule("0 12 * * 3", function weeklySport() {
-  if (autofri) {
-    createFridayEvent()
-  }
-  else {
-    console.log("Auto weeklySport turned off...")
-  }
-}) */
-
 ////////// RESPOND //////////
 const respond = async (req, res) => {
   try {
