@@ -53,12 +53,6 @@ if (!groupid) {
 if (!bot_id) {
   console.log("ENV: 'BOT_ID' is undefined")
 }
-if (!autotues) {
-  console.log("ENV: 'AUTO_TUES' is missing or set to false")
-}
-if (!autofri) {
-  console.log("ENV: 'AUTO_FRI' is missing or set to false")
-}
 
 ////////// FUNCTIONS/METHODS //////////
 // Create a post and mention users if ID array is provided
