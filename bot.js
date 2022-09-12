@@ -59,6 +59,13 @@ const respond = async (req, res) => {
     console.log(`User request: "${requesttext}"`)
     console.log(`Request Body: "${JSON.stringify(request)}"`)
 
+    console.log(typeof req)
+    console.log(req.headers)
+    const headerkeys = Object.keys(req.headers)
+    if (headerkeys.indexOf("SOCCER") > -1) {
+      console.log("Found SOCCER header...")
+    }
+
     // If text exists
     if (requesttext) {
       res.writeHead(200)
