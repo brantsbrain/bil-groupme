@@ -13,7 +13,6 @@ const {
   newbiestext, testregex, versionregex,
   coolregex, createPost, sportjson, getPollWinner
 } = require("./groupme-api")
-const nodeCron = require("node-cron")
 
 ////////// INITIALIZE VARS //////////
 const sleep = (ms) => {
