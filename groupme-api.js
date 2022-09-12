@@ -24,10 +24,6 @@ const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
-// Auto-Create Events
-const autotues = (process.env.AUTO_TUES === "true")
-const autofri = (process.env.AUTO_FRI === "true")
-
 // Optional for ignoring events from particular user id(s) separated by comma
 const ignoremembersstr = process.env.IGNORE_MEMBERS
 const ignorememberarr = ignoremembersstr.split(",")
@@ -56,12 +52,6 @@ if (!groupid) {
 }
 if (!bot_id) {
   console.log("ENV: 'BOT_ID' is undefined")
-}
-if (!autotues) {
-  console.log("ENV: 'AUTO_TUES' is missing or set to false")
-}
-if (!autofri) {
-  console.log("ENV: 'AUTO_FRI' is missing or set to false")
 }
 
 ////////// FUNCTIONS/METHODS //////////
@@ -291,7 +281,6 @@ const getUserId = async (name) => {
   for (const key of Object.entries(memberdict)) {
     if (key[1].nickname == name) {
       console.log(`Found ${name} with user id ${key[1].user_id}`)
-      sendDm(loguserid, `Found ${name} with user id ${key[1].user_id}`)
       return key[1].user_id
     }
   }
@@ -679,10 +668,6 @@ exports.nextregex = nextregex
 exports.getNextSport = getNextSport
 exports.getSportRotation = getSportRotation
 exports.sportrotregex = sportrotregex
-
-// Auto-Create Events
-exports.autotues = autotues
-exports.autofri = autofri
 
 // Send DM
 exports.sendDm = sendDm

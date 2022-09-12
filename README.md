@@ -72,8 +72,6 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
     | NEWBIES_TEXT              | Welcome message auto-sent to new members |
     | LOCATION_TEXT             | String of sports locations listed using `/locations` |
     | SPORT_JSON                | Structured as seen in `examplesportjson.json` |
-    | AUTO_TUES                 | Simple true/false string for auto-creating Tuesday events |
-    | AUTO_FRI                  | Simple true/false string for auto-creating Friday events |
     
 
 5. Click `Create`
@@ -82,6 +80,20 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
 ### 5. Testing
 
 1. Open the `LOGS` tab in the Cloud Run service details for your app and run a `/help` in the GroupMe chat. You should see the logs populate after a minute with the responses
+
+### 6. Enabling Auto-Create Features
+
+The `bot.js` file listens for POSTs w/ specific header values that we'll provide via Cloud Scheduler in GCP in the form of CRON jobs sending an HTTP POST w/ that header
+
+1. Open Cloud Scheduler in the GCP console and create a new job
+2. Assign a region and give it a name (description optional)
+3. The frequency should be every Sunday (or whenenver you'd like to post it). For example, Mondays at 8:00 AM in CRON format is `0 8 * * 1`
+4. Adjust your timezone accordingly
+5. Continue to `Configure the Execution` and add your relevant `URL`
+6. Change the `HTTP Method` to `POST` and add a header for `tuessoccer` and give it a value of `true`
+7. Add arbitrary text to the body. This isn't analyzed but it shouldn't be blank.
+8. Save the job and force run to make sure it works
+9. Repeat steps 1-8 but swap `tuessoccer` in step 6 for `frisports` and adjust the frequency in step 3 as desired
 
 ---
 

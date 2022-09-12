@@ -3,7 +3,6 @@ const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
   ballersregex, getBallers,
-  autofri, autotues,
   createEvent, createFridayEvent,
   nextregex, getNextSport, 
   getSportRotation, sportrotregex,
@@ -14,7 +13,6 @@ const {
   newbiestext, testregex, versionregex,
   coolregex, createPost, sportjson, getPollWinner
 } = require("./groupme-api")
-const nodeCron = require("node-cron")
 
 ////////// INITIALIZE VARS //////////
 const sleep = (ms) => {
@@ -22,32 +20,14 @@ const sleep = (ms) => {
 }
 
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 1.1"
+const version = "May I Take Your Hat Sir? 1.2"
 
 // Max attempts to find user id
 const maxattempts = 3
 
-////////// CRON JOBS //////////
-// Adjust +4 hours for UTC
-// Post weekly on Monday 8:00 AM EST
-const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
-  if (autotues) {
-    createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
-  }
-  else {
-    console.log("Auto weeklySocc turned off...")
-  }
-})
-
-// Post event or poll weekly on Wednesday at 8:00 AM EST
-const weeklySport = nodeCron.schedule("0 12 * * 3", function weeklySport() {
-  if (autofri) {
-    createFridayEvent()
-  }
-  else {
-    console.log("Auto weeklySport turned off...")
-  }
-})
+// Header values
+const tuesheader = "tuessoccer"
+const friheader = "frisports"
 
 ////////// RESPOND //////////
 const respond = async (req, res) => {
@@ -58,6 +38,17 @@ const respond = async (req, res) => {
     const sendername = request.name
     console.log(`User request: "${requesttext}"`)
     console.log(`Request Body: "${JSON.stringify(request)}"`)
+
+    // Auto-create events on cron job POSTs
+    const headerkeys = Object.keys(req.headers)
+    if ((headerkeys.indexOf(tuesheader) > -1)) {
+      console.log(`Found ${tuesheader}...`)
+      await createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
+    }
+    else if ((headerkeys.indexOf(friheader) > -1)) {
+      console.log(`Found ${friheader}...`)
+      await createFridayEvent()
+    }
 
     // If text exists
     if (requesttext) {
@@ -129,6 +120,7 @@ const respond = async (req, res) => {
               userid = await getUserId(name)
               if (userid) {
                 await sendDm(userid, `Hey ${name}! ${newbiestext}`)
+                await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
                 found = true
               }
               else {
@@ -151,6 +143,7 @@ const respond = async (req, res) => {
               userid = await getUserId(name)
               if (userid) {
                 await sendDm(userid, `Hey ${name}! ${newbiestext}`)
+                await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
                 found = true
               }
               else {
