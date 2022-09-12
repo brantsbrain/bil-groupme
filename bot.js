@@ -27,7 +27,11 @@ const version = "May I Take Your Hat Sir? 1.1"
 // Max attempts to find user id
 const maxattempts = 3
 
-////////// CRON JOBS //////////
+// Header values
+const tuesheader = "tuessoccer"
+const friheader = "frisports"
+
+/* ////////// CRON JOBS //////////
 // Adjust +4 hours for UTC
 // Post weekly on Monday 8:00 AM EST
 const weeklySocc = nodeCron.schedule("0 12 * * 1", function weeklySocc() {
@@ -47,7 +51,7 @@ const weeklySport = nodeCron.schedule("0 12 * * 3", function weeklySport() {
   else {
     console.log("Auto weeklySport turned off...")
   }
-})
+}) */
 
 ////////// RESPOND //////////
 const respond = async (req, res) => {
@@ -59,11 +63,15 @@ const respond = async (req, res) => {
     console.log(`User request: "${requesttext}"`)
     console.log(`Request Body: "${JSON.stringify(request)}"`)
 
-    console.log(typeof req)
-    console.log(req.headers)
+    // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
-    if (headerkeys.indexOf("soccer") > -1) {
-      console.log("Found SOCCER header...")
+    if ((headerkeys.indexOf(tuesheader) > -1) && autotues) {
+      console.log(`Found ${tuesheader}...`)
+      await createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
+    }
+    else if ((headerkeys.indexOf(friheader) > -1) && autofri) {
+      console.log(`Found ${friheader}...`)
+      await createFridayEvent()
     }
 
     // If text exists
@@ -136,6 +144,7 @@ const respond = async (req, res) => {
               userid = await getUserId(name)
               if (userid) {
                 await sendDm(userid, `Hey ${name}! ${newbiestext}`)
+                await sendDm(loguserid, `Found ${name} in ${attempts} tries...`)
                 found = true
               }
               else {
@@ -158,6 +167,7 @@ const respond = async (req, res) => {
               userid = await getUserId(name)
               if (userid) {
                 await sendDm(userid, `Hey ${name}! ${newbiestext}`)
+                await sendDm(loguserid, `Found ${name} in ${attempts} tries...`)
                 found = true
               }
               else {

@@ -291,7 +291,6 @@ const getUserId = async (name) => {
   for (const key of Object.entries(memberdict)) {
     if (key[1].nickname == name) {
       console.log(`Found ${name} with user id ${key[1].user_id}`)
-      sendDm(loguserid, `Found ${name} with user id ${key[1].user_id}`)
       return key[1].user_id
     }
   }
