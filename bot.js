@@ -3,7 +3,6 @@ const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
   ballersregex, getBallers,
-  autofri, autotues,
   createEvent, createFridayEvent,
   nextregex, getNextSport, 
   getSportRotation, sportrotregex,
@@ -22,7 +21,7 @@ const sleep = (ms) => {
 }
 
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 1.1"
+const version = "May I Take Your Hat Sir? 1.2"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -43,11 +42,11 @@ const respond = async (req, res) => {
 
     // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
-    if ((headerkeys.indexOf(tuesheader) > -1) && autotues) {
+    if ((headerkeys.indexOf(tuesheader) > -1)) {
       console.log(`Found ${tuesheader}...`)
       await createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
     }
-    else if ((headerkeys.indexOf(friheader) > -1) && autofri) {
+    else if ((headerkeys.indexOf(friheader) > -1)) {
       console.log(`Found ${friheader}...`)
       await createFridayEvent()
     }

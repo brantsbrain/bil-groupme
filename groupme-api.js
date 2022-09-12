@@ -24,10 +24,6 @@ const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
 
-// Auto-Create Events
-const autotues = (process.env.AUTO_TUES === "true")
-const autofri = (process.env.AUTO_FRI === "true")
-
 // Optional for ignoring events from particular user id(s) separated by comma
 const ignoremembersstr = process.env.IGNORE_MEMBERS
 const ignorememberarr = ignoremembersstr.split(",")
@@ -678,10 +674,6 @@ exports.nextregex = nextregex
 exports.getNextSport = getNextSport
 exports.getSportRotation = getSportRotation
 exports.sportrotregex = sportrotregex
-
-// Auto-Create Events
-exports.autotues = autotues
-exports.autofri = autofri
 
 // Send DM
 exports.sendDm = sendDm
