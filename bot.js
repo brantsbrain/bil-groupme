@@ -120,7 +120,7 @@ const respond = async (req, res) => {
               userid = await getUserId(name)
               if (userid) {
                 await sendDm(userid, `Hey ${name}! ${newbiestext}`)
-                await sendDm(loguserid, `Found ${name} in ${attempts} tries...`)
+                await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
                 found = true
               }
               else {
@@ -143,7 +143,7 @@ const respond = async (req, res) => {
               userid = await getUserId(name)
               if (userid) {
                 await sendDm(userid, `Hey ${name}! ${newbiestext}`)
-                await sendDm(loguserid, `Found ${name} in ${attempts} tries...`)
+                await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
                 found = true
               }
               else {
