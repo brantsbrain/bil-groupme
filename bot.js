@@ -111,6 +111,7 @@ const respond = async (req, res) => {
         let found = false
         if (requesttext.includes("added")) {
           let name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
+          let firstname = name.split(" ")[0]
           console.log(`Found '${name}' in requesttext`)
 
           // Search for user id maxattempts times
@@ -119,7 +120,7 @@ const respond = async (req, res) => {
             if (!found) {
               userid = await getUserId(name)
               if (userid) {
-                await sendDm(userid, `Hey ${name}! ${newbiestext}`)
+                await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
                 await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
                 found = true
               }
@@ -135,6 +136,7 @@ const respond = async (req, res) => {
         else if (requesttext.includes("joined")) {
           let name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
           console.log(`Found '${name}' in requesttext`)
+          let firstname = name.split(" ")[0]
 
           // Search for user id maxattempts times
           for (let attempt = 1; attempt <= maxattempts; attempt++) {
@@ -142,7 +144,7 @@ const respond = async (req, res) => {
             if (!found) {
               userid = await getUserId(name)
               if (userid) {
-                await sendDm(userid, `Hey ${name}! ${newbiestext}`)
+                await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
                 await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
                 found = true
               }

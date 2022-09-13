@@ -87,7 +87,7 @@ The `bot.js` file listens for POSTs w/ specific header values that we'll provide
 
 1. Open Cloud Scheduler in the GCP console and create a new job
 2. Assign a region and give it a name (description optional)
-3. The frequency should be every Sunday (or whenenver you'd like to post it). For example, Mondays at 8:00 AM in CRON format is `0 8 * * 1`
+3. Assign it a frequency. For example, Mondays at 8:00 AM in CRON format is `0 8 * * 1`
 4. Adjust your timezone accordingly
 5. Continue to `Configure the Execution` and add your relevant `URL`
 6. Change the `HTTP Method` to `POST` and add a header for `tuessoccer` and give it a value of `true`
