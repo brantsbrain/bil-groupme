@@ -10,17 +10,13 @@ const {
   createTiedPoll, tiebreakertitle,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
-  newbiestext, testregex, versionregex,
-  coolregex, createPost, sportjson, getPollWinner
+  newbiestext, testregex, versionregex, sleepinsec,
+  coolregex, createPost, sportjson, getPollWinner, sleep
 } = require("./groupme-api")
 
 ////////// INITIALIZE VARS //////////
-const sleep = (ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 1.2"
+const version = "May I Take Your Hat Sir? 1.3"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -108,52 +104,36 @@ const respond = async (req, res) => {
 
       // Send new members welcome DM
       else if (sendername == "GroupMe") {
-        let found = false
+        // Get name substring
+        let name = ""
         if (requesttext.includes("added")) {
-          let name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
-          let firstname = name.split(" ")[0]
-          console.log(`Found '${name}' in requesttext`)
-
-          // Search for user id maxattempts times
-          for (let attempt = 1; attempt <= maxattempts; attempt++) {
-            console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
-            if (!found) {
-              userid = await getUserId(name)
-              if (userid) {
-                await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
-                await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
-                found = true
-              }
-              else {
-                await sleep(60000)
-              }
-            }
-            else {
-              console.log("Already found user...")
-            }
-          }
+          name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
         }
         else if (requesttext.includes("joined")) {
-          let name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
-          console.log(`Found '${name}' in requesttext`)
-          let firstname = name.split(" ")[0]
-
-          // Search for user id maxattempts times
-          for (let attempt = 1; attempt <= maxattempts; attempt++) {
-            console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
-            if (!found) {
-              userid = await getUserId(name)
-              if (userid) {
-                await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
-                await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
-                found = true
-              }
-              else {
-                await sleep(60000)
-              }
+          name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
+        }
+        console.log(`Found '${name}' in requesttext`)
+        const firstname = name.split(" ")[0]
+        
+        // Search for user id maxattempts times
+        let found = false
+        let userid = ""
+        for (let attempt = 1; attempt <= maxattempts; attempt++) {
+          console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
+          if (!found) {
+            userid = await getUserId(name)
+            if (userid) {
+              await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
+              await sendDm(loguserid, `Found ${name} on attempt ${attempt}...`)
+              console.log(`Found ${name} on attempt ${attempt}...`)
+              found = true
+            }
+            else if (attempt < 3){
+              await sleep(sleepinsec * 1000)
             }
             else {
-              console.log("Already found user...")
+              await sendDm(loguserid, `Attempted ${attempt} time(s). Couldn't find user ID for ${name}`)
+              console.log(`Attempted ${attempt} time(s). Couldn't find user ID for ${name}`)
             }
           }
         }
@@ -190,7 +170,7 @@ const respond = async (req, res) => {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await createPost(requesttext, await getBallers())
-          console.log("Admin ran /ballers")
+          console.log(`${sendername} ran /ballers`)
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
@@ -203,7 +183,7 @@ const respond = async (req, res) => {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await createSportsPoll()
-          console.log("Admin ran /sportspoll")
+          console.log(`${sendername} ran /sportspoll`)
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)

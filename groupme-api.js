@@ -1,7 +1,7 @@
 ////////// IMPORTS //////////
 require("dotenv").config()
 const got = require("got")
-const { URL } = require("url")
+const {URL} = require("url")
 const https = require("https")
 const {helptext} = require("./helptext")
 
@@ -42,6 +42,9 @@ locationtext = locationtext.replace(/~/g, "\n")
 
 // Sport JSON
 const sportjson = JSON.parse(process.env.SPORT_JSON)
+
+// Used to control how long to wait when checking for new member IDs
+const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -269,6 +272,7 @@ const getAdmins = async () => {
   return adminarr
 }
 
+// Return user ID string from name
 const getUserId = async (name) => {
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
@@ -284,8 +288,6 @@ const getUserId = async (name) => {
       return key[1].user_id
     }
   }
-  console.log(`Couldn't find user ID for ${name}`)
-  sendDm(loguserid, `Couldn't find user ID for '${name}'`)
   return false
 }
 
@@ -687,6 +689,7 @@ exports.createTiedPoll = createTiedPoll
 exports.newbiesregex = newbiesregex
 exports.newbiestext = newbiestext
 exports.versionregex = versionregex
+exports.sleepinsec = sleepinsec
 
 // Misc vars
 exports.coolregex = coolregex
@@ -694,3 +697,4 @@ exports.createPost = createPost
 exports.getAdmins = getAdmins
 exports.testregex = testregex
 exports.adminregex = adminregex
+exports.sleep = sleep
