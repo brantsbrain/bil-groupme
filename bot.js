@@ -105,12 +105,11 @@ const respond = async (req, res) => {
       // Send new members welcome DM
       else if (sendername == "GroupMe") {
         // Get name substring
-        let name = ""
         if (requesttext.includes("added")) {
-          name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
+          var name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
         }
         else if (requesttext.includes("joined")) {
-          name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
+          var name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
         }
         console.log(`Found '${name}' in requesttext`)
         const firstname = name.split(" ")[0]
