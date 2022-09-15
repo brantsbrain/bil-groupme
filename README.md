@@ -1,8 +1,8 @@
 # GroupMe Sports Bot
 
-GroupMe is a very lightweight app that easily connects any number of people over a simple interface. It has basic functionality such as event creation, polls, and single-member mentioning. The heart behind this bot was to be able to automate sport event creation and moderate a large group of people looking to get involved in sports events without spamming those who couldn't make it to any one given event.
+GroupMe is a very lightweight group messaging app that easily connects any number of people over a simple interface. It has basic functionality such as event creation, polls, and single-member mentioning. The heart behind this bot was to be able to automate sport event creation and moderate a large group of people looking to get involved in sports events without spamming those who couldn't make it to any one given event.
 
-The primary functionality of this app (aside from automated event creation) is `/ballers` which mentions only those people who have marked themselves as `Going` to the nearest upcoming event. GroupMe has a built-in mention feature, but, as it stands currently, a member would have to individually mention each desired member. `/ballers` compiles an array of members and mentions all these people with a simple `@ballers` instead.
+The primary functionality of this app (aside from automated event creation) is `/ballers` which mentions only those people who have marked themselves as `Going` to the nearest upcoming event. GroupMe has a built-in mention feature, but, as it stands currently, a member would have to individually mention each desired member. `/ballers` compiles an array of members and mentions all those people with a simple `@ballers` instead.
 
 Another helpful feature is automatic notification for new members. The bot will send a direct message (on behalf of the bot owner) to every new member that joins with the contents of `NEWBIES_TEXT`, an environment variable added to the Google Cloud Platform (GCP) Cloud Run Service. This text is best used as a welcome message describing the group's purpose and any regular activities that occur in it.
 
@@ -27,12 +27,19 @@ We are constantly looking for ways to improve on current functionality and imple
 
 This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but their free tier has been rescinded as of 9/28/22. After some digging, we found Google Cloud Provider (GCP) offers a free tier for similar functionality up to a certain ceiling, which we don't expect to hit. Details of their pricing plan for this functionality can be found at [https://cloud.google.com/run/pricing](https://cloud.google.com/run/pricing).
 
+### Flow Diagram
+
+The bot needs three entities to work correctly: Google Cloud Platform (GCP), GroupMe, and GitHub. Shown below is a very basic flow diagram of how a single transaction works its way through all three sites
+
+![flow diagram](BotFlowDiagram.png)
+
 ### Prerequisites:
 
 | Tool                                  | Website                               | Purpose |
 | ------------------------------------- | ------------------------------------- | ------- |
-| GitHub Account                        | [www.github.com](www.github.com)      | Hosts the JS code that deploys to GCP |
+| GroupMe Account                       | [www.groupme.com](www.groupme.com)    | Messaging service the bot will interact with |
 | GroupMe Developer Account             | [dev.groupme.com](dev.groupme.com)    | Integrates bot into GroupMe chats and forwards messages to GCP callback URL |
+| GitHub Account                        | [www.github.com](www.github.com)      | Hosts the JS code that deploys to GCP |
 | Google Cloud Platform (GCP) Account   | [cloud.google.com](cloud.google.com)  | Used to receive messages from GroupMe bot and respond using JS app |
 
 ### 1. Forking GitHub Repo
@@ -48,7 +55,7 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
     1. Click `Continously deploy new revisions from a source repository` followed by `SET UP WITH CLOUD BUILD`
     2. Follow the steps to connect the GitHub repository and the `prod` branch and click `Save` to confirm.
     3. Select `Allow unauthenticated invocations` under Authentication
-5. Pause here and continue to the next section
+5. Pause here, open a new tab, and continue to the next section
     
 ### 3. Creating GroupMe Bot
 
@@ -61,7 +68,7 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
 
 ### 4. Addtional Prep in GCP and Deploying App
 
-1. Expand the `Container, Connections, Security` section and add these Environment Variables:
+1. Return to the GCP tab, expand the `Container, Connections, Security` section, and add these Environment Variables:
 
     | Environment Variable      | Value    |
     | ---------------------     | -------- |
@@ -71,11 +78,11 @@ This app originally ran on Heroku, a Platform as a Service (PaaS) vendor, but th
     | IGNORE_MEMBERS            | CSV user IDs to ignore when scraping events |
     | NEWBIES_TEXT              | Welcome message auto-sent to new members |
     | LOCATION_TEXT             | String of sports locations listed using `/locations` |
-    | SPORT_JSON                | Structured as seen in `examplesportjson.json` |
+    | SPORT_JSON                | Structured as seen in [examplesportjson.json](examplesportjson.json) |
     
 
 5. Click `Create`
-6. The app will run through deploying. Once it's finished, copy the URL next to the `Region` in the upper portion of the screen and return to the bot at [dev.groupme.com](dev.groupme.com) and edit it to paste the URL into the `Callback URL` field.
+6. The app will run through deploying. Once it's finished, copy the URL next to the `Region` in the upper portion of the screen and return to the bot at [dev.groupme.com](dev.groupme.com) and edit it to paste the URL into the `Callback URL` field
 
 ### 5. Testing
 
