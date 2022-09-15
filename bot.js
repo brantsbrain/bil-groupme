@@ -103,7 +103,7 @@ const respond = async (req, res) => {
       }
 
       // Send new members welcome DM
-      else if (sendername == "GroupMe") {
+      else if (sendername == "GroupMe" && requesttext.includes("group")) {
         // Get name substring
         if (requesttext.includes("added")) {
           var name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
