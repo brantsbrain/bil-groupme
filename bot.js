@@ -125,7 +125,7 @@ const respond = async (req, res) => {
                 found = true
               }
               else {
-                await sleep(10000)
+                await sleep(60000)
               }
             }
             else {
@@ -149,7 +149,7 @@ const respond = async (req, res) => {
                 found = true
               }
               else {
-                await sleep(10000)
+                await sleep(60000)
               }
             }
             else {
