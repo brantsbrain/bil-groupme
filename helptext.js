@@ -3,8 +3,12 @@ const helptext = "Kobe Commands:\n" +
   "/next - Post the next upcoming Friday sport\n" +
   "/rotation - Post the current sport rotation\n" +
   "/locations - Post all previous locations of sports\n" +
-  "/ballers [message] - Mention all people going to nearest upcoming event (admins only)\n" +
+  "/pins - Display pinned messages\n" +
   "/help - Uhhh... you're here\n\n" +
+  
+  "Admin Commands:\n" +
+  "/ballers [message] - Mention all people going to nearest upcoming event\n" +
+  "/pin [message] - Pin a message to pinboard (displayed using /pins)\n\n" +
 
   "Navigating GroupMe:\n" +
   "Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n" +

@@ -683,6 +683,7 @@ const filterRegexMsgList = (msglist, regex) => {
 }
 
 const combinePinList = async (msglist) => {
+  msglist = msglist.reverse()
   var start = "Pinned messages:\n"
   var body = "" 
   for (let i = 0; i < msglist.length; i++) {
@@ -692,9 +693,28 @@ const combinePinList = async (msglist) => {
 }
 
 const showPins = async () => {
-  const myLikeList = await getMyLikeList()
-  const pinlist = filterRegexMsgList(myLikeList, pinregex)
+  const mylikelist = await getMyLikeList()
+  const pinlist = filterRegexMsgList(mylikelist, pinregex)
   await createPost(await combinePinList(pinlist))
+}
+
+const unpin = async(pos) => {
+  const mylikelist = await getMyLikeList()
+  const pinlist = filterRegexMsgList(mylikelist, pinregex)
+
+  msglist = pinlist.reverse()
+  unlikeid = msglist[pos].id
+
+  const unlikePath = `/v3/messages/${groupid}/${msgid}/unlike?token=${accesstoken}`
+  const destUrl = new URL(unlikePath, baseurl)
+  console.log(`Unliking message: ${msgid}`)
+  const response = await got.post(destUrl, {
+    json: {},
+    responseType: "json",
+  })
+  if (response.statusCode !== 200) {
+    console.log(`Error unliking a message ${response.statusCode}`)
+  }
 }
 
 ////////// REGEX //////////
@@ -711,6 +731,7 @@ const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const pinsregex = /^\/pins/i
 const pinregex = /^\/pin\s(.+)/i
+const unpinregex = /^\/unpin\s?(\d+)\s*$/i
 
 ////////// EXPORTS //////////
 // Pic vars
@@ -719,6 +740,7 @@ exports.postPic = postPic
 // Pins
 exports.pinregex = pinregex
 exports.pinsregex = pinsregex
+exports.unpinregex = unpinregex
 exports.showPins = showPins
 exports.likeMessage = likeMessage
 

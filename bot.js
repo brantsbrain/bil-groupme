@@ -7,7 +7,7 @@ const {
   nextregex, getNextSport, 
   getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex, sportspolltitle,
-  pinregex, pinsregex, showPins, likeMessage,
+  pinregex, pinsregex, unpinregex, showPins, likeMessage,
   createTiedPoll, tiebreakertitle,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
@@ -203,6 +203,17 @@ const respond = async (req, res) => {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await likeMessage(request.id)
+        }
+        else {
+          await createPost("This is an admin only command. Pin not recorded")
+        }
+      }
+
+      // Unpin message
+      else if (unpinregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          await unpin(parseInt(requesttext.match(unpinregex)) - 1)
         }
         else {
           await createPost("This is an admin only command. Pin not recorded")
