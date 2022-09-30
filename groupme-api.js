@@ -685,7 +685,7 @@ const filterRegexMsgList = (msglist, regex) => {
 const combinePinList = async (msglist) => {
   var start = "Pinned messages:\n"
   var body = "" 
-  for (let i = 0; i < msglist.length(); i++) {
+  for (let i = 0; i < msglist.length; i++) {
     body += `${i+1}: ${msglist[i].text}\n`
   }
   return start + body
