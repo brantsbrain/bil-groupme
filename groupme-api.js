@@ -705,9 +705,9 @@ const unpin = async(pos) => {
   msglist = pinlist.reverse()
   unlikeid = msglist[pos].id
 
-  const unlikePath = `/v3/messages/${groupid}/${msgid}/unlike?token=${accesstoken}`
+  const unlikePath = `/v3/messages/${groupid}/${unlikeid}/unlike?token=${accesstoken}`
   const destUrl = new URL(unlikePath, baseurl)
-  console.log(`Unliking message: ${msgid}`)
+  console.log(`Unliking message: ${unlikeid}`)
   const response = await got.post(destUrl, {
     json: {},
     responseType: "json",
