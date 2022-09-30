@@ -741,6 +741,7 @@ exports.postPic = postPic
 exports.pinregex = pinregex
 exports.pinsregex = pinsregex
 exports.unpinregex = unpinregex
+exports.unpin = unpin
 exports.showPins = showPins
 exports.likeMessage = likeMessage
 
