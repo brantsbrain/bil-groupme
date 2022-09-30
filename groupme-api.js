@@ -715,6 +715,9 @@ const unpin = async(pos) => {
   if (response.statusCode !== 200) {
     console.log(`Error unliking a message ${response.statusCode}`)
   }
+  else {
+    console.log("Message unliked...")
+  }
 }
 
 ////////// REGEX //////////

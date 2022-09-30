@@ -213,7 +213,7 @@ const respond = async (req, res) => {
       else if (unpinregex.test(requesttext)) {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
-          var pos = requesttext.match(unpinregex)
+          var pos = requesttext.match(unpinregex)[1]
           console.log(`Pos: ${pos}`)
           await unpin(parseInt(pos) - 1)
         }
