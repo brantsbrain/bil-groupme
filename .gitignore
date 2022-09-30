@@ -3,6 +3,7 @@
 *.json
 *.odg
 README.old
+node_modules/
 
 # Exceptions
 !examplesportjson.json

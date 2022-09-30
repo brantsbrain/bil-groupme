@@ -7,6 +7,7 @@ const {
   nextregex, getNextSport, 
   getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex, sportspolltitle,
+  pinregex, pinsregex, showPins, likeMessage,
   createTiedPoll, tiebreakertitle,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
@@ -16,7 +17,7 @@ const {
 
 ////////// INITIALIZE VARS //////////
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 1.3"
+const version = "May I Take Your Hat Sir? 2.0"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -37,11 +38,11 @@ const respond = async (req, res) => {
 
     // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
-    if ((headerkeys.indexOf(tuesheader) > -1)) {
+    if (headerkeys.indexOf(tuesheader) > -1) {
       console.log(`Found ${tuesheader}...`)
       await createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
     }
-    else if ((headerkeys.indexOf(friheader) > -1)) {
+    else if (headerkeys.indexOf(friheader) > -1) {
       console.log(`Found ${friheader}...`)
       await createFridayEvent()
     }
@@ -65,6 +66,16 @@ const respond = async (req, res) => {
       // Post help text
       else if (helpregex.test(requesttext)) {
         await createPost(helptext)
+      }
+
+      // Pin message
+      else if (pinregex.test(requesttext)) {
+        await likeMessage(request.id)
+      }
+
+      // Show pins
+      else if (pinsregex.test(requesttext)) {
+        await showPins()
       }
 
       // Post winning event from sports poll
@@ -115,8 +126,8 @@ const respond = async (req, res) => {
         const firstname = name.split(" ")[0]
         
         // Search for user id maxattempts times
-        let found = false
-        let userid = ""
+        var found = false
+        var userid = ""
         for (let attempt = 1; attempt <= maxattempts; attempt++) {
           console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
           if (!found) {

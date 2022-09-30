@@ -4,6 +4,7 @@ const got = require("got")
 const {URL} = require("url")
 const https = require("https")
 const {helptext} = require("./helptext")
+const Firestore = require('@google-cloud/firestore')
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
@@ -45,6 +46,11 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 
 // Used to control how long to wait when checking for new member IDs
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
+
+const db = new Firestore({
+  projectId: process.env.PROJ_ID,
+  keyFilename: process.env.KEY,
+})
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -636,6 +642,61 @@ const getSportRotation = async () => {
   return sportrot
 }
 
+// Like message
+const likeMessage = async (msgid) => {
+  const likePath = `/v3/messages/${groupid}/${msgid}/like?token=${accesstoken}`
+  const destUrl = new URL(likePath, baseurl)
+  console.log(`Liking message: ${msgid}`)
+  const response = await got.post(destUrl, {
+    json: {},
+    responseType: "json",
+  })
+  if (response.statusCode !== 200) {
+    console.log(`Error liking a message ${response.statusCode}`)
+  }
+}
+
+// The bot retrieves a list of messages that the owner of the bot has liked
+const getMyLikeList = async () => {
+  try {
+    const myLikePath = `/v3/groups/${groupid}/likes/mine?token=${accesstoken}`
+    const destUrl = new URL(myLikePath, baseurl)
+    const response = await got(destUrl, {
+      responseType: "json"
+    })
+
+    if (response.statusCode == 200) {
+      const likedMessageList = response.body.response.messages
+      console.log("Got liked messages list...")
+      return likedMessageList
+    }
+    return []
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// Returns a list of messages that matches the regex
+const filterRegexMsgList = (msglist, regex) => {
+  return msglist.filter(msg => (msg.text && regex.test(msg.text)))
+}
+
+const combinePinList = async (msglist) => {
+  var start = "Pinned messages:\n"
+  var body = "" 
+  for (let i = 0; i < msglist.length(); i++) {
+    body += `${i+1}: ${msglist[i].text}\n`
+  }
+  return start + body
+}
+
+const showPins = async () => {
+  const myLikeList = await getMyLikeList()
+  const pinlist = filterRegexMsgList(myLikeList, pinregex)
+  await createPost(await combinePinList(pinlist))
+}
+
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
@@ -648,10 +709,18 @@ const nextregex = /^(\s)*\/next/i
 const sportrotregex = /^(\s)*\/rotation/i
 const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
+const pinsregex = /^\/pins/i
+const pinregex = /^\/pin/i
 
 ////////// EXPORTS //////////
 // Pic vars
 exports.postPic = postPic
+
+// Pins
+exports.pinregex = pinregex
+exports.pinsregex = pinsregex
+exports.showPins = showPins
+exports.likeMessage = likeMessage
 
 // Help vars
 exports.helpregex = helpregex
