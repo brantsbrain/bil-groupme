@@ -68,11 +68,6 @@ const respond = async (req, res) => {
         await createPost(helptext)
       }
 
-      // Pin message
-      else if (pinregex.test(requesttext)) {
-        await likeMessage(request.id)
-      }
-
       // Show pins
       else if (pinsregex.test(requesttext)) {
         await showPins()
@@ -188,6 +183,7 @@ const respond = async (req, res) => {
           console.log(`${sendername} attempted to run /ballers`)
         }
       }
+
       // Post sports poll
       else if (sportspollregex.test(requesttext)) {
         const adminarr = await getAdmins()
@@ -199,6 +195,17 @@ const respond = async (req, res) => {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)
           await sendDm(loguserid, `${sendername} attempted to run /ballers`)
           console.log(`${sendername} attempted to run /sportspoll`)
+        }
+      }
+
+      // Pin message
+      else if (pinregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          await likeMessage(request.id)
+        }
+        else {
+          await createPost("This is an admin only command. Pin not recorded")
         }
       }
 
