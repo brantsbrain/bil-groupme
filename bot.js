@@ -213,7 +213,9 @@ const respond = async (req, res) => {
       else if (unpinregex.test(requesttext)) {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
-          await unpin(parseInt(requesttext.match(unpinregex)) - 1)
+          var pos = requesttext.match(unpinregex)
+          console.log(`Pos: ${pos}`)
+          await unpin(parseInt(pos) - 1)
         }
         else {
           await createPost("This is an admin only command. Can't unpin")
