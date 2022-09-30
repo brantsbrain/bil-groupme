@@ -7,20 +7,17 @@ const {
   nextregex, getNextSport, 
   getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex, sportspolltitle,
+  pinregex, pinsregex, unpinregex, unpin, showPins, likeMessage,
   createTiedPoll, tiebreakertitle,
   locationsregex, locationtext,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
-  newbiestext, testregex, versionregex,
-  coolregex, createPost, sportjson, getPollWinner
+  newbiestext, testregex, versionregex, sleepinsec,
+  coolregex, createPost, sportjson, getPollWinner, sleep
 } = require("./groupme-api")
 
 ////////// INITIALIZE VARS //////////
-const sleep = (ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 1.2"
+const version = "May I Take Your Hat Sir? 3.0"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -41,11 +38,11 @@ const respond = async (req, res) => {
 
     // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
-    if ((headerkeys.indexOf(tuesheader) > -1)) {
+    if (headerkeys.indexOf(tuesheader) > -1) {
       console.log(`Found ${tuesheader}...`)
       await createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
     }
-    else if ((headerkeys.indexOf(friheader) > -1)) {
+    else if (headerkeys.indexOf(friheader) > -1) {
       console.log(`Found ${friheader}...`)
       await createFridayEvent()
     }
@@ -69,6 +66,11 @@ const respond = async (req, res) => {
       // Post help text
       else if (helpregex.test(requesttext)) {
         await createPost(helptext)
+      }
+
+      // Show pins
+      else if (pinsregex.test(requesttext)) {
+        await showPins()
       }
 
       // Post winning event from sports poll
@@ -107,53 +109,36 @@ const respond = async (req, res) => {
       }
 
       // Send new members welcome DM
-      else if (sendername == "GroupMe") {
-        let found = false
+      else if (sendername == "GroupMe" && requesttext.includes("group")) {
+        // Get name substring
         if (requesttext.includes("added")) {
-          let name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
-          let firstname = name.split(" ")[0]
-          console.log(`Found '${name}' in requesttext`)
-
-          // Search for user id maxattempts times
-          for (let attempt = 1; attempt <= maxattempts; attempt++) {
-            console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
-            if (!found) {
-              userid = await getUserId(name)
-              if (userid) {
-                await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
-                await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
-                found = true
-              }
-              else {
-                await sleep(60000)
-              }
-            }
-            else {
-              console.log("Already found user...")
-            }
-          }
+          var name = requesttext.substring(requesttext.lastIndexOf("added") + 6, requesttext.lastIndexOf("to") - 1)
         }
         else if (requesttext.includes("joined")) {
-          let name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
-          console.log(`Found '${name}' in requesttext`)
-          let firstname = name.split(" ")[0]
-
-          // Search for user id maxattempts times
-          for (let attempt = 1; attempt <= maxattempts; attempt++) {
-            console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
-            if (!found) {
-              userid = await getUserId(name)
-              if (userid) {
-                await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
-                await sendDm(loguserid, `Found ${name} in ${attempt} tries...`)
-                found = true
-              }
-              else {
-                await sleep(60000)
-              }
+          var name = requesttext.substring(0, requesttext.lastIndexOf("has") - 1)
+        }
+        console.log(`Found '${name}' in requesttext`)
+        const firstname = name.split(" ")[0]
+        
+        // Search for user id maxattempts times
+        var found = false
+        var userid = ""
+        for (let attempt = 1; attempt <= maxattempts; attempt++) {
+          console.log(`Attempt ${attempt}: Searching for user ID for ${name}...`)
+          if (!found) {
+            userid = await getUserId(name)
+            if (userid) {
+              await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
+              await sendDm(loguserid, `Found ${name} on attempt ${attempt}...`)
+              console.log(`Found ${name} on attempt ${attempt}...`)
+              found = true
+            }
+            else if (attempt < 3){
+              await sleep(sleepinsec * 1000)
             }
             else {
-              console.log("Already found user...")
+              await sendDm(loguserid, `Attempted ${attempt} time(s). Couldn't find user ID for ${name}`)
+              console.log(`Attempted ${attempt} time(s). Couldn't find user ID for ${name}`)
             }
           }
         }
@@ -190,7 +175,7 @@ const respond = async (req, res) => {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await createPost(requesttext, await getBallers())
-          console.log("Admin ran /ballers")
+          console.log(`${sendername} ran /ballers`)
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
@@ -198,17 +183,41 @@ const respond = async (req, res) => {
           console.log(`${sendername} attempted to run /ballers`)
         }
       }
+
       // Post sports poll
       else if (sportspollregex.test(requesttext)) {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await createSportsPoll()
-          console.log("Admin ran /sportspoll")
+          console.log(`${sendername} ran /sportspoll`)
         }
         else {
           await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)
           await sendDm(loguserid, `${sendername} attempted to run /ballers`)
           console.log(`${sendername} attempted to run /sportspoll`)
+        }
+      }
+
+      // Pin message
+      else if (pinregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          await likeMessage(request.id)
+        }
+        else {
+          await createPost("This is an admin-only command. Pin not recorded")
+        }
+      }
+
+      // Unpin message
+      else if (unpinregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          var pos = requesttext.match(unpinregex)[1]
+          await unpin(parseInt(pos) - 1)
+        }
+        else {
+          await createPost("This is an admin-only command. Can't unpin")
         }
       }
 

@@ -1,9 +1,10 @@
 ////////// IMPORTS //////////
 require("dotenv").config()
 const got = require("got")
-const { URL } = require("url")
+const {URL} = require("url")
 const https = require("https")
 const {helptext} = require("./helptext")
+const Firestore = require('@google-cloud/firestore')
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
@@ -42,6 +43,15 @@ locationtext = locationtext.replace(/~/g, "\n")
 
 // Sport JSON
 const sportjson = JSON.parse(process.env.SPORT_JSON)
+
+// Used to control how long to wait when checking for new member IDs
+const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
+
+// Not using yet. Prepping for further development
+const db = new Firestore({
+  projectId: process.env.PROJ_ID,
+  keyFilename: process.env.KEY,
+})
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -269,6 +279,7 @@ const getAdmins = async () => {
   return adminarr
 }
 
+// Return user ID string from name
 const getUserId = async (name) => {
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
@@ -284,8 +295,6 @@ const getUserId = async (name) => {
       return key[1].user_id
     }
   }
-  console.log(`Couldn't find user ID for ${name}`)
-  sendDm(loguserid, `Couldn't find user ID for '${name}'`)
   return false
 }
 
@@ -634,6 +643,87 @@ const getSportRotation = async () => {
   return sportrot
 }
 
+// Like message
+const likeMessage = async (msgid) => {
+  const likePath = `/v3/messages/${groupid}/${msgid}/like?token=${accesstoken}`
+  const destUrl = new URL(likePath, baseurl)
+  console.log(`Liking message: ${msgid}`)
+  const response = await got.post(destUrl, {
+    json: {},
+    responseType: "json",
+  })
+  if (response.statusCode !== 200) {
+    console.log(`Error liking a message ${response.statusCode}`)
+  }
+}
+
+// The bot retrieves a list of messages that the owner of the bot has liked
+const getMyLikeList = async () => {
+  try {
+    const myLikePath = `/v3/groups/${groupid}/likes/mine?token=${accesstoken}`
+    const destUrl = new URL(myLikePath, baseurl)
+    const response = await got(destUrl, {
+      responseType: "json"
+    })
+
+    if (response.statusCode == 200) {
+      const likedMessageList = response.body.response.messages
+      console.log("Got liked messages list...")
+      return likedMessageList
+    }
+    return []
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// Returns a list of messages that matches the regex
+const filterRegexMsgList = (msglist, regex) => {
+  return msglist.filter(msg => (msg.text && regex.test(msg.text)))
+}
+
+// Convert array to string for post
+const combinePinList = async (msglist) => {
+  msglist = msglist.reverse()
+  var start = "Pinned messages:\n"
+  var body = "" 
+  for (let i = 0; i < msglist.length; i++) {
+    body += `${i+1}: ${msglist[i].text.slice(5)}\n`
+  }
+  return start + body
+}
+
+// Show all pinned messages in chronological order
+const showPins = async () => {
+  const mylikelist = await getMyLikeList()
+  const pinlist = filterRegexMsgList(mylikelist, pinregex)
+  await createPost(await combinePinList(pinlist))
+}
+
+// Unpin/unlike message based on position in liked array
+const unpin = async(pos) => {
+  const mylikelist = await getMyLikeList()
+  const pinlist = filterRegexMsgList(mylikelist, pinregex)
+
+  msglist = pinlist.reverse()
+  unlikeid = msglist[pos].id
+
+  const unlikePath = `/v3/messages/${groupid}/${unlikeid}/unlike?token=${accesstoken}`
+  const destUrl = new URL(unlikePath, baseurl)
+  console.log(`Unliking message: ${unlikeid}`)
+  const response = await got.post(destUrl, {
+    json: {},
+    responseType: "json",
+  })
+  if (response.statusCode !== 200) {
+    console.log(`Error unliking a message ${response.statusCode}`)
+  }
+  else {
+    console.log("Message unliked...")
+  }
+}
+
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
@@ -646,10 +736,21 @@ const nextregex = /^(\s)*\/next/i
 const sportrotregex = /^(\s)*\/rotation/i
 const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
+const pinsregex = /^\/pins/i
+const pinregex = /^\/pin\s(.+)/i
+const unpinregex = /^\/unpin\s?(\d+)\s*$/i
 
 ////////// EXPORTS //////////
 // Pic vars
 exports.postPic = postPic
+
+// Pins
+exports.pinregex = pinregex
+exports.pinsregex = pinsregex
+exports.unpinregex = unpinregex
+exports.unpin = unpin
+exports.showPins = showPins
+exports.likeMessage = likeMessage
 
 // Help vars
 exports.helpregex = helpregex
@@ -687,6 +788,7 @@ exports.createTiedPoll = createTiedPoll
 exports.newbiesregex = newbiesregex
 exports.newbiestext = newbiestext
 exports.versionregex = versionregex
+exports.sleepinsec = sleepinsec
 
 // Misc vars
 exports.coolregex = coolregex
@@ -694,3 +796,4 @@ exports.createPost = createPost
 exports.getAdmins = getAdmins
 exports.testregex = testregex
 exports.adminregex = adminregex
+exports.sleep = sleep
