@@ -686,7 +686,7 @@ const combinePinList = async (msglist) => {
   var start = "Pinned messages:\n"
   var body = "" 
   for (let i = 0; i < msglist.length; i++) {
-    body += `${i+1}: ${msglist[i].text}\n`
+    body += `${i+1}: ${msglist[i].text.strip("/pin ")}\n`
   }
   return start + body
 }
