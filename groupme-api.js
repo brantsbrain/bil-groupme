@@ -710,7 +710,7 @@ const sportrotregex = /^(\s)*\/rotation/i
 const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const pinsregex = /^\/pins/i
-const pinregex = /^\/pin/i
+const pinregex = /^\/pin\s(.+)/i
 
 ////////// EXPORTS //////////
 // Pic vars
