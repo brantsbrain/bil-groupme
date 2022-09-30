@@ -17,7 +17,7 @@ const {
 
 ////////// INITIALIZE VARS //////////
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 2.0"
+const version = "May I Take Your Hat Sir? 3.0"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -205,7 +205,7 @@ const respond = async (req, res) => {
           await likeMessage(request.id)
         }
         else {
-          await createPost("This is an admin only command. Pin not recorded")
+          await createPost("This is an admin-only command. Pin not recorded")
         }
       }
 
@@ -214,11 +214,10 @@ const respond = async (req, res) => {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           var pos = requesttext.match(unpinregex)[1]
-          console.log(`Pos: ${pos}`)
           await unpin(parseInt(pos) - 1)
         }
         else {
-          await createPost("This is an admin only command. Can't unpin")
+          await createPost("This is an admin-only command. Can't unpin")
         }
       }
 

@@ -8,7 +8,8 @@ const helptext = "Kobe Commands:\n" +
   
   "Admin Commands:\n" +
   "/ballers [message] - Mention all people going to nearest upcoming event\n" +
-  "/pin [message] - Pin a message to pinboard (displayed using /pins)\n\n" +
+  "/pin [message] - Pin a message to pinboard\n" +
+  "/unpin [number] - Unpin an index on the pins list\n\n" +
 
   "Navigating GroupMe:\n" +
   "Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n" +

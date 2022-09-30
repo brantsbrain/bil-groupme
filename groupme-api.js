@@ -47,6 +47,7 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 // Used to control how long to wait when checking for new member IDs
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
+// Not using yet. Prepping for further development
 const db = new Firestore({
   projectId: process.env.PROJ_ID,
   keyFilename: process.env.KEY,
@@ -682,6 +683,7 @@ const filterRegexMsgList = (msglist, regex) => {
   return msglist.filter(msg => (msg.text && regex.test(msg.text)))
 }
 
+// Convert array to string for post
 const combinePinList = async (msglist) => {
   msglist = msglist.reverse()
   var start = "Pinned messages:\n"
@@ -692,12 +694,14 @@ const combinePinList = async (msglist) => {
   return start + body
 }
 
+// Show all pinned messages in chronological order
 const showPins = async () => {
   const mylikelist = await getMyLikeList()
   const pinlist = filterRegexMsgList(mylikelist, pinregex)
   await createPost(await combinePinList(pinlist))
 }
 
+// Unpin/unlike message based on position in liked array
 const unpin = async(pos) => {
   const mylikelist = await getMyLikeList()
   const pinlist = filterRegexMsgList(mylikelist, pinregex)
