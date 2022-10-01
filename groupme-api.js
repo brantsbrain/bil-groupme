@@ -342,6 +342,7 @@ const postPic = async (text) => {
 // Create event
 const createEvent = async (name, loc, dayofweek, hour, min) => {
   console.log(`Creating ${name} event`)
+  console.log(`Start hour: ${hour}, start min: ${min}`)
 
   // Need to find the nearest specified day of week (0 == Sun, 6 == Sat)
   let day = dayofweek
@@ -365,7 +366,7 @@ const createEvent = async (name, loc, dayofweek, hour, min) => {
   if (rotsporttimearr[0] >= 20) {
     enddate.setDate(enddate.getDate() + 1)
   }
-  enddate.setHours(hour, min, 0)
+  enddate.setHours(hour + 3, min, 0)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
