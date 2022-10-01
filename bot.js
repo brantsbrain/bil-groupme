@@ -48,6 +48,7 @@ const respond = async (req, res) => {
       await createRotEvent()
     }
 
+    // Get dynamic day of week for sports poll title
     const sportspolltitle = `${await getDayOfWeek(rotsportday)} Sports Poll`
 
     // If text exists
@@ -101,7 +102,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, 5)
+              await createEvent(val.name, val.location, rotsportday)
             }
           }
         }

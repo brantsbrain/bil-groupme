@@ -10,7 +10,7 @@ const {helptext} = require("./helptext")
 // Used to access GroupMe API
 const baseurl = "https://api.groupme.com/"
 
-// Titles for sports polls
+// Title for tiebreaker poll
 const tiebreakertitle = "6 Hour Tiebreaker Poll"
 
 // Allow delay for GroupMe API to update
@@ -46,7 +46,7 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 // Used to control how long to wait when checking for new member IDs
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
-// Resolve number to strings for sport day
+// Get integer for rotation sport's day of week
 const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
 
 /* // Not using yet. Prepping for further development
