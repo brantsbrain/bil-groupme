@@ -5,9 +5,9 @@ const {
   ballersregex, getBallers,
   createEvent, createRotEvent,
   nextregex, getNextSport, 
-  rotsportday, dayofweek,
+  rotsportday, getDayOfWeek,
   getSportRotation, sportrotregex,
-  createSportsPoll, sportspollregex, sportspolltitle,
+  createSportsPoll, sportspollregex,
   pinregex, pinsregex, unpinregex, unpin, showPins, likeMessage,
   createTiedPoll, tiebreakertitle,
   locationsregex, locationtext,
@@ -47,6 +47,8 @@ const respond = async (req, res) => {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()
     }
+
+    const sportspolltitle = `${await getDayOfWeek(rotsportday)} Sports Poll`
 
     // If text exists
     if (requesttext) {

@@ -46,15 +46,8 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 // Used to control how long to wait when checking for new member IDs
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
-// Get day of week as string
-const getDayOfWeek = async (num) => {
-  return ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
-}
-
 // Resolve number to strings for sport day
 const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
-const dayofweek = getDayOfWeek(rotsportday)
-const sportspolltitle = `${dayofweek} Sports Poll`
 
 /* // Not using yet. Prepping for further development
 const db = new Firestore({
@@ -445,7 +438,7 @@ const createSportsPoll = async () => {
 
   // Prep poll
   const message = {
-    "subject": sportspolltitle,
+    "subject": `${await getDayOfWeek(rotsportday)} Sports Poll`,
     options,
     expiration,
     "type": "multi",
@@ -483,14 +476,14 @@ const createRotEvent = async () => {
   // Get nearest Friday
   let upcomingsportday = await nearestDay(rotsportday)
   upcomingsportday = new Date(upcomingsportday.getTime())
-  console.log(`Upcoming ${dayofweek}: ${upcomingsportday}`)
+  console.log(`Upcoming ${await getDayOfWeek(rotsportday)}: ${upcomingsportday}`)
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
   console.log(`EPOCH: ${epoch}`)
   const msinweek = 604800000
   const diff = (upcomingsportday - epoch) / msinweek
-  console.log(`(${dayofweek} - EPOCH) / ms in week: ${diff}`)
+  console.log(`(${await getDayOfWeek(rotsportday)} - EPOCH) / ms in week: ${diff}`)
   const floordiff = Math.floor(diff)
   console.log(`Math.floor(diff): ${floordiff}`)
 
@@ -733,6 +726,11 @@ const unpin = async (pos) => {
   }
 }
 
+// Get day of week as string
+const getDayOfWeek = async (num) => {
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
+}
+
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
@@ -755,7 +753,7 @@ exports.postPic = postPic
 
 // Sport day
 exports.rotsportday = rotsportday
-exports.dayofweek = dayofweek
+exports.getDayOfWeek = getDayOfWeek
 
 // Pins
 exports.pinregex = pinregex
@@ -793,7 +791,6 @@ exports.createSportsPoll = createSportsPoll
 exports.sportspollregex = sportspollregex
 exports.sportjson = sportjson
 exports.getPollWinner = getPollWinner
-exports.sportspolltitle = sportspolltitle
 exports.tiebreakertitle = tiebreakertitle
 exports.createTiedPoll = createTiedPoll
 
