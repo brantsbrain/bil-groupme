@@ -4,14 +4,13 @@ const got = require("got")
 const {URL} = require("url")
 const https = require("https")
 const {helptext} = require("./helptext")
-const Firestore = require('@google-cloud/firestore')
+// const Firestore = require('@google-cloud/firestore')
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
 const baseurl = "https://api.groupme.com/"
 
-// Titles for sports polls
-const sportspolltitle = "Friday Sports Poll"
+// Title for tiebreaker poll
 const tiebreakertitle = "6 Hour Tiebreaker Poll"
 
 // Allow delay for GroupMe API to update
@@ -47,11 +46,14 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 // Used to control how long to wait when checking for new member IDs
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
-// Not using yet. Prepping for further development
+// Get integer for rotation sport's day of week
+const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
+
+/* // Not using yet. Prepping for further development
 const db = new Firestore({
   projectId: process.env.PROJ_ID,
   keyFilename: process.env.KEY,
-})
+}) */
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -436,7 +438,7 @@ const createSportsPoll = async () => {
 
   // Prep poll
   const message = {
-    "subject": sportspolltitle,
+    "subject": `${await getDayOfWeek(rotsportday)} Sports Poll`,
     options,
     expiration,
     "type": "multi",
@@ -470,18 +472,18 @@ const createSportsPoll = async () => {
 }
 
 // Create Friday event or poll depending on week
-const createFridayEvent = async () => {
+const createRotEvent = async () => {
   // Get nearest Friday
-  let upcomingfriday = await nearestDay(5)
-  upcomingfriday = new Date(upcomingfriday.getTime())
-  console.log(`Upcoming Friday: ${upcomingfriday}`)
+  let upcomingsportday = await nearestDay(rotsportday)
+  upcomingsportday = new Date(upcomingsportday.getTime())
+  console.log(`Upcoming ${await getDayOfWeek(rotsportday)}: ${upcomingsportday}`)
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
   console.log(`EPOCH: ${epoch}`)
   const msinweek = 604800000
-  const diff = (upcomingfriday - epoch) / msinweek
-  console.log(`(Friday - EPOCH) / ms in week: ${diff}`)
+  const diff = (upcomingsportday - epoch) / msinweek
+  console.log(`(${await getDayOfWeek(rotsportday)} - EPOCH) / ms in week: ${diff}`)
   const floordiff = Math.floor(diff)
   console.log(`Math.floor(diff): ${floordiff}`)
 
@@ -500,7 +502,7 @@ const createFridayEvent = async () => {
   }
   else {
     const sportkey = Object.keys(sportjson.sports)[position]
-    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, 5)
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, rotsportday)
   }
 }
 
@@ -702,7 +704,7 @@ const showPins = async () => {
 }
 
 // Unpin/unlike message based on position in liked array
-const unpin = async(pos) => {
+const unpin = async (pos) => {
   const mylikelist = await getMyLikeList()
   const pinlist = filterRegexMsgList(mylikelist, pinregex)
 
@@ -722,6 +724,11 @@ const unpin = async(pos) => {
   else {
     console.log("Message unliked...")
   }
+}
+
+// Get day of week as string
+const getDayOfWeek = async (num) => {
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
 }
 
 ////////// REGEX //////////
@@ -744,6 +751,10 @@ const unpinregex = /^\/unpin\s?(\d+)\s*$/i
 // Pic vars
 exports.postPic = postPic
 
+// Sport day
+exports.rotsportday = rotsportday
+exports.getDayOfWeek = getDayOfWeek
+
 // Pins
 exports.pinregex = pinregex
 exports.pinsregex = pinsregex
@@ -762,7 +773,7 @@ exports.ballersregex = ballersregex
 
 // Event
 exports.createEvent = createEvent
-exports.createFridayEvent = createFridayEvent
+exports.createRotEvent = createRotEvent
 exports.locationsregex = locationsregex
 exports.locationtext = locationtext
 exports.nextregex = nextregex
@@ -780,7 +791,6 @@ exports.createSportsPoll = createSportsPoll
 exports.sportspollregex = sportspollregex
 exports.sportjson = sportjson
 exports.getPollWinner = getPollWinner
-exports.sportspolltitle = sportspolltitle
 exports.tiebreakertitle = tiebreakertitle
 exports.createTiedPoll = createTiedPoll
 
