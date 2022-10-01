@@ -741,6 +741,23 @@ const getDayOfWeek = async (num) => {
   return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
 }
 
+const getLocations = async () => {
+  const sportarr = Object.entries(sportjson.addresses)
+  let locations = ""
+  for (const [key, val] of sportarr) {
+    locations += `${key}:\n`
+    for (let i = 0; i < val.length; i++) {
+      if (i != val.length - 1) {
+        locations += `${val[i]}\n`
+      }
+      else {
+        locations += `${val[i]}\n\n`
+      }
+    }
+  }
+  return locations
+}
+
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
@@ -777,6 +794,7 @@ exports.likeMessage = likeMessage
 // Help vars
 exports.helpregex = helpregex
 exports.helptext = helptext
+exports.getLocations = getLocations
 
 // Ballers
 exports.getBallers = getBallers
