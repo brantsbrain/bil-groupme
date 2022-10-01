@@ -35,11 +35,6 @@ const loguserid = process.env.LOG_USERID
 const onelinenewbiestext = process.env.NEWBIES_TEXT
 const newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
 
-// Replace ` w/ two newlines and ~ w/ one newline since GCP only takes one-line ENV variables
-const onelinelocationtext = process.env.LOCATION_TEXT
-let locationtext = onelinelocationtext.replace(/`/g, "\n\n")
-locationtext = locationtext.replace(/~/g, "\n")
-
 // Sport JSON
 const sportjson = JSON.parse(process.env.SPORT_JSON)
 
@@ -804,7 +799,6 @@ exports.ballersregex = ballersregex
 exports.createEvent = createEvent
 exports.createRotEvent = createRotEvent
 exports.locationsregex = locationsregex
-exports.locationtext = locationtext
 exports.nextregex = nextregex
 exports.getNextSport = getNextSport
 exports.getSportRotation = getSportRotation
