@@ -378,7 +378,7 @@ const createEvent = async (name, loc, address, dayofweek, hour, min, length) => 
     "is_all_day": false,
     "timezone": "America/Detroit",
     "location": {
-      "address": address,
+      address,
       "name": loc
     }
   }
@@ -512,7 +512,7 @@ const createRotEvent = async () => {
   }
   else {
     const sportkey = Object.keys(sportjson.sports)[position]
-    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, sportjson.sports[sportkey].address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
   }
 }
 
