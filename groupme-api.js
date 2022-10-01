@@ -340,7 +340,7 @@ const postPic = async (text) => {
 }
 
 // Create event
-const createEvent = async (name, loc, dayofweek, hour, min) => {
+const createEvent = async (name, loc, dayofweek, hour, min, length) => {
   console.log(`Creating ${name} event`)
   console.log(`Start hour: ${hour}, start min: ${min}`)
 
@@ -362,11 +362,11 @@ const createEvent = async (name, loc, dayofweek, hour, min) => {
   }
 
   // EST is 4 hours behind UTC
-  startdate.setHours(hour, min, 0)
-  if (rotsporttimearr[0] >= 20) {
+  startdate.setHours(hour + 4, min, 0)
+  if (rotsporttimearr[0] + 4 + length >= 20) {
     enddate.setDate(enddate.getDate() + 1)
   }
-  enddate.setHours(hour + 3, min, 0)
+  enddate.setHours(hour + 4 + length, min, 0)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
@@ -509,7 +509,7 @@ const createRotEvent = async () => {
   }
   else {
     const sportkey = Object.keys(sportjson.sports)[position]
-    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, rotsportday, rotsporttimearr[0], rotsporttimearr[1])
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
   }
 }
 
@@ -761,6 +761,7 @@ exports.postPic = postPic
 // Sport day
 exports.rotsportday = rotsportday
 exports.getDayOfWeek = getDayOfWeek
+exports.rotsporttimearr = rotsporttimearr
 
 // Pins
 exports.pinregex = pinregex
