@@ -24,8 +24,8 @@ const version = "May I Take Your Hat Sir? 3.0"
 const maxattempts = 3
 
 // Header values
-const firstsportheader = "tuessoccer"
-const secondsportheader = "frisports"
+const firstsportheader = "soccer"
+const secondsportheader = "sports"
 
 ////////// RESPOND //////////
 const respond = async (req, res) => {

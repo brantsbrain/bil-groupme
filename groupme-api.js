@@ -46,6 +46,12 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 // Used to control how long to wait when checking for new member IDs
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
+// Get day of week as string
+const getDayOfWeek = async (num) => {
+  return ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
+}
+
+// Resolve number to strings for sport day
 const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
 const dayofweek = getDayOfWeek(rotsportday)
 const sportspolltitle = `${dayofweek} Sports Poll`
@@ -725,10 +731,6 @@ const unpin = async (pos) => {
   else {
     console.log("Message unliked...")
   }
-}
-
-const getDayOfWeek = async (num) => {
-  return ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
 }
 
 ////////// REGEX //////////
