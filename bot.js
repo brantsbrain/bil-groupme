@@ -18,7 +18,7 @@ const {
 
 ////////// INITIALIZE VARS //////////
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 3.0"
+const version = "May I Take Your Hat Sir? 4.0"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -41,7 +41,7 @@ const respond = async (req, res) => {
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1) {
       console.log(`Found ${firstsportheader}...`)
-      await createEvent(`Soccer Tuesdays!`, sportjson.sports["Soccer"].location, 2)
+      await createEvent(`Soccer Tuesdays!`, sportjson.sports["Soccer"].location, 2, 5, 30)
     }
     else if (headerkeys.indexOf(secondsportheader) > -1) {
       console.log(`Found ${secondsportheader}...`)

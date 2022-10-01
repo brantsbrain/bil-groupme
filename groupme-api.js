@@ -340,7 +340,7 @@ const postPic = async (text) => {
 }
 
 // Create event
-const createEvent = async (name, loc, dayofweek) => {
+const createEvent = async (name, loc, dayofweek, hour, min) => {
   console.log(`Creating ${name} event`)
 
   // Need to find the nearest specified day of week (0 == Sun, 6 == Sat)
@@ -361,11 +361,11 @@ const createEvent = async (name, loc, dayofweek) => {
   }
 
   // EST is 4 hours behind UTC
-  startdate.setHours(rotsporttimearr[0] - 4, rotsporttimearr[1], 0)
-  if (rotsporttimearr[0] - 4 >= 20) {
+  startdate.setHours(hour, min, 0)
+  if (rotsporttimearr[0] >= 20) {
     enddate.setDate(enddate.getDate() + 1)
   }
-  enddate.setHours(rotsporttimearr[0] - 1, rotsporttimearr[1], 0)
+  enddate.setHours(hour, min, 0)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
@@ -508,7 +508,7 @@ const createRotEvent = async () => {
   }
   else {
     const sportkey = Object.keys(sportjson.sports)[position]
-    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, rotsportday)
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, rotsportday, rotsporttimearr[0], rotsporttimearr[1])
   }
 }
 
