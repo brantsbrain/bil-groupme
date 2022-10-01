@@ -84,7 +84,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, val.address, 5, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
+              await createEvent(val.name, val.location, val.address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
             }
           }
         }
@@ -137,7 +137,7 @@ const respond = async (req, res) => {
               console.log(`Found ${name} on attempt ${attempt}...`)
               found = true
             }
-            else if (attempt < 3){
+            else if (attempt < 3) {
               await sleep(sleepinsec * 1000)
             }
             else {
