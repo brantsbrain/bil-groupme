@@ -41,7 +41,7 @@ const respond = async (req, res) => {
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1) {
       console.log(`Found ${firstsportheader}...`)
-      await createEvent(`Soccer Tuesdays!`, sportjson.sports["Soccer"].location, 2, 17, 30, 3)
+      await createEvent(`Soccer Tuesdays!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, 2, 17, 30, 3)
     }
     else if (headerkeys.indexOf(secondsportheader) > -1) {
       console.log(`Found ${secondsportheader}...`)
@@ -84,7 +84,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, 5, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
+              await createEvent(val.name, val.location, val.address, 5, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
             }
           }
         }
@@ -102,7 +102,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
+              await createEvent(val.name, val.location, val.address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
             }
           }
         }

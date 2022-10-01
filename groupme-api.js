@@ -340,7 +340,7 @@ const postPic = async (text) => {
 }
 
 // Create event
-const createEvent = async (name, loc, dayofweek, hour, min, length) => {
+const createEvent = async (name, loc, address, dayofweek, hour, min, length) => {
   console.log(`Creating ${name} event`)
   console.log(`Start hour: ${hour}, start min: ${min}`)
 
@@ -377,7 +377,10 @@ const createEvent = async (name, loc, dayofweek, hour, min, length) => {
     end_at,
     "is_all_day": false,
     "timezone": "America/Detroit",
-    "location": { "name": loc }
+    "location": {
+      "address": address,
+      "name": loc
+    }
   }
 
   // Prep message as JSON and construct packet
