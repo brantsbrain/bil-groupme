@@ -6,7 +6,7 @@ The primary functionality of this app (aside from automated event creation) is `
 
 Another helpful feature is automatic notification for new members. The bot will send a direct message (on behalf of the bot owner) to every new member that joins with the contents of `NEWBIES_TEXT`, an environment variable added to the Google Cloud Platform (GCP) Cloud Run Service. This text is best used as a welcome message describing the group's purpose and any regular activities that occur in it.
 
-Currently the bot automatically posts a soccer event every Monday morning at 8:00 AM EST for the following Tuesday at 5:30 PM EST and a rotating schedule of volleyball -> basketball -> soccer -> group poll every Wednesday morning at 8:00 AM EST for the following Friday at 5:30 PM EST.
+Currently the bot automatically posts a soccer event every Monday morning at 8:00 AM EST for the following Tuesday at 5:30 PM EST and a rotating schedule of volleyball -> basketball -> soccer -> group poll every Wednesday morning at 8:00 AM EST for the following `ROT_SPORT_DAY` at 5:30 PM EST.
 
 We are constantly looking for ways to improve on current functionality and implement new functionality. We know we're not JS pros! Please create an issue or submit a pull request if you'd like to contribute to the repo!
 
@@ -19,7 +19,10 @@ We are constantly looking for ways to improve on current functionality and imple
 | `/rotation`                               | Posts the full current rotation of sports |
 | `/ballers [message to mention ballers]`   | Mentions all members who have marked themselves as `Going` to the nearest upcoming event (admin-only) |
 | `/locations`                              | Posts a list of sports locations laid out in the `LOCATION_TEXT` environment variable |
-| `/help`                                   | Posts an abbreviated version of the above commands' usage as well as basic GroupMe navigation tips and automated features
+| `/help`                                   | Posts an abbreviated version of the above commands' usage as well as basic GroupMe navigation tips and automated features |
+| `/pin`                                    | Pins a message to pinboard (admin-only) |
+| `/unpin`                                  | Unpins message from pinboard (admin-only) |
+| `/pins`                                   | Posts pinboard |
 
 ---
 
@@ -79,6 +82,8 @@ The bot needs three entities to work correctly: Google Cloud Platform (GCP), Gro
     | NEWBIES_TEXT              | Welcome message auto-sent to new members |
     | LOCATION_TEXT             | String of sports locations listed using `/locations` |
     | SPORT_JSON                | Structured as seen in [examplesportjson.json](examplesportjson.json) |
+    | ROT_SPORT_DAY             | Number for day of week (0 = Sunday, 6 = Saturday) |
+    | ROT_SPORT_TIME            | CSV for start time of rotating sport (e.g., 5,30) |
     
 
 5. Click `Create`

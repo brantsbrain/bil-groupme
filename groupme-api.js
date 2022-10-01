@@ -46,7 +46,12 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 // Used to control how long to wait when checking for new member IDs
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
-// Get integer for rotation sport's day of week
+// Get time/day for rotation sport
+const rotsporttimestr = process.env.ROT_SPORT_TIME
+const rotsporttimearr = rotsporttimestr.split(",")
+for (let i = 0; i < rotsporttimearr.length; i++) {
+  rotsporttimearr[i] = parseInt(rotsporttimearr[i])
+}
 const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
 
 /* // Not using yet. Prepping for further development
@@ -355,11 +360,12 @@ const createEvent = async (name, loc, dayofweek) => {
     enddate.setDate(enddate.getDate() + 7)
   }
 
-  // EST is 4 hours behind UTC. Set to desired time
-  // Start at 5:30 PM and end at 8:30 PM
-  startdate.setHours(21, 30, 0)
-  enddate.setDate(enddate.getDate() + 1)
-  enddate.setHours(0, 30, 0)
+  // EST is 4 hours behind UTC
+  startdate.setHours(rotsporttimearr[0] - 4, rotsporttimearr[1], 0)
+  if (rotsporttimearr[0] - 4 >= 20) {
+    enddate.setDate(enddate.getDate() + 1)
+  }
+  enddate.setHours(rotsporttimearr[0] - 1, rotsporttimearr[1], 0)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
