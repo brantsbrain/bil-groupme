@@ -3,8 +3,9 @@ const cool = require('cool-ascii-faces')
 const {
   helptext, helpregex,
   ballersregex, getBallers,
-  createEvent, createFridayEvent,
+  createEvent, createRotEvent,
   nextregex, getNextSport, 
+  rotsportday, dayofweek,
   getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex, sportspolltitle,
   pinregex, pinsregex, unpinregex, unpin, showPins, likeMessage,
@@ -23,8 +24,8 @@ const version = "May I Take Your Hat Sir? 3.0"
 const maxattempts = 3
 
 // Header values
-const tuesheader = "tuessoccer"
-const friheader = "frisports"
+const firstsportheader = "tuessoccer"
+const secondsportheader = "frisports"
 
 ////////// RESPOND //////////
 const respond = async (req, res) => {
@@ -38,13 +39,13 @@ const respond = async (req, res) => {
 
     // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
-    if (headerkeys.indexOf(tuesheader) > -1) {
-      console.log(`Found ${tuesheader}...`)
-      await createEvent("Soccer Tuesdays!", sportjson.sports["Soccer"].location, 2)
+    if (headerkeys.indexOf(firstsportheader) > -1) {
+      console.log(`Found ${firstsportheader}...`)
+      await createEvent(`Soccer Tuesdays!`, sportjson.sports["Soccer"].location, 2)
     }
-    else if (headerkeys.indexOf(friheader) > -1) {
-      console.log(`Found ${friheader}...`)
-      await createFridayEvent()
+    else if (headerkeys.indexOf(secondsportheader) > -1) {
+      console.log(`Found ${secondsportheader}...`)
+      await createRotEvent()
     }
 
     // If text exists
