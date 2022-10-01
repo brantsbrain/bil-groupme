@@ -6,7 +6,7 @@ const {
   createEvent, createRotEvent,
   nextregex, getNextSport, 
   rotsportday, getDayOfWeek,
-  getSportRotation, sportrotregex,
+  getSportRotation, sportrotregex, rotsporttimearr,
   createSportsPoll, sportspollregex,
   pinregex, pinsregex, unpinregex, unpin, showPins, likeMessage,
   createTiedPoll, tiebreakertitle,
@@ -18,7 +18,7 @@ const {
 
 ////////// INITIALIZE VARS //////////
 // Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 3.0"
+const version = "May I Take Your Hat Sir? 4.0"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -41,7 +41,7 @@ const respond = async (req, res) => {
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1) {
       console.log(`Found ${firstsportheader}...`)
-      await createEvent(`Soccer Tuesdays!`, sportjson.sports["Soccer"].location, 2)
+      await createEvent(`Soccer Tuesdays!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, 2, 17, 30, 3)
     }
     else if (headerkeys.indexOf(secondsportheader) > -1) {
       console.log(`Found ${secondsportheader}...`)
@@ -84,7 +84,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, 5)
+              await createEvent(val.name, val.location, val.address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
             }
           }
         }
@@ -102,7 +102,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, rotsportday)
+              await createEvent(val.name, val.location, val.address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
             }
           }
         }
@@ -137,7 +137,7 @@ const respond = async (req, res) => {
               console.log(`Found ${name} on attempt ${attempt}...`)
               found = true
             }
-            else if (attempt < 3){
+            else if (attempt < 3) {
               await sleep(sleepinsec * 1000)
             }
             else {

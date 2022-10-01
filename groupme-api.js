@@ -46,7 +46,12 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 // Used to control how long to wait when checking for new member IDs
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
-// Get integer for rotation sport's day of week
+// Get time/day for rotation sport
+const rotsporttimestr = process.env.ROT_SPORT_TIME
+const rotsporttimearr = rotsporttimestr.split(",")
+for (let i = 0; i < rotsporttimearr.length; i++) {
+  rotsporttimearr[i] = parseInt(rotsporttimearr[i])
+}
 const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
 
 /* // Not using yet. Prepping for further development
@@ -335,8 +340,9 @@ const postPic = async (text) => {
 }
 
 // Create event
-const createEvent = async (name, loc, dayofweek) => {
+const createEvent = async (name, loc, address, dayofweek, hour, min, length) => {
   console.log(`Creating ${name} event`)
+  console.log(`Start hour: ${hour}, start min: ${min}`)
 
   // Need to find the nearest specified day of week (0 == Sun, 6 == Sat)
   let day = dayofweek
@@ -355,11 +361,12 @@ const createEvent = async (name, loc, dayofweek) => {
     enddate.setDate(enddate.getDate() + 7)
   }
 
-  // EST is 4 hours behind UTC. Set to desired time
-  // Start at 5:30 PM and end at 8:30 PM
-  startdate.setHours(21, 30, 0)
-  enddate.setDate(enddate.getDate() + 1)
-  enddate.setHours(0, 30, 0)
+  // EST is 4 hours behind UTC
+  startdate.setHours(hour + 4, min, 0)
+  if (rotsporttimearr[0] + 4 + length >= 20) {
+    enddate.setDate(enddate.getDate() + 1)
+  }
+  enddate.setHours(hour + 4 + length, min, 0)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
@@ -370,7 +377,10 @@ const createEvent = async (name, loc, dayofweek) => {
     end_at,
     "is_all_day": false,
     "timezone": "America/Detroit",
-    "location": { "name": loc }
+    "location": {
+      address,
+      "name": loc
+    }
   }
 
   // Prep message as JSON and construct packet
@@ -502,7 +512,7 @@ const createRotEvent = async () => {
   }
   else {
     const sportkey = Object.keys(sportjson.sports)[position]
-    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, rotsportday)
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, sportjson.sports[sportkey].address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
   }
 }
 
@@ -754,6 +764,7 @@ exports.postPic = postPic
 // Sport day
 exports.rotsportday = rotsportday
 exports.getDayOfWeek = getDayOfWeek
+exports.rotsporttimearr = rotsporttimearr
 
 // Pins
 exports.pinregex = pinregex
