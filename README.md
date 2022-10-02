@@ -18,7 +18,7 @@ We are constantly looking for ways to improve on current functionality and imple
 
 | Command Usage                             | Purpose |
 | ----------------------------------------- | ------- |
-| `/admins [message]`             | Mentions all admins with message |
+| `/admins [message]`                       | Mentions all admins with message |
 | `/next`                                   | Posts the next upcoming sport in the rotation |
 | `/rotation`                               | Posts the full current rotation of sports |
 | `/locations`                              | Posts a list of sports locations laid out in the `addresses` key of `SPORT_JSON` |
