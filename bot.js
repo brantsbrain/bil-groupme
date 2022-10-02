@@ -4,13 +4,13 @@ const {
   helptext, helpregex,
   ballersregex, getBallers,
   createEvent, createRotEvent,
-  nextregex, getNextSport, 
+  nextregex, getNextSport,
   rotsportday, getDayOfWeek,
   getSportRotation, sportrotregex, rotsporttimearr,
   createSportsPoll, sportspollregex,
   pinregex, pinsregex, unpinregex, unpin, showPins, likeMessage,
   createTiedPoll, tiebreakertitle,
-  locationsregex, locationtext,
+  locationsregex, getLocations,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex, versionregex, sleepinsec,
   coolregex, createPost, sportjson, getPollWinner, sleep
@@ -150,7 +150,7 @@ const respond = async (req, res) => {
 
       // Post previous sports locations
       else if (locationsregex.test(requesttext)) {
-        await createPost(locationtext)
+        await createPost(await getLocations())
       }
 
       // Test regex

@@ -1,4 +1,4 @@
-# GroupMe Sports Bot
+# GroupMe "Ball is Life (BIL)" Sports Bot
 
 GroupMe is a very lightweight group messaging app that easily connects any number of people over a simple interface. It has basic functionality such as event creation, polls, and single-member mentioning. The heart behind this bot was to be able to automate sport event creation and moderate a large group of people looking to get involved in sports events without spamming those who couldn't make it to any one given event.
 
@@ -6,7 +6,7 @@ The primary functionality of this app (aside from automated event creation) is `
 
 Another helpful feature is automatic notification for new members. The bot will send a direct message (on behalf of the bot owner) to every new member that joins with the contents of `NEWBIES_TEXT`, an environment variable added to the Google Cloud Platform (GCP) Cloud Run Service. This text is best used as a welcome message describing the group's purpose and any regular activities that occur in it.
 
-Currently the bot automatically posts a soccer event every Monday morning at 8:00 AM EST for the following Tuesday at 5:30 PM EST and a rotating schedule of volleyball -> basketball -> soccer -> group poll every Wednesday morning at 8:00 AM EST for the following `ROT_SPORT_DAY` at `ROT_SPORT_TIME` EST.
+The bot uses the `SPORT_JSON` ENV variable (formatted like [examplesportjson.json](examplesportjson.json)) to rotate through a series of events/polls and post a weekly soccer event. `ROT_SPORT_DAY` and `ROT_SPORT_TIME` determine the day and start time of the rotating series events. Currently the soccer event is hardcoded for 5:30 PM EST on Tuesdays.
 
 We are constantly looking for ways to improve on current functionality and implement new functionality. We know we're not JS pros! Please create an issue or submit a pull request if you'd like to contribute to the repo!
 
@@ -72,7 +72,7 @@ The bot needs three entities to work correctly: Google Cloud Platform (GCP), Gro
 ### 3. Creating GroupMe Bot
 
 1. Browse to [dev.groupme.com](dev.groupme.com) > Bots > Create Bot
-2. Choose the desired chat for the bot (Note: You must be the owner or an admin of the chat to add a bot)
+2. Choose the desired chat for the bot. *Note: You must be the owner or an admin of the chat to add a bot*
 3. Give the bot a name that will appear with each posted message in your chat
 4. `Callback URL` is very important, but we don't have it yet. Leave it blank for now.
 5. `Avatar URL` is optional, but must be an absolute URL path to an image format file (i.e., ending with .jpeg, .png, etc.)
@@ -89,7 +89,6 @@ The bot needs three entities to work correctly: Google Cloud Platform (GCP), Gro
     | GROUP_ID                  | [dev.groupme.com](dev.groupme.com) > Bots > Created Bot > Group Id |
     | IGNORE_MEMBERS            | CSV user IDs to ignore when scraping events |
     | NEWBIES_TEXT              | Welcome message auto-sent to new members |
-    | LOCATION_TEXT             | String of sports locations listed using `/locations` |
     | SPORT_JSON                | Structured as seen in [examplesportjson.json](examplesportjson.json) |
     | ROT_SPORT_DAY             | Number for day of week (0 = Sunday, 6 = Saturday) |
     | ROT_SPORT_TIME            | CSV for start time (24 hr format) of rotating sport (e.g., 5,30 would mean start the event at 5:30 AM EST) |

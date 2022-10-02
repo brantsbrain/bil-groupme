@@ -35,11 +35,6 @@ const loguserid = process.env.LOG_USERID
 const onelinenewbiestext = process.env.NEWBIES_TEXT
 const newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
 
-// Replace ` w/ two newlines and ~ w/ one newline since GCP only takes one-line ENV variables
-const onelinelocationtext = process.env.LOCATION_TEXT
-let locationtext = onelinelocationtext.replace(/`/g, "\n\n")
-locationtext = locationtext.replace(/~/g, "\n")
-
 // Sport JSON
 const sportjson = JSON.parse(process.env.SPORT_JSON)
 
@@ -741,6 +736,23 @@ const getDayOfWeek = async (num) => {
   return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
 }
 
+const getLocations = async () => {
+  const sportarr = Object.entries(sportjson.addresses)
+  let locations = ""
+  for (const [key, val] of sportarr) {
+    locations += `${key}:\n`
+    for (let i = 0; i < val.length; i++) {
+      if (i != val.length - 1) {
+        locations += `${val[i]}\n`
+      }
+      else {
+        locations += `${val[i]}\n\n`
+      }
+    }
+  }
+  return locations
+}
+
 ////////// REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
@@ -777,6 +789,7 @@ exports.likeMessage = likeMessage
 // Help vars
 exports.helpregex = helpregex
 exports.helptext = helptext
+exports.getLocations = getLocations
 
 // Ballers
 exports.getBallers = getBallers
@@ -786,7 +799,6 @@ exports.ballersregex = ballersregex
 exports.createEvent = createEvent
 exports.createRotEvent = createRotEvent
 exports.locationsregex = locationsregex
-exports.locationtext = locationtext
 exports.nextregex = nextregex
 exports.getNextSport = getNextSport
 exports.getSportRotation = getSportRotation
