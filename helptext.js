@@ -1,4 +1,4 @@
-const helptext = "Kobe Commands:\n" +
+const helptext = "Bot Commands:\n" +
   "/admins [message] - Mention the admins with a pressing question/comment\n" +
   "/next - Post the next upcoming Friday sport\n" +
   "/rotation - Post the current sport rotation\n" +

@@ -3,7 +3,8 @@
         "Basketball": {
             "id": "Basketball",
             "name": "Basketball it up!",
-            "location": "123 Main St"
+            "location": "Middle school",
+            "address": "123 Main St"
         },
         "Poll": {
             "placeholder": "placeholder"
@@ -11,49 +12,70 @@
         "Volleyball": {
             "id": "Volleyball",
             "name": "Volleyballin",
-            "location": "321 Main St"
+            "location": "High school",
+            "address": "321 Main St"
         },
         "Soccer": {
             "id": "Soccer",
             "name": "Soccer Friday!",
-            "location": "456 2nd St"
+            "location": "Middle school",
+            "address": "123 Main St"
         }
     },
     "poll": {
         "Soccer": {
             "id": "Soccer",
             "name": "Soccer Y'all",
-            "location": "456 2nd St"
+            "location": "High school",
+            "address": "321 Main St"
         },
         "Ultimate Frisbee": {
             "id": "Ultimate Frisbee",
             "name": "Circle in Air Game",
-            "location": "654 2nd St"
+            "location": "Middle school",
+            "address": "123 Main St"
         },
         "Football": {
             "id": "Football",
             "name": "The 'Ol Pigskin",
-            "location": "654 2nd St"
+            "location": "High school",
+            "address": "321 Main St"
         },
         "Kickball": {
             "id": "Kickball",
             "name": "Kick the Ball Really Far Game",
-            "location": "789 3rd St"
+            "location": "Middle school",
+            "address": "123 Main St"
         },
         "Volleyball": {
             "id": "Volleyball",
             "name": "Volleyballin",
-            "location": "321 Main St"
+            "location": "High school",
+            "address": "321 Main St"
         },
         "Basketball": {
             "id": "Basketball",
             "name": "Basketball it up!",
-            "location": "123 Main St"
+            "location": "Middle school",
+            "address": "123 Main St"
         },
         "Wiffle Ball": {
             "id": "Wiffle Ball",
             "name": "Wiffle Ballers",
-            "location": "789 3rd St"
+            "location": "High school",
+            "address": "321 Main St"
         }
+    },
+    "addresses": {
+        "Soccer": [
+            "321 Main St.",
+            "123 2nd St."
+        ],
+        "Basketball": [
+            "456 3rd St."
+        ],
+        "Football": [
+            "789 5th St."
+        ]
     }
 }
