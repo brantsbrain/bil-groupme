@@ -2,11 +2,13 @@
 
 GroupMe is a very lightweight group messaging app that easily connects any number of people over a simple interface. It has basic functionality such as event creation, polls, and single-member mentioning. The heart behind this bot was to be able to automate sport event creation and moderate a large group of people looking to get involved in sports events without spamming those who couldn't make it to any one given event.
 
-The primary functionality of this app (aside from automated event creation) is `/ballers` which mentions only those people who have marked themselves as `Going` to the nearest upcoming event. GroupMe has a built-in mention feature, but, as it stands currently, a member would have to individually mention each desired member. `/ballers` compiles an array of members and mentions all those people with a simple `@ballers` instead.
+My primary use case for this app right now is the automated event creation feature. There are about 400 members and only 4 admins in its current use case, so manually and consistently creating two events per week can become tiresome. Automating that has brought a huge relief to the admins and the members (for the sake of consistency in when to expect a created event). 
+
+Closely following automated event creation is `/ballers` which mentions only those people who have marked themselves as `Going` to the nearest upcoming event. GroupMe has a built-in mention feature, but, as it stands currently, a member would have to individually mention each desired member for whatever message he/she is trying to send. `/ballers` compiles an array of members and mentions all those people with a simple `@ballers` instead. Given the 400+ members in its current use case, many of them have the GroupMe muted. A mention, however, notifies through a mute and makes sure that the needed people are aware of any last minute changes to the events.
 
 Another helpful feature is automatic notification for new members. The bot will send a direct message (on behalf of the bot owner) to every new member that joins with the contents of `NEWBIES_TEXT`, an environment variable added to the Google Cloud Platform (GCP) Cloud Run Service. This text is best used as a welcome message describing the group's purpose and any regular activities that occur in it.
 
-The bot uses the `SPORT_JSON` ENV variable (formatted like [examplesportjson.json](examplesportjson.json)) to rotate through a series of events/polls and post a weekly soccer event. `ROT_SPORT_DAY` and `ROT_SPORT_TIME` determine the day and start time of the rotating series events. Currently the soccer event is hardcoded for 5:30 PM EST on Tuesdays.
+The bot uses the `SPORT_JSON` ENV variable (formatted like [examplesportjson.json](examplesportjson.json)) to rotate through creating a series of events/polls as well as posting a weekly soccer event. `ROT_SPORT_DAY` and `ROT_SPORT_TIME` determine the day and start time of the rotating series of events/polls. Currently the soccer event is hardcoded for 5:30 PM EST on Tuesdays.
 
 We are constantly looking for ways to improve on current functionality and implement new functionality. We know we're not JS pros! Please create an issue or submit a pull request if you'd like to contribute to the repo!
 
@@ -49,7 +51,7 @@ The bot needs three entities to work correctly: Google Cloud Platform (GCP), Gro
 
 | Tool                                  | Website                               | Purpose |
 | ------------------------------------- | ------------------------------------- | ------- |
-| GroupMe Account                       | [www.groupme.com](www.groupme.com)    | Messaging service the bot will interact with |
+| GroupMe Account                       | [web.groupme.com](web.groupme.com)    | Messaging service the bot will interact with |
 | GroupMe Developer Account             | [dev.groupme.com](dev.groupme.com)    | Integrates bot into GroupMe chats and forwards messages to GCP callback URL |
 | GitHub Account                        | [www.github.com](www.github.com)      | Hosts the JS code that deploys to GCP |
 | Google Cloud Platform (GCP) Account   | [cloud.google.com](cloud.google.com)  | Used to receive messages from GroupMe bot and respond using JS app |
