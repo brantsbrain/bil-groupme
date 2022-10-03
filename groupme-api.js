@@ -4,7 +4,6 @@ const got = require("got")
 const {URL} = require("url")
 const https = require("https")
 const {helptext} = require("./helptext")
-// const Firestore = require('@google-cloud/firestore')
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
@@ -42,18 +41,12 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
 // Get time/day for rotation sport
+const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
 const rotsporttimestr = process.env.ROT_SPORT_TIME
 const rotsporttimearr = rotsporttimestr.split(",")
 for (let i = 0; i < rotsporttimearr.length; i++) {
   rotsporttimearr[i] = parseInt(rotsporttimearr[i])
 }
-const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
-
-/* // Not using yet. Prepping for further development
-const db = new Firestore({
-  projectId: process.env.PROJ_ID,
-  keyFilename: process.env.KEY,
-}) */
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -66,7 +59,14 @@ if (!bot_id) {
   console.log("ENV: 'BOT_ID' is undefined")
 }
 
-////////// FUNCTIONS/METHODS //////////
+/* 
+////////// SEND MESSAGES //////////
+Send either: 
+- a regular post to the GroupMe, 
+- a post w/ an array of mention IDs, or
+- a DM to a user ID from the bot owner's user ID
+*/
+
 // Create a post and mention users if ID array is provided
 const createPost = async (message, mentionids) => {
   console.log(`Creating new post (${message.length}): ${message}`)
@@ -219,8 +219,15 @@ const sendDm = async (userid, message) => {
   }
 }
 
-// Get members from the nearest upcoming event that isn't deleted 
-// or created by member in ignorememberarr
+/* 
+////////// GETTERS //////////
+Get: 
+- an array of user IDs of members going to the most recently posted event,
+- an array of admin user IDs for the GroupMe, or
+- a user ID from a provided nickname
+*/
+
+// Get members from the nearest upcoming event
 const getBallers = async () => {
   const limit = 5
   const date = new Date().getTime()
@@ -300,39 +307,14 @@ const getUserId = async (name) => {
   return false
 }
 
-// Post pic from URL
-const postPic = async (text) => {
-  console.log(`Posting pic`)
-  const message = {
-    text,
-    bot_id
-  }
-
-  // Prep message as JSON and construct packet
-  const json = JSON.stringify(message)
-  const groupmeAPIOptions = {
-    agent: false,
-    host: "api.groupme.com",
-    path: "/v3/bots/post",
-    port: 443,
-    method: "POST",
-    headers: {
-      "Content-Length": json.length,
-      "Content-Type": "image/jpeg",
-      "X-Access-Token": accesstoken
-    }
-  }
-
-  // Send request
-  const req = https.request(groupmeAPIOptions, response => {
-    let data = ""
-    response.on("data", chunk => (data += chunk))
-    response.on("end", () =>
-      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
-    )
-  })
-  req.end(json)
-}
+/* 
+////////// EVENTS/DAYS //////////
+Handle all functions needed for:
+- creating events,
+- finding appropriate dates,
+- finding appropriate sports, and
+- polling
+*/
 
 // Create event
 const createEvent = async (name, loc, address, dayofweek, hour, min, length) => {
@@ -654,6 +636,12 @@ const getSportRotation = async () => {
   return sportrot
 }
 
+/* 
+////////// PINS //////////
+Handle functions for:
+- Pinning and unpinning messages
+*/
+
 // Like message
 const likeMessage = async (msgid) => {
   const likePath = `/v3/messages/${groupid}/${msgid}/like?token=${accesstoken}`
@@ -735,11 +723,17 @@ const unpin = async (pos) => {
   }
 }
 
-// Get day of week as string
+/* 
+////////// MISC //////////
+Misc functions
+*/
+
+// Get day of week as string from integer
 const getDayOfWeek = async (num) => {
   return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
 }
 
+// Get locations as string from sportjson
 const getLocations = async () => {
   const sportarr = Object.entries(sportjson.addresses)
   let locations = ""
@@ -757,7 +751,41 @@ const getLocations = async () => {
   return locations
 }
 
-////////// REGEX //////////
+// Post pic from URL
+const postPic = async (text) => {
+  console.log(`Posting pic`)
+  const message = {
+    text,
+    bot_id
+  }
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: "/v3/bots/post",
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "image/jpeg",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
+}
+
+////////// (LOTS OF) REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i

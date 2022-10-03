@@ -17,8 +17,8 @@ const {
 } = require("./groupme-api")
 
 ////////// INITIALIZE VARS //////////
-// Manually adjust as versions improve
-const version = "May I Take Your Hat Sir? 4.0"
+// Bot info
+const version = "May I Take Your Hat Sir? 4.1\nhttps://github.com/brantsbrain/bil-groupme"
 
 // Max attempts to find user id
 const maxattempts = 3
@@ -182,7 +182,7 @@ const respond = async (req, res) => {
           console.log(`${sendername} ran /ballers`)
         }
         else {
-          await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
+          await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
           await sendDm(loguserid, `${sendername} attempted to run /ballers`)
           console.log(`${sendername} attempted to run /ballers`)
         }
@@ -196,7 +196,7 @@ const respond = async (req, res) => {
           console.log(`${sendername} ran /sportspoll`)
         }
         else {
-          await sendDm(senderid, `Kobe Bot: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)
+          await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)
           await sendDm(loguserid, `${sendername} attempted to run /ballers`)
           console.log(`${sendername} attempted to run /sportspoll`)
         }
