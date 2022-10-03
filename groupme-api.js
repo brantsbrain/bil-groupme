@@ -361,7 +361,7 @@ const createEvent = async (name, loc, address, dayofweek, hour, min, length) => 
   if (rotsporttimearr[0] + 4 + length >= 20) {
     enddate.setDate(enddate.getDate() + 1)
   }
-  enddate.setHours(hour + 4 + length, min, 0)
+  enddate.setHours(hour + 4 + length - 24, min, 0)
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
