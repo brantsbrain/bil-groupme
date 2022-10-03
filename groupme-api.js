@@ -358,10 +358,14 @@ const createEvent = async (name, loc, address, dayofweek, hour, min, length) => 
 
   // EST is 4 hours behind UTC
   startdate.setHours(hour + 4, min, 0)
-  if (rotsporttimearr[0] + 4 + length >= 20) {
+  // Adjust end date if end time will be over hour 24
+  if (rotsporttimearr[0] + 4 + length >= 24) {
     enddate.setDate(enddate.getDate() + 1)
+    enddate.setHours(hour + 4 + length - 24, min, 0)
   }
-  enddate.setHours(hour + 4 + length - 24, min, 0)
+  else {
+    enddate.setHours(hour + 4 + length, min, 0)
+  }
 
   const start_at = startdate.toISOString()
   const end_at = enddate.toISOString()
