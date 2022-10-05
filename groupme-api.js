@@ -223,6 +223,7 @@ const sendDm = async (userid, message) => {
 ////////// GETTERS //////////
 Get: 
 - an array of user IDs of members going to the most recently posted event,
+- an array of all user IDs,
 - an array of admin user IDs for the GroupMe, or
 - a user ID from a provided nickname
 */
