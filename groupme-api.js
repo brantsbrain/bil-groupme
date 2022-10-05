@@ -223,11 +223,12 @@ const sendDm = async (userid, message) => {
 ////////// GETTERS //////////
 Get: 
 - an array of user IDs of members going to the most recently posted event,
+- an array of all user IDs,
 - an array of admin user IDs for the GroupMe, or
 - a user ID from a provided nickname
 */
 
-// Get members from the nearest upcoming event
+// Get members as an array from the nearest upcoming event
 const getBallers = async () => {
   const limit = 5
   const date = new Date().getTime()
@@ -266,7 +267,25 @@ const getBallers = async () => {
   return memberarr
 }
 
-// Get admins
+// Get members as an array
+const getMembers = async () => {
+  const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+      responseType: "json"
+  })
+
+  const memberdict = response.body.response.members
+  console.log(memberdict)
+  let memberarr = []
+  for (const key of Object.entries(memberdict)) {
+    memberarr.push(key[1].user_id)
+  }
+
+  return memberarr
+}
+
+// Get admins as an array
 const getAdmins = async () => {
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
@@ -800,10 +819,15 @@ const versionregex = /^(\s)*\/version/i
 const pinsregex = /^\/pins/i
 const pinregex = /^\/pin\s(.+)/i
 const unpinregex = /^\/unpin\s?(\d+)\s*$/i
+const everyoneregex = /^(\s)*\/everyone/i
 
 ////////// EXPORTS //////////
 // Pic vars
 exports.postPic = postPic
+
+// Everyone
+exports.everyoneregex = everyoneregex
+exports.getMembers = getMembers
 
 // Sport day
 exports.rotsportday = rotsportday

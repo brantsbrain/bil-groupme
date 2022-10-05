@@ -9,6 +9,7 @@ const helptext = "Bot Commands:\n" +
   
   "Admin Commands:\n" +
   "/ballers [message] - Mention all people going to nearest upcoming event\n" +
+  "/everyone [message] - Mention everyone in the group\n" +
   "/pin [message] - Pin a message to pinboard\n" +
   "/unpin [number] - Unpin an index on the pins list\n\n" +
 
