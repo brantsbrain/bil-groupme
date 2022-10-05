@@ -11,6 +11,7 @@ const {
   pinregex, pinsregex, unpinregex, unpin, showPins, likeMessage,
   createTiedPoll, tiebreakertitle,
   locationsregex, getLocations,
+  getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex, versionregex, sleepinsec,
   coolregex, createPost, sportjson, getPollWinner, sleep
@@ -222,6 +223,19 @@ const respond = async (req, res) => {
         }
         else {
           await createPost("This is an admin-only command. Can't unpin")
+        }
+      }
+
+      // Mention everyone
+      else if (everyoneregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          await createPost(requesttext, await getMembers())
+        }
+        else {
+          await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /everyone!`)
+          await sendDm(loguserid, `${sendername} attempted to run /everyone`)
+          console.log(`${sendername} attempted to run /everyone`)
         }
       }
 
