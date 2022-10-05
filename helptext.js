@@ -4,6 +4,7 @@ const helptext = "Bot Commands:\n" +
   "/rotation - Post the current sport rotation\n" +
   "/locations - Post all previous locations of sports\n" +
   "/pins - Display pinned messages\n" +
+  "/version - Display version number and GitHub URL for project\n" +
   "/help - Uhhh... you're here\n\n" +
   
   "Admin Commands:\n" +
