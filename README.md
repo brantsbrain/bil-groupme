@@ -32,6 +32,7 @@ We are constantly looking for ways to improve on current functionality and imple
 | Command Usage                             | Purpose |
 | ----------------------------------------- | ------- |
 | `/ballers [message]`                      | Mentions all members who have marked themselves as `Going` to the nearest upcoming event |
+| `/everyone [message]`                     | Mentions all members |
 | `/pin [message]`                          | Pins a message to pinboard |
 | `/unpin [number]`                         | Unpins message from pinboard by number |
 
