@@ -198,7 +198,7 @@ const respond = async (req, res) => {
         }
         else {
           await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)
-          await sendDm(loguserid, `${sendername} attempted to run /ballers`)
+          await sendDm(loguserid, `${sendername} attempted to run /sportspoll`)
           console.log(`${sendername} attempted to run /sportspoll`)
         }
       }
