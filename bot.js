@@ -19,7 +19,8 @@ const {
 
 ////////// INITIALIZE VARS //////////
 // Bot info
-const version = "May I Take Your Hat Sir? 4.2\nhttps://github.com/brantsbrain/bil-groupme"
+const version = "May I Take Your Hat Sir? 4.2\n" +
+                "https://github.com/brantsbrain/bil-groupme"
 
 // Max attempts to find user id
 const maxattempts = 3
