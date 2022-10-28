@@ -812,7 +812,7 @@ const postPic = async (text) => {
 
 var helptext = `Bot Commands:\n` +
   `/admins [message] - Mention the admins with a pressing question/comment\n` +
-  `/next - Post the next upcoming | sport\n` +
+  `/next - Post the next upcoming # sport\n` +
   `/rotation - Post the current sport rotation\n` +
   `/locations - Post all previous locations of sports\n` +
   `/pins - Display pinned messages\n` +
@@ -831,7 +831,7 @@ var helptext = `Bot Commands:\n` +
 
   `\nAutomated Features:\n` +
   `Soccer Tuesdays - Mondays at 8:00 AM EST a soccer event is created for the following Tuesday at 5:30 PM EST\n` +
-  `| Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following weekly sport day's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created. Ties must be resolved manually.`
+  `# Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following weekly sport day's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created. Ties must be resolved manually.`
 
 ////////// (LOTS OF) REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
