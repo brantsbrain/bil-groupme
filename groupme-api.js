@@ -32,7 +32,8 @@ const loguserid = process.env.LOG_USERID
 
 // Replace ` w/ two newlines since GCP only takes one-line ENV variables
 const onelinenewbiestext = process.env.NEWBIES_TEXT
-const newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
+var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
+newbiestext = newbiestext.replace(/|/g, getDayOfWeek(rotsportday))
 
 // Sport JSON
 const sportjson = JSON.parse(process.env.SPORT_JSON)
@@ -487,9 +488,9 @@ const createSportsPoll = async () => {
   req.end(json)
 }
 
-// Create Friday event or poll depending on week
+// Create rotsportday event or poll depending on week
 const createRotEvent = async () => {
-  // Get nearest Friday
+  // Get nearest rotsportday
   let upcomingsportday = await nearestDay(rotsportday)
   upcomingsportday = new Date(upcomingsportday.getTime())
   console.log(`Upcoming ${await getDayOfWeek(rotsportday)}: ${upcomingsportday}`)
