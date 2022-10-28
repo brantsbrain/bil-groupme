@@ -1,4 +1,4 @@
-import { getDayOfWeek, rotsportday } from "./groupme-api"
+const {getDayOfWeek, rotsportday} = require("./groupme-api")
 
 const sportday = await getDayOfWeek(rotsportday)
 
