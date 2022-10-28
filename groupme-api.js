@@ -30,6 +30,11 @@ const ignorememberarr = ignoremembersstr.split(",")
 // You can't DM yourself, so provide user id to send log messages to
 const loguserid = process.env.LOG_USERID
 
+// Get day of week as string from integer
+const getDayOfWeek = async (num) => {
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
+}
+
 // Replace ` w/ two newlines since GCP only takes one-line ENV variables
 const onelinenewbiestext = process.env.NEWBIES_TEXT
 var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
@@ -753,11 +758,6 @@ const unpin = async (pos) => {
 ////////// MISC //////////
 Misc functions
 */
-
-// Get day of week as string from integer
-const getDayOfWeek = async (num) => {
-  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
-}
 
 // Get locations as string from sportjson
 const getLocations = async () => {
