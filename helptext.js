@@ -1,6 +1,6 @@
 const {getDayOfWeek, rotsportday} = require("./groupme-api")
 
-const sportday = await getDayOfWeek(rotsportday)
+const sportday = getDayOfWeek(rotsportday)
 
 const helptext = `Bot Commands:\n" +
   "/admins [message] - Mention the admins with a pressing question/comment\n" +
