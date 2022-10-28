@@ -38,6 +38,8 @@ const respond = async (req, res) => {
     const sendername = request.name
     console.log(`User request: "${requesttext}"`)
     console.log(`Request Body: "${JSON.stringify(request)}"`)
+    
+    const sportday = await getDayOfWeek(rotsportday)
 
     // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
@@ -71,7 +73,8 @@ const respond = async (req, res) => {
 
       // Post help text
       else if (helpregex.test(requesttext)) {
-        await createPost(helptext)
+        const adjusthelptext = helptext.replace(/|/g, sportday)
+        await createPost(adjusthelptext)
       }
 
       // Show pins
@@ -134,7 +137,8 @@ const respond = async (req, res) => {
           if (!found) {
             userid = await getUserId(name)
             if (userid) {
-              await sendDm(userid, `Hey ${firstname}! ${newbiestext}`)
+              const adjustnewbiestext = newbiestext.replace(/|/g, sportday)
+              await sendDm(userid, `Hey ${firstname}! ${adjustnewbiestext}`)
               await sendDm(loguserid, `Found ${name} on attempt ${attempt}...`)
               console.log(`Found ${name} on attempt ${attempt}...`)
               found = true
