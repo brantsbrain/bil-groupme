@@ -3,7 +3,7 @@ require("dotenv").config()
 const got = require("got")
 const {URL} = require("url")
 const https = require("https")
-const {helptext} = require("./helptext")
+// const {helptext} = require("./helptext")
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
@@ -30,9 +30,10 @@ const ignorememberarr = ignoremembersstr.split(",")
 // You can't DM yourself, so provide user id to send log messages to
 const loguserid = process.env.LOG_USERID
 
-// Replace ` w/ two newlines since GCP only takes one-line ENV variables
-const onelinenewbiestext = process.env.NEWBIES_TEXT
-const newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
+// Get day of week as string from integer
+const getDayOfWeek = async (num) => {
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
+}
 
 // Sport JSON
 const sportjson = JSON.parse(process.env.SPORT_JSON)
@@ -47,6 +48,10 @@ const rotsporttimearr = rotsporttimestr.split(",")
 for (let i = 0; i < rotsporttimearr.length; i++) {
   rotsporttimearr[i] = parseInt(rotsporttimearr[i])
 }
+
+// Replace ` w/ two newlines since GCP only takes one-line ENV variables
+const onelinenewbiestext = process.env.NEWBIES_TEXT
+var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -487,9 +492,9 @@ const createSportsPoll = async () => {
   req.end(json)
 }
 
-// Create Friday event or poll depending on week
+// Create rotsportday event or poll depending on week
 const createRotEvent = async () => {
-  // Get nearest Friday
+  // Get nearest rotsportday
   let upcomingsportday = await nearestDay(rotsportday)
   upcomingsportday = new Date(upcomingsportday.getTime())
   console.log(`Upcoming ${await getDayOfWeek(rotsportday)}: ${upcomingsportday}`)
@@ -753,11 +758,6 @@ const unpin = async (pos) => {
 Misc functions
 */
 
-// Get day of week as string from integer
-const getDayOfWeek = async (num) => {
-  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
-}
-
 // Get locations as string from sportjson
 const getLocations = async () => {
   const sportarr = Object.entries(sportjson.addresses)
@@ -809,6 +809,29 @@ const postPic = async (text) => {
   })
   req.end(json)
 }
+
+var helptext = `Bot Commands:\n` +
+  `/admins [message] - Mention the admins with a pressing question/comment\n` +
+  `/next - Post the next upcoming # sport\n` +
+  `/rotation - Post the current sport rotation\n` +
+  `/locations - Post all previous locations of sports\n` +
+  `/pins - Display pinned messages\n` +
+  `/version - Display version number and GitHub URL for project\n` +
+  `/help - Uhhh... you're here\n` +
+  
+  `\nAdmin Commands:\n` +
+  `/ballers [message] - Mention all people going to nearest upcoming event\n` +
+  `/everyone [message] - Mention everyone in the group\n` +
+  `/pin [message] - Pin a message to pinboard\n` +
+  `/unpin [number] - Unpin an index on the pins list\n` +
+
+  `\nNavigating GroupMe:\n` +
+  `Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n` +
+  `RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to/view the desired event\n` +
+
+  `\nAutomated Features:\n` +
+  `Soccer Tuesdays - Mondays at 8:00 AM EST a soccer event is created for the following Tuesday at 5:30 PM EST\n` +
+  `# Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following weekly sport day's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created. Ties must be resolved manually.`
 
 ////////// (LOTS OF) REGEX //////////
 const ballersregex = /^(\s)*\/ballers/i
