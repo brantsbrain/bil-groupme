@@ -35,11 +35,6 @@ const getDayOfWeek = async (num) => {
   return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][num]
 }
 
-// Replace ` w/ two newlines since GCP only takes one-line ENV variables
-const onelinenewbiestext = process.env.NEWBIES_TEXT
-var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
-newbiestext = newbiestext.replace(/|/g, getDayOfWeek(rotsportday))
-
 // Sport JSON
 const sportjson = JSON.parse(process.env.SPORT_JSON)
 
@@ -53,6 +48,11 @@ const rotsporttimearr = rotsporttimestr.split(",")
 for (let i = 0; i < rotsporttimearr.length; i++) {
   rotsporttimearr[i] = parseInt(rotsporttimearr[i])
 }
+
+// Replace ` w/ two newlines since GCP only takes one-line ENV variables
+const onelinenewbiestext = process.env.NEWBIES_TEXT
+var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
+newbiestext = newbiestext.replace(/|/g, getDayOfWeek(rotsportday))
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
