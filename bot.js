@@ -161,7 +161,8 @@ const respond = async (req, res) => {
 
       // Test regex
       else if (testregex.test(requesttext)) {
-        await sendDm(loguserid, newbiestext)
+        const adjustnewbiestext = newbiestext.replace(/#/g, sportday)
+        await sendDm(loguserid, adjustnewbiestext)
       }
 
       // Post next upcoming Friday sport
