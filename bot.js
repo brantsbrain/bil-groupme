@@ -47,7 +47,7 @@ const respond = async (req, res) => {
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1) {
       console.log(`Found ${firstsportheader}...`)
-      await createEvent(`Soccer ${soccerdaystr}!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccertimearr[0], soccertimearr[1], 3)
+      await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccertimearr[0], soccertimearr[1], 3)
     }
     else if (headerkeys.indexOf(secondsportheader) > -1) {
       console.log(`Found ${secondsportheader}...`)
