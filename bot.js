@@ -6,6 +6,7 @@ const {
   createEvent, createRotEvent,
   nextregex, getNextSport,
   rotsportday, getDayOfWeek,
+  soccerday, soccertimearr,
   getSportRotation, sportrotregex, rotsporttimearr,
   createSportsPoll, sportspollregex,
   pinregex, pinsregex, unpinregex, unpin, showPins, likeMessage,
@@ -40,12 +41,13 @@ const respond = async (req, res) => {
     console.log(`Request Body: "${JSON.stringify(request)}"`)
     
     const sportday = await getDayOfWeek(rotsportday)
+    const soccerdaystr = await getDayOfWeek(soccerday)
 
     // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1) {
       console.log(`Found ${firstsportheader}...`)
-      await createEvent(`Soccer Tuesdays!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, 2, 17, 30, 3)
+      await createEvent(`Soccer ${soccerdaystr}!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccertimearr[0], soccertimearr[1], 3)
     }
     else if (headerkeys.indexOf(secondsportheader) > -1) {
       console.log(`Found ${secondsportheader}...`)

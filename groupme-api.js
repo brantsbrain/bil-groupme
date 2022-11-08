@@ -49,6 +49,14 @@ for (let i = 0; i < rotsporttimearr.length; i++) {
   rotsporttimearr[i] = parseInt(rotsporttimearr[i])
 }
 
+// Get time/day for weekly soccer
+const soccerday = parseInt(process.env.SOCCER_DAY)
+const soccertimestr = process.env.SOCCER_TIME
+const soccertimearr = soccertimestr.split(",")
+for (let i = 0; i < soccertimearr.length; i++) {
+  soccertimearr[i] = parseInt(soccertimearr[i])
+}
+
 // Replace ` w/ two newlines since GCP only takes one-line ENV variables
 const onelinenewbiestext = process.env.NEWBIES_TEXT
 var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
@@ -862,6 +870,10 @@ exports.getMembers = getMembers
 exports.rotsportday = rotsportday
 exports.getDayOfWeek = getDayOfWeek
 exports.rotsporttimearr = rotsporttimearr
+
+// Soccer
+exports.soccerday = soccerday
+exports.soccertimearr = soccertimearr
 
 // Pins
 exports.pinregex = pinregex
