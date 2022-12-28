@@ -3,7 +3,6 @@ require("dotenv").config()
 const got = require("got")
 const {URL} = require("url")
 const https = require("https")
-// const {helptext} = require("./helptext")
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
@@ -675,93 +674,6 @@ const getSportRotation = async () => {
 }
 
 /* 
-////////// PINS //////////
-Handle functions for:
-- Pinning and unpinning messages
-*/
-
-// Like message
-const likeMessage = async (msgid) => {
-  const likePath = `/v3/messages/${groupid}/${msgid}/like?token=${accesstoken}`
-  const destUrl = new URL(likePath, baseurl)
-  console.log(`Liking message: ${msgid}`)
-  const response = await got.post(destUrl, {
-    json: {},
-    responseType: "json",
-  })
-  if (response.statusCode !== 200) {
-    console.log(`Error liking a message ${response.statusCode}`)
-  }
-}
-
-// The bot retrieves a list of messages that the owner of the bot has liked
-const getMyLikeList = async () => {
-  try {
-    const myLikePath = `/v3/groups/${groupid}/likes/mine?token=${accesstoken}`
-    const destUrl = new URL(myLikePath, baseurl)
-    const response = await got(destUrl, {
-      responseType: "json"
-    })
-
-    if (response.statusCode == 200) {
-      const likedMessageList = response.body.response.messages
-      console.log("Got liked messages list...")
-      return likedMessageList
-    }
-    return []
-
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-// Returns a list of messages that matches the regex
-const filterRegexMsgList = (msglist, regex) => {
-  return msglist.filter(msg => (msg.text && regex.test(msg.text)))
-}
-
-// Convert array to string for post
-const combinePinList = async (msglist) => {
-  msglist = msglist.reverse()
-  var start = "Pinned messages:\n"
-  var body = "" 
-  for (let i = 0; i < msglist.length; i++) {
-    body += `${i+1}: ${msglist[i].text.slice(5)}\n`
-  }
-  return start + body
-}
-
-// Show all pinned messages in chronological order
-const showPins = async () => {
-  const mylikelist = await getMyLikeList()
-  const pinlist = filterRegexMsgList(mylikelist, pinregex)
-  await createPost(await combinePinList(pinlist))
-}
-
-// Unpin/unlike message based on position in liked array
-const unpin = async (pos) => {
-  const mylikelist = await getMyLikeList()
-  const pinlist = filterRegexMsgList(mylikelist, pinregex)
-
-  msglist = pinlist.reverse()
-  unlikeid = msglist[pos].id
-
-  const unlikePath = `/v3/messages/${groupid}/${unlikeid}/unlike?token=${accesstoken}`
-  const destUrl = new URL(unlikePath, baseurl)
-  console.log(`Unliking message: ${unlikeid}`)
-  const response = await got.post(destUrl, {
-    json: {},
-    responseType: "json",
-  })
-  if (response.statusCode !== 200) {
-    console.log(`Error unliking a message ${response.statusCode}`)
-  }
-  else {
-    console.log("Message unliked...")
-  }
-}
-
-/* 
 ////////// MISC //////////
 Misc functions
 */
@@ -823,15 +735,12 @@ var helptext = `Bot Commands:\n` +
   `/next - Post the next upcoming # sport\n` +
   `/rotation - Post the current sport rotation\n` +
   `/locations - Post all previous locations of sports\n` +
-  `/pins - Display pinned messages\n` +
   `/version - Display version number and GitHub URL for project\n` +
   `/help - Uhhh... you're here\n` +
   
   `\nAdmin Commands:\n` +
   `/ballers [message] - Mention all people going to nearest upcoming event\n` +
   `/everyone [message] - Mention everyone in the group\n` +
-  `/pin [message] - Pin a message to pinboard\n` +
-  `/unpin [number] - Unpin an index on the pins list\n` +
 
   `\nNavigating GroupMe:\n` +
   `Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n` +
@@ -874,14 +783,6 @@ exports.rotsporttimearr = rotsporttimearr
 // Soccer
 exports.soccerday = soccerday
 exports.soccertimearr = soccertimearr
-
-// Pins
-exports.pinregex = pinregex
-exports.pinsregex = pinsregex
-exports.unpinregex = unpinregex
-exports.unpin = unpin
-exports.showPins = showPins
-exports.likeMessage = likeMessage
 
 // Help vars
 exports.helpregex = helpregex

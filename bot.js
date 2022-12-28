@@ -9,7 +9,6 @@ const {
   soccerday, soccertimearr,
   getSportRotation, sportrotregex, rotsporttimearr,
   createSportsPoll, sportspollregex,
-  pinregex, pinsregex, unpinregex, unpin, showPins, likeMessage,
   createTiedPoll, tiebreakertitle,
   locationsregex, getLocations,
   getMembers, everyoneregex,
@@ -20,7 +19,7 @@ const {
 
 ////////// INITIALIZE VARS //////////
 // Bot info
-const version = "May I Take Your Hat Sir? v4.2\n" +
+const version = "May I Take Your Hat Sir? v5.0\n" +
                 "https://github.com/brantsbrain/bil-groupme"
 
 // Max attempts to find user id
@@ -48,6 +47,7 @@ const respond = async (req, res) => {
     if (headerkeys.indexOf(firstsportheader) > -1) {
       console.log(`Found ${firstsportheader}...`)
       await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccertimearr[0], soccertimearr[1], 3)
+      await createPost(sportjson.winternote)
     }
     else if (headerkeys.indexOf(secondsportheader) > -1) {
       console.log(`Found ${secondsportheader}...`)
@@ -77,11 +77,6 @@ const respond = async (req, res) => {
       else if (helpregex.test(requesttext)) {
         const adjusthelptext = helptext.replace(/#/g, sportday)
         await createPost(adjusthelptext)
-      }
-
-      // Show pins
-      else if (pinsregex.test(requesttext)) {
-        await showPins()
       }
 
       // Post winning event from sports poll
@@ -208,29 +203,6 @@ const respond = async (req, res) => {
           await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)
           await sendDm(loguserid, `${sendername} attempted to run /sportspoll`)
           console.log(`${sendername} attempted to run /sportspoll`)
-        }
-      }
-
-      // Pin message
-      else if (pinregex.test(requesttext)) {
-        const adminarr = await getAdmins()
-        if (adminarr.indexOf(senderid) > -1) {
-          await likeMessage(request.id)
-        }
-        else {
-          await createPost("This is an admin-only command. Pin not recorded")
-        }
-      }
-
-      // Unpin message
-      else if (unpinregex.test(requesttext)) {
-        const adminarr = await getAdmins()
-        if (adminarr.indexOf(senderid) > -1) {
-          var pos = requesttext.match(unpinregex)[1]
-          await unpin(parseInt(pos) - 1)
-        }
-        else {
-          await createPost("This is an admin-only command. Can't unpin")
         }
       }
 
