@@ -57,7 +57,7 @@ for (let i = 0; i < soccertimearr.length; i++) {
 }
 
 // Replace ` w/ two newlines since GCP only takes one-line ENV variables
-const onelinenewbiestext = process.env.NEWBIES_TEXT
+const onelinenewbiestext = sportjson.newbiestext
 var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
 
 ////////// CHECK ENV VARS //////////
