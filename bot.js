@@ -134,7 +134,7 @@ const respond = async (req, res) => {
           if (!found) {
             userid = await getUserId(name)
             if (userid) {
-              const adjustnewbiestext = newbiestext.replace(/#/g, sportday)
+              const adjustnewbiestext = newbiestext.replace(/#/g, sportday).replace(/~/g, soccerdaystr)
               await sendDm(userid, `Hey ${firstname}! ${adjustnewbiestext}`)
               await sendDm(loguserid, `Found ${name} on attempt ${attempt}...`)
               console.log(`Found ${name} on attempt ${attempt}...`)
@@ -158,7 +158,7 @@ const respond = async (req, res) => {
 
       // Test regex
       else if (testregex.test(requesttext)) {
-        const adjustnewbiestext = newbiestext.replace(/#/g, sportday)
+        const adjustnewbiestext = newbiestext.replace(/#/g, sportday).replace(/~/g, soccerdaystr)
         await sendDm(loguserid, adjustnewbiestext)
       }
 
