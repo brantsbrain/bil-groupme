@@ -60,6 +60,9 @@ for (let i = 0; i < soccertimearr.length; i++) {
 const onelinenewbiestext = sportjson.newbiestext
 var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
 
+// Consider timezone
+const timezone = parseInt(process.env.TIMEZONE)
+
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
   console.log("ENV: 'ACCESS_TOKEN' is undefined")
@@ -375,15 +378,19 @@ const createEvent = async (name, loc, address, dayofweek, hour, min, length) => 
     enddate.setDate(enddate.getDate() + 7)
   }
 
-  // EST is 4 hours behind UTC
-  startdate.setHours(hour + 4, min, 0)
+  // Adjust based on timezone against UTC
+  const adjustedhour = hour + timezone
+
+  // Set start time
+  startdate.setHours(adjustedhour, min, 0)
+
   // Adjust end date if end time will be over hour 24
-  if (hour + 4 + length >= 24) {
+  if (adjustedhour + length >= 24) {
     enddate.setDate(enddate.getDate() + 1)
-    enddate.setHours(hour + 4 + length - 24, min, 0)
+    enddate.setHours(adjustedhour + length - 24, min, 0)
   }
   else {
-    enddate.setHours(hour + 4 + length, min, 0)
+    enddate.setHours(adjustedhour + length, min, 0)
   }
 
   const start_at = startdate.toISOString()
