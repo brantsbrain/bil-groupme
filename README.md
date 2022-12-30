@@ -24,7 +24,7 @@ We are constantly looking for ways to improve on current functionality and imple
 | `/next`                                   | Posts the next upcoming sport in the rotation |
 | `/rotation`                               | Posts the full current rotation of sports |
 | `/locations`                              | Posts a list of sports locations laid out in the `addresses` key of `SPORT_JSON` |
-| `/help`                                   | Posts text found in [helptext.js](./helptext.js) |
+| `/help`                                   | Posts help text |
 
 ### Admin Commands
 

@@ -750,7 +750,7 @@ var helptext = `Bot Commands:\n` +
   `RSVPing to an event - Click/Tap the group picture in the upper right corner, find 'Calendar', and RSVP to/view the desired event\n` +
 
   `\nAutomated Features:\n` +
-  `Soccer Tuesdays - Mondays at 8:00 AM EST a soccer event is created for the following Tuesday at 5:30 PM EST\n` +
+  `Soccer ~s - Mondays at 8:00 AM EST a soccer event is created for the following ~\n` +
   `# Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following weekly sport day's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created. Ties must be resolved manually.`
 
 ////////// (LOTS OF) REGEX //////////
