@@ -75,7 +75,7 @@ const respond = async (req, res) => {
 
       // Post help text
       else if (helpregex.test(requesttext)) {
-        const adjusthelptext = helptext.replace(/#/g, sportday)
+        const adjusthelptext = helptext.replace(/#/g, sportday).replace(/~/g, soccerdaystr)
         await createPost(adjusthelptext)
       }
 
