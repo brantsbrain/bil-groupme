@@ -41,24 +41,23 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
 // Get time/day for rotation sport
-const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
-const rotsporttimestr = process.env.ROT_SPORT_TIME
-const rotsporttimearr = rotsporttimestr.split(",")
-for (let i = 0; i < rotsporttimearr.length; i++) {
-  rotsporttimearr[i] = parseInt(rotsporttimearr[i])
-}
+const rotsportday = parseInt(sportjson.rotsport.day)
+const rotsporthour = parseInt(sportjson.rotsport.hour)
+const rotsportmin = parseInt(sportjson.rotsport.min)
+const rotsportlength = parseInt(sportjson.rotsport.length)
 
 // Get time/day for weekly soccer
-const soccerday = parseInt(process.env.SOCCER_DAY)
-const soccertimestr = process.env.SOCCER_TIME
-const soccertimearr = soccertimestr.split(",")
-for (let i = 0; i < soccertimearr.length; i++) {
-  soccertimearr[i] = parseInt(soccertimearr[i])
-}
+const soccerday = parseInt(sportjson.soccer.day)
+const soccerhour = parseInt(sportjson.soccer.hour)
+const soccermin = parseInt(sportjson.soccer.min)
+const soccerlength = parseInt(sportjson.soccer.length)
 
 // Replace ` w/ two newlines since GCP only takes one-line ENV variables
-const onelinenewbiestext = process.env.NEWBIES_TEXT
+const onelinenewbiestext = sportjson.newbiestext
 var newbiestext = onelinenewbiestext.replace(/`/g, "\n\n")
+
+// Consider timezone
+const timezone = parseInt(process.env.TIMEZONE)
 
 ////////// CHECK ENV VARS //////////
 if (!accesstoken) {
@@ -375,15 +374,19 @@ const createEvent = async (name, loc, address, dayofweek, hour, min, length) => 
     enddate.setDate(enddate.getDate() + 7)
   }
 
-  // EST is 4 hours behind UTC
-  startdate.setHours(hour + 4, min, 0)
+  // Adjust based on timezone against UTC
+  const adjustedhour = hour + timezone
+
+  // Set start time
+  startdate.setHours(adjustedhour, min, 0)
+
   // Adjust end date if end time will be over hour 24
-  if (rotsporttimearr[0] + 4 + length >= 24) {
+  if (adjustedhour + length >= 24) {
     enddate.setDate(enddate.getDate() + 1)
-    enddate.setHours(hour + 4 + length - 24, min, 0)
+    enddate.setHours(adjustedhour + length - 24, min, 0)
   }
   else {
-    enddate.setHours(hour + 4 + length, min, 0)
+    enddate.setHours(adjustedhour + length, min, 0)
   }
 
   const start_at = startdate.toISOString()
@@ -530,7 +533,7 @@ const createRotEvent = async () => {
   }
   else {
     const sportkey = Object.keys(sportjson.sports)[position]
-    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, sportjson.sports[sportkey].address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, sportjson.sports[sportkey].address, rotsportday, rotsporthour, rotsportmin, rotsportlength)
   }
 }
 
@@ -756,15 +759,13 @@ const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 const newbiesregex = /^(\s)*\/newbies/i
 const sportspollregex = /^(\s)*\/sportspoll/i
+const soccerregex = /^(\s)*\/soccer/i
 const locationsregex = /^(\s)*\/locations/i
 const testregex = /^(\s)*\/test/i
 const nextregex = /^(\s)*\/next/i
 const sportrotregex = /^(\s)*\/rotation/i
 const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
-const pinsregex = /^\/pins/i
-const pinregex = /^\/pin\s(.+)/i
-const unpinregex = /^\/unpin\s?(\d+)\s*$/i
 const everyoneregex = /^(\s)*\/everyone/i
 
 ////////// EXPORTS //////////
@@ -774,15 +775,6 @@ exports.postPic = postPic
 // Everyone
 exports.everyoneregex = everyoneregex
 exports.getMembers = getMembers
-
-// Sport day
-exports.rotsportday = rotsportday
-exports.getDayOfWeek = getDayOfWeek
-exports.rotsporttimearr = rotsporttimearr
-
-// Soccer
-exports.soccerday = soccerday
-exports.soccertimearr = soccertimearr
 
 // Help vars
 exports.helpregex = helpregex
@@ -828,3 +820,17 @@ exports.getAdmins = getAdmins
 exports.testregex = testregex
 exports.adminregex = adminregex
 exports.sleep = sleep
+exports.getDayOfWeek = getDayOfWeek
+
+// Soccer Details
+exports.soccerday = soccerday
+exports.soccerhour = soccerhour
+exports.soccermin = soccermin
+exports.soccerlength = soccerlength
+exports.soccerregex = soccerregex
+
+// Rotsport Details
+exports.rotsportday = rotsportday
+exports.rotsporthour = rotsporthour
+exports.rotsportmin = rotsportmin
+exports.rotsportlength = rotsportlength
