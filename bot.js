@@ -6,7 +6,7 @@ const {
   createEvent, createRotEvent,
   nextregex, getNextSport,
   getDayOfWeek, rotsportday, rotsporthour, rotsportmin, rotsportlength,
-  soccerday, soccerhour, soccermin, soccerlength,
+  soccerday, soccerhour, soccermin, soccerlength, soccerregex,
   getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex,
   createTiedPoll, tiebreakertitle,
@@ -203,6 +203,20 @@ const respond = async (req, res) => {
           await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /sportspoll!`)
           await sendDm(loguserid, `${sendername} attempted to run /sportspoll`)
           console.log(`${sendername} attempted to run /sportspoll`)
+        }
+      }
+
+      // Post sports poll
+      else if (soccerregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength)
+          console.log(`${sendername} ran /soccer`)
+        }
+        else {
+          await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /soccer!`)
+          await sendDm(loguserid, `${sendername} attempted to run /soccer`)
+          console.log(`${sendername} attempted to run /soccer`)
         }
       }
 

@@ -759,15 +759,13 @@ const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
 const newbiesregex = /^(\s)*\/newbies/i
 const sportspollregex = /^(\s)*\/sportspoll/i
+const soccerregex = /^(\s)*\/soccer/i
 const locationsregex = /^(\s)*\/locations/i
 const testregex = /^(\s)*\/test/i
 const nextregex = /^(\s)*\/next/i
 const sportrotregex = /^(\s)*\/rotation/i
 const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
-const pinsregex = /^\/pins/i
-const pinregex = /^\/pin\s(.+)/i
-const unpinregex = /^\/unpin\s?(\d+)\s*$/i
 const everyoneregex = /^(\s)*\/everyone/i
 
 ////////// EXPORTS //////////
@@ -829,6 +827,7 @@ exports.soccerday = soccerday
 exports.soccerhour = soccerhour
 exports.soccermin = soccermin
 exports.soccerlength = soccerlength
+exports.soccerregex = soccerregex
 
 // Rotsport Details
 exports.rotsportday = rotsportday
