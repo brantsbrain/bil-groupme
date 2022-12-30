@@ -1,4 +1,21 @@
 {
+    "winter": {
+        "timespan": "",
+        "note": "WINTER REMINDER: Don't forget to check the weather forecast BEFORE you RSVP! We don't want people to show up to a sport only to have a bunch of people bail last minute. Thanks!"
+    },
+    "rotsport": {
+        "day": 6,
+        "hour": 17,
+        "min": 30,
+        "length": 3
+    },
+    "soccer": {
+        "day": 6,
+        "hour": 10,
+        "min": 30,
+        "length": 3
+    },
+    "newbiestext": "Welcome to the group. Now give details...",
     "sports": {
         "Basketball": {
             "id": "Basketball",
