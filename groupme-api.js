@@ -41,20 +41,16 @@ const sportjson = JSON.parse(process.env.SPORT_JSON)
 const sleepinsec = parseInt(process.env.SLEEP_IN_SEC)
 
 // Get time/day for rotation sport
-const rotsportday = parseInt(process.env.ROT_SPORT_DAY)
-const rotsporttimestr = process.env.ROT_SPORT_TIME
-const rotsporttimearr = rotsporttimestr.split(",")
-for (let i = 0; i < rotsporttimearr.length; i++) {
-  rotsporttimearr[i] = parseInt(rotsporttimearr[i])
-}
+const rotsportday = parseInt(sportjson.rotsport.day)
+const rotsporthour = parseInt(sportjson.rotsport.hour)
+const rotsportmin = parseInt(sportjson.rotsport.min)
+const rotsportlength = parseInt(sportjson.rotsport.length)
 
 // Get time/day for weekly soccer
-const soccerday = parseInt(process.env.SOCCER_DAY)
-const soccertimestr = process.env.SOCCER_TIME
-const soccertimearr = soccertimestr.split(",")
-for (let i = 0; i < soccertimearr.length; i++) {
-  soccertimearr[i] = parseInt(soccertimearr[i])
-}
+const soccerday = parseInt(sportjson.soccer.day)
+const soccerhour = parseInt(sportjson.soccer.hour)
+const soccermin = parseInt(sportjson.soccer.min)
+const soccerlength = parseInt(sportjson.soccer.length)
 
 // Replace ` w/ two newlines since GCP only takes one-line ENV variables
 const onelinenewbiestext = sportjson.newbiestext
@@ -537,7 +533,7 @@ const createRotEvent = async () => {
   }
   else {
     const sportkey = Object.keys(sportjson.sports)[position]
-    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, sportjson.sports[sportkey].address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, sportjson.sports[sportkey].address, rotsportday, rotsporthour, rotsportmin, rotsportlength)
   }
 }
 
@@ -782,15 +778,6 @@ exports.postPic = postPic
 exports.everyoneregex = everyoneregex
 exports.getMembers = getMembers
 
-// Sport day
-exports.rotsportday = rotsportday
-exports.getDayOfWeek = getDayOfWeek
-exports.rotsporttimearr = rotsporttimearr
-
-// Soccer
-exports.soccerday = soccerday
-exports.soccertimearr = soccertimearr
-
 // Help vars
 exports.helpregex = helpregex
 exports.helptext = helptext
@@ -835,3 +822,16 @@ exports.getAdmins = getAdmins
 exports.testregex = testregex
 exports.adminregex = adminregex
 exports.sleep = sleep
+exports.getDayOfWeek = getDayOfWeek
+
+// Soccer Details
+exports.soccerday = soccerday
+exports.soccerhour = soccerhour
+exports.soccermin = soccermin
+exports.soccerlength = soccerlength
+
+// Rotsport Details
+exports.rotsportday = rotsportday
+exports.rotsporthour = rotsporthour
+exports.rotsportmin = rotsportmin
+exports.rotsportlength = rotsportlength

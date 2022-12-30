@@ -5,9 +5,9 @@ const {
   ballersregex, getBallers,
   createEvent, createRotEvent,
   nextregex, getNextSport,
-  rotsportday, getDayOfWeek,
-  soccerday, soccertimearr,
-  getSportRotation, sportrotregex, rotsporttimearr,
+  getDayOfWeek, rotsportday, rotsporthour, rotsportmin, rotsportlength,
+  soccerday, soccerhour, soccermin, soccerlength,
+  getSportRotation, sportrotregex,
   createSportsPoll, sportspollregex,
   createTiedPoll, tiebreakertitle,
   locationsregex, getLocations,
@@ -46,7 +46,7 @@ const respond = async (req, res) => {
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1) {
       console.log(`Found ${firstsportheader}...`)
-      await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccertimearr[0], soccertimearr[1], 3)
+      await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength)
       await createPost(sportjson.winternote)
     }
     else if (headerkeys.indexOf(secondsportheader) > -1) {
@@ -86,7 +86,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, val.address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
+              await createEvent(val.name, val.location, val.address, rotsportday, rotsporthour, rotsportmin, rotsportlength)
             }
           }
         }
@@ -104,7 +104,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, val.address, rotsportday, rotsporttimearr[0], rotsporttimearr[1], 3)
+              await createEvent(val.name, val.location, val.address, rotsportday, rotsporthour, rotsportmin, rotsportlength)
             }
           }
         }
