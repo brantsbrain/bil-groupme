@@ -343,6 +343,13 @@ const getUserId = async (name) => {
   return false
 }
 
+// Get today's day of the week integer
+const getTodayDayofWeek = async () => {
+  let today = new Date()
+  let currentdate = new Date(today.getTime())
+  return currentdate.getDay()
+}
+
 /* 
 ////////// EVENTS/DAYS //////////
 Handle all functions needed for:
@@ -821,6 +828,7 @@ exports.testregex = testregex
 exports.adminregex = adminregex
 exports.sleep = sleep
 exports.getDayOfWeek = getDayOfWeek
+exports.getTodayDayofWeek = getTodayDayofWeek
 
 // Soccer Details
 exports.soccerday = soccerday
