@@ -41,10 +41,14 @@ const respond = async (req, res) => {
     
     const sportday = await getDayOfWeek(rotsportday)
     const soccerdaystr = await getDayOfWeek(soccerday)
+    const today = await getTodayDayofWeek()
+
+    console.log(`soccerday: ${soccerday}`)
+    console.log(`Today's integer is ${today}`)
 
     // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
-    if (headerkeys.indexOf(firstsportheader) > -1 && await getTodayDayofWeek() == soccerday) {
+    if (headerkeys.indexOf(firstsportheader) > -1 && today == soccerday) {
       console.log(`Found ${firstsportheader}...`)
       await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength)
 
@@ -53,7 +57,7 @@ const respond = async (req, res) => {
         await createPost(sportjson.winter.note)
       }
     }
-    else if (headerkeys.indexOf(secondsportheader) > -1 && await getTodayDayofWeek() == rotsportday) {
+    else if (headerkeys.indexOf(secondsportheader) > -1 && today == rotsportday) {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()
     }
