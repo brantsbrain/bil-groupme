@@ -54,7 +54,7 @@ const respond = async (req, res) => {
         await createPost(sportjson.winter.note)
       }
     }
-    else if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.scheduleday) {
+    if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.scheduleday) {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()
     }
