@@ -14,7 +14,7 @@ const {
   getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex, versionregex, sleepinsec,
-  coolregex, createPost, sportjson, getPollWinner, sleep
+  coolregex, createPost, sportjson, getPollWinner, sleep, getTodayDayofWeek
 } = require("./groupme-api")
 
 ////////// INITIALIZE VARS //////////
@@ -41,15 +41,20 @@ const respond = async (req, res) => {
     
     const sportday = await getDayOfWeek(rotsportday)
     const soccerdaystr = await getDayOfWeek(soccerday)
+    const today = await getTodayDayofWeek()
 
     // Auto-create events on cron job POSTs
     const headerkeys = Object.keys(req.headers)
-    if (headerkeys.indexOf(firstsportheader) > -1) {
+    if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.scheduleday) {
       console.log(`Found ${firstsportheader}...`)
       await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength)
-      await createPost(sportjson.winter.note)
+
+      // Post winter reminder
+      if (sportjson.winter.remind) {
+        await createPost(sportjson.winter.note)
+      }
     }
-    else if (headerkeys.indexOf(secondsportheader) > -1) {
+    if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.scheduleday) {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()
     }

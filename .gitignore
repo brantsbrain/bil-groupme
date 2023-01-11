@@ -4,6 +4,7 @@
 *.odg
 README.old
 node_modules/
+.env
 
 # Exceptions
 !examplesportjson.json
