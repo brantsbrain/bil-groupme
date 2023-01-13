@@ -7,7 +7,7 @@ const {
   nextregex, getNextSport,
   getDayOfWeek, rotsportday, rotsporthour, rotsportmin, rotsportlength,
   soccerday, soccerhour, soccermin, soccerlength, soccerregex,
-  getSportRotation, sportrotregex,
+  getSportRotation, sportrotregex, cancelUpcoming,
   createSportsPoll, sportspollregex,
   createTiedPoll, tiebreakertitle,
   locationsregex, getLocations,
@@ -43,7 +43,7 @@ const respond = async (req, res) => {
     const soccerdaystr = await getDayOfWeek(soccerday)
     const today = await getTodayDayofWeek()
 
-    // Auto-create events on cron job POSTs
+    // Create soccer event on CRON job POST
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.scheduleday) {
       console.log(`Found ${firstsportheader}...`)
@@ -54,6 +54,18 @@ const respond = async (req, res) => {
         await createPost(sportjson.winter.note)
       }
     }
+
+    // Check to see if enough players are going. Cancel if not
+    else if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.checkgoingday) {
+      const going = await getBallers()
+
+      if (going < sportjson.sports.Soccer.mintoplay) {
+        await createPost(`Minimum players for ${sportjson.sports.Soccer.id} is ${sportjson.sports.Soccer.mintoplay}. Canceling because only ${going} RSVP'd.`)
+        await cancelUpcoming()
+      }
+    }
+    
+    // Create rotational event
     if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.scheduleday) {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()

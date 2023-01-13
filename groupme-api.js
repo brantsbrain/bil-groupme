@@ -666,6 +666,11 @@ const getNextSport = async () => {
   }
 }
 
+// Return next sport ID
+const returnNextSport = async () => {
+  return
+}
+
 // Get sports rotation
 const getSportRotation = async () => {
   const sportarr = Object.keys(sportjson.sports)
@@ -681,6 +686,21 @@ const getSportRotation = async () => {
   }
 
   return sportrot
+}
+
+// Cancel nearest event
+const cancelUpcoming = async () => {
+  const limit = 5
+  const date = new Date().getTime()
+  const yesterdaylong = date - 24 * 60 * 60 * 1000
+  const yesterday = new Date(yesterdaylong)
+  var end_at = yesterday.toISOString()
+
+  const getpath = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+    responseType: "json"
+  })
 }
 
 /* 
@@ -800,6 +820,7 @@ exports.nextregex = nextregex
 exports.getNextSport = getNextSport
 exports.getSportRotation = getSportRotation
 exports.sportrotregex = sportrotregex
+exports.cancelUpcoming = cancelUpcoming
 
 // Send DM
 exports.sendDm = sendDm
