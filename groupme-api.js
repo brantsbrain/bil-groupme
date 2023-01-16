@@ -634,17 +634,17 @@ const createTiedPoll = async (tiedarr) => {
 
 // Get next sport in rotation
 const getNextSport = async () => {
-  // Get nearest Friday
-  let upcomingfriday = await nearestDay(5)
-  upcomingfriday = new Date(upcomingfriday.getTime())
-  console.log(`Upcoming Friday: ${upcomingfriday}`)
+  // Get nearest rotating sport day
+  let upcomingrotsportday = await nearestDay(rotsportday)
+  upcomingrotsportday = new Date(upcomingrotsportday.getTime())
+  console.log(`Upcoming rotating sport day: ${upcomingrotsportday}`)
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
   console.log(`EPOCH: ${epoch}`)
   const msinweek = 604800000
-  const diff = (upcomingfriday - epoch) / msinweek
-  console.log(`(Friday - EPOCH) / ms in week: ${diff}`)
+  const diff = (upcomingrotsportday - epoch) / msinweek
+  console.log(`(Upcoming rotating sport day - EPOCH) / ms in week: ${diff}`)
   const floordiff = Math.floor(diff)
   console.log(`Math.floor(diff): ${floordiff}`)
 
@@ -667,8 +667,27 @@ const getNextSport = async () => {
 }
 
 // Return next sport ID
-const returnNextSport = async () => {
-  return
+const returnNextSportPos = async () => {
+    // Get nearest rotating sport day
+    let upcomingrotsportday = await nearestDay(rotsportday)
+    upcomingrotsportday = new Date(upcomingrotsportday.getTime())
+    console.log(`Upcoming rotating sport day: ${upcomingrotsportday}`)
+  
+    // Create base EPOCH date and find number of weeks since EPOCH
+    const epoch = new Date(0)
+    console.log(`EPOCH: ${epoch}`)
+    const msinweek = 604800000
+    const diff = (upcomingrotsportday - epoch) / msinweek
+    console.log(`(Upcoming rotating sport day - EPOCH) / ms in week: ${diff}`)
+    const floordiff = Math.floor(diff)
+    console.log(`Math.floor(diff): ${floordiff}`)
+  
+    // Use modulo to navigate sportjson
+    const sportarrlen = Object.keys(sportjson.sports).length
+    const position = floordiff % sportarrlen
+    console.log(`Sport Position: ${position}`)
+  
+    return position
 }
 
 // Get sports rotation
@@ -688,8 +707,8 @@ const getSportRotation = async () => {
   return sportrot
 }
 
-// Cancel nearest event
-const cancelUpcoming = async () => {
+// Get nearest event
+const upcomingEvent = async () => {
   const limit = 5
   const date = new Date().getTime()
   const yesterdaylong = date - 24 * 60 * 60 * 1000
@@ -701,6 +720,40 @@ const cancelUpcoming = async () => {
   const response = await got(desturl, {
     responseType: "json"
   })
+
+  console.log(response.body.response)
+
+  const eventarr = response.body.response.events
+  let goodevent = []
+
+  for (var i = 0; i < eventarr.length; i++) {
+    if ("deleted_at" in eventarr[i]) {
+      console.log(`Found deleted_at in ${JSON.stringify(eventarr[i])}`)
+    }
+    else if (ignorememberarr.includes(eventarr[i]["creator_id"])) {
+      console.log("creator_id in ignorememberarr... passing...")
+    }
+    else {
+      goodevent = eventarr[i]
+      console.log(`Found good event: ${JSON.stringify(goodevent)}`)
+      return eventarr[i].event_id
+    }
+  }
+  return null
+}
+
+// Cancel nearest event
+const cancelUpcoming = async () => {
+  const event_id = await upcomingEvent()
+
+  const getpath = `/v3/conversations/${groupid}/events/delete?event_id=${event_id}&token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await fetch(desturl, {
+    method: "DELETE",
+    responseType: "json"
+  })
+
+  console.log(`DELETE response: ${response}`)
 }
 
 /* 
@@ -818,6 +871,7 @@ exports.createRotEvent = createRotEvent
 exports.locationsregex = locationsregex
 exports.nextregex = nextregex
 exports.getNextSport = getNextSport
+exports.returnNextSport = returnNextSportPos
 exports.getSportRotation = getSportRotation
 exports.sportrotregex = sportrotregex
 exports.cancelUpcoming = cancelUpcoming

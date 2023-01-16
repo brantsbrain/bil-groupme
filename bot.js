@@ -4,7 +4,7 @@ const {
   helptext, helpregex,
   ballersregex, getBallers,
   createEvent, createRotEvent,
-  nextregex, getNextSport,
+  nextregex, getNextSport, returnNextSportPos,
   getDayOfWeek, rotsportday, rotsporthour, rotsportmin, rotsportlength,
   soccerday, soccerhour, soccermin, soccerlength, soccerregex,
   getSportRotation, sportrotregex, cancelUpcoming,
@@ -57,7 +57,7 @@ const respond = async (req, res) => {
 
     // Check to see if enough players are going. Cancel if not
     else if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.checkgoingday) {
-      const going = await getBallers()
+      const going = (await getBallers()).length
 
       if (going < sportjson.sports.Soccer.mintoplay) {
         await createPost(`Minimum players for ${sportjson.sports.Soccer.id} is ${sportjson.sports.Soccer.mintoplay}. Canceling because only ${going} RSVP'd.`)
@@ -69,6 +69,17 @@ const respond = async (req, res) => {
     if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.scheduleday) {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()
+    }
+
+    // Check to see if enough players are going. Cancel if not
+    const rotsportpos = await returnNextSportPos()
+    if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson[rotsportpos].checkgoingday) {
+      const going = (await getBallers()).length
+
+      if (going < sportjson.sports[rotsportpos].mintoplay) {
+        await createPost(`Minimum players for ${sportjson.sports[rotsportpos].id} is ${sportjson.sports[rotsportpos].mintoplay}. Canceling because only ${going} RSVP'd.`)
+        await cancelUpcoming()
+      }
     }
 
     // Get dynamic day of week for sports poll title
