@@ -3,7 +3,7 @@ require("dotenv").config()
 const got = require("got")
 const {URL} = require("url")
 const https = require("https")
-const fetch = require("node-fetch")
+import fetch from "node-fetch"
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
