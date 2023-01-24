@@ -1,6 +1,6 @@
 ////////// IMPORTS //////////
-const cool = require('cool-ascii-faces')
-const {
+// const cool = require('cool-ascii-faces')
+import {
   helptext, helpregex,
   ballersregex, getBallers,
   createEvent, createRotEvent,
@@ -15,7 +15,7 @@ const {
   getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex, versionregex, sleepinsec,
   coolregex, createPost, sportjson, getPollWinner, sleep, getTodayDayofWeek
-} = require("./groupme-api")
+} from "./groupme-api.js"
 
 ////////// INITIALIZE VARS //////////
 // Bot info

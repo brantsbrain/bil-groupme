@@ -1,5 +1,5 @@
 import express from "express"
-import {respond} from "./bot"
+import {respond} from "./bot.js"
 
 // const express = require("express")
 // const {respond} = require("./bot")
