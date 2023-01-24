@@ -73,7 +73,7 @@ const respond = async (req, res) => {
 
     // Check to see if enough players are going. Cancel if not
     const rotsportpos = await returnNextSportPos()
-    if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson[rotsportpos].checkgoingday) {
+    if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.checkgoingday) {
       const going = (await getBallers()).length
 
       if (going < sportjson.sports[rotsportpos].mintoplay) {
