@@ -13,7 +13,7 @@ import {
   locationsregex, getLocations,
   getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
-  newbiestext, testregex, versionregex, sleepinsec,
+  newbiestext, testregex, versionregex, sleep, sleepinsec,
   coolregex, createPost, sportjson, getPollWinner, getTodayDayofWeek
 } from "./groupme-api.js"
 
@@ -285,4 +285,5 @@ const createCoolFaceMessage = async () => {
   await createPost(botResponse)
 }
 
-exports.respond = respond
+// exports.respond = respond
+export {respond}

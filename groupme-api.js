@@ -4,6 +4,7 @@ import got from "got"
 import {URL} from "url"
 import https from "https"
 import * as dotenv from "dotenv"
+import exp from "constants"
 dotenv.config()
 
 // require("dotenv").config()
@@ -855,7 +856,19 @@ const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 
-////////// EXPORTS //////////
+export {postPic}
+export {everyoneregex, getMembers}
+export {helpregex, helptext, getLocations}
+export {getBallers, ballersregex}
+export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming}
+export {sendDm, getUserId, loguserid}
+export {createSportsPoll, sportspollregex, sportjson, getPollWinner, tiebreakertitle, createTiedPoll}
+export {newbiesregex, newbiestext, versionregex, sleep, sleepinsec}
+export {coolregex, createPost, getAdmins, testregex, adminregex, getDayOfWeek, getTodayDayofWeek}
+export {soccerday, soccerhour, soccermin, soccerlength, soccerregex}
+export {rotsportday, rotsporthour, rotsportmin, rotsportlength}
+
+/* ////////// EXPORTS //////////
 // Pic vars
 exports.postPic = postPic
 
@@ -878,7 +891,7 @@ exports.createRotEvent = createRotEvent
 exports.locationsregex = locationsregex
 exports.nextregex = nextregex
 exports.getNextSport = getNextSport
-exports.returnNextSport = returnNextSportPos
+exports.returnNextSportPos = returnNextSportPos
 exports.getSportRotation = getSportRotation
 exports.sportrotregex = sportrotregex
 exports.cancelUpcoming = cancelUpcoming
@@ -923,4 +936,4 @@ exports.soccerregex = soccerregex
 exports.rotsportday = rotsportday
 exports.rotsporthour = rotsporthour
 exports.rotsportmin = rotsportmin
-exports.rotsportlength = rotsportlength
+exports.rotsportlength = rotsportlength */
