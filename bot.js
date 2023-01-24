@@ -14,7 +14,7 @@ import {
   getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex, versionregex, sleepinsec,
-  coolregex, createPost, sportjson, getPollWinner, sleep, getTodayDayofWeek
+  coolregex, createPost, sportjson, getPollWinner, getTodayDayofWeek
 } from "./groupme-api.js"
 
 ////////// INITIALIZE VARS //////////
