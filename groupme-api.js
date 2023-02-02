@@ -7,11 +7,6 @@ import * as dotenv from "dotenv"
 import exp from "constants"
 dotenv.config()
 
-// require("dotenv").config()
-// const got = require("got")
-// const {URL} = require("url")
-// const https = require("https")
-
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
 const baseurl = "https://api.groupme.com/"
@@ -867,73 +862,3 @@ export {newbiesregex, newbiestext, versionregex, sleep, sleepinsec}
 export {coolregex, createPost, getAdmins, testregex, adminregex, getDayOfWeek, getTodayDayofWeek}
 export {soccerday, soccerhour, soccermin, soccerlength, soccerregex}
 export {rotsportday, rotsporthour, rotsportmin, rotsportlength}
-
-/* ////////// EXPORTS //////////
-// Pic vars
-exports.postPic = postPic
-
-// Everyone
-exports.everyoneregex = everyoneregex
-exports.getMembers = getMembers
-
-// Help vars
-exports.helpregex = helpregex
-exports.helptext = helptext
-exports.getLocations = getLocations
-
-// Ballers
-exports.getBallers = getBallers
-exports.ballersregex = ballersregex
-
-// Event
-exports.createEvent = createEvent
-exports.createRotEvent = createRotEvent
-exports.locationsregex = locationsregex
-exports.nextregex = nextregex
-exports.getNextSport = getNextSport
-exports.returnNextSportPos = returnNextSportPos
-exports.getSportRotation = getSportRotation
-exports.sportrotregex = sportrotregex
-exports.cancelUpcoming = cancelUpcoming
-
-// Send DM
-exports.sendDm = sendDm
-exports.getUserId = getUserId
-exports.loguserid = loguserid
-
-// Sports poll
-exports.createSportsPoll = createSportsPoll
-exports.sportspollregex = sportspollregex
-exports.sportjson = sportjson
-exports.getPollWinner = getPollWinner
-exports.tiebreakertitle = tiebreakertitle
-exports.createTiedPoll = createTiedPoll
-
-// Newbie
-exports.newbiesregex = newbiesregex
-exports.newbiestext = newbiestext
-exports.versionregex = versionregex
-exports.sleepinsec = sleepinsec
-
-// Misc vars
-exports.coolregex = coolregex
-exports.createPost = createPost
-exports.getAdmins = getAdmins
-exports.testregex = testregex
-exports.adminregex = adminregex
-exports.sleep = sleep
-exports.getDayOfWeek = getDayOfWeek
-exports.getTodayDayofWeek = getTodayDayofWeek
-
-// Soccer Details
-exports.soccerday = soccerday
-exports.soccerhour = soccerhour
-exports.soccermin = soccermin
-exports.soccerlength = soccerlength
-exports.soccerregex = soccerregex
-
-// Rotsport Details
-exports.rotsportday = rotsportday
-exports.rotsporthour = rotsporthour
-exports.rotsportmin = rotsportmin
-exports.rotsportlength = rotsportlength */
