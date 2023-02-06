@@ -108,6 +108,7 @@ const createPost = async (message, mentionids) => {
     else {
       messagearr.push(currmess)
       currmess = ""
+      i -= 1
     }
   }
   if (currmess.length > 0) {
