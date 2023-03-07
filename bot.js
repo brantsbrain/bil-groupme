@@ -60,7 +60,7 @@ const respond = async (req, res) => {
       const going = (await getBallers()).length
 
       if (going < sportjson.sports.Soccer.mintoplay) {
-        await createPost(`Minimum players for ${sportjson.sports.Soccer.id} is ${sportjson.sports.Soccer.mintoplay}. Canceling because only ${going} RSVP'd.`)
+        await createPost(`Minimum players for ${(sportjson.sports.Soccer.id).toLowerCase()} is ${sportjson.sports.Soccer.mintoplay}. Canceling because only ${going} RSVP'd.`)
         await cancelUpcoming()
       }
     }
@@ -77,7 +77,7 @@ const respond = async (req, res) => {
       const going = (await getBallers()).length
 
       if (going < sportjson.sports[rotsportpos].mintoplay) {
-        await createPost(`Minimum players for ${sportjson.sports[rotsportpos].id} is ${sportjson.sports[rotsportpos].mintoplay}. Canceling because only ${going} RSVP'd.`)
+        await createPost(`Minimum players for ${(sportjson.sports[rotsportpos].id).toLowerCase()} is ${sportjson.sports[rotsportpos].mintoplay}. Canceling because only ${going} RSVP'd.`)
         await cancelUpcoming()
       }
     }
