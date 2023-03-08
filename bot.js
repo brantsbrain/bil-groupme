@@ -234,7 +234,7 @@ const respond = async (req, res) => {
         }
       }
 
-      // Post sports poll
+      // Post soccer event
       else if (soccerregex.test(requesttext)) {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
