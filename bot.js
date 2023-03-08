@@ -59,7 +59,7 @@ const respond = async (req, res) => {
     else if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.checkgoingday) {
       const going = (await getBallers()).length
 
-      if (going < sportjson.sports.Soccer.mintoplay) {
+      if (sportjson.checkgoing && going < sportjson.sports.Soccer.mintoplay) {
         await createPost(`Minimum players for ${(sportjson.sports.Soccer.id).toLowerCase()} is ${sportjson.sports.Soccer.mintoplay}. Canceling because only ${going} RSVP'd.`)
         await cancelUpcoming()
       }
@@ -76,7 +76,7 @@ const respond = async (req, res) => {
     if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.checkgoingday) {
       const going = (await getBallers()).length
 
-      if (going < sportjson.sports[rotsportpos].mintoplay) {
+      if (sportjson.checkgoing && going < sportjson.sports[rotsportpos].mintoplay) {
         await createPost(`Minimum players for ${(sportjson.sports[rotsportpos].id).toLowerCase()} is ${sportjson.sports[rotsportpos].mintoplay}. Canceling because only ${going} RSVP'd.`)
         await cancelUpcoming()
       }
