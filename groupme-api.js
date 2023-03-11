@@ -1,8 +1,11 @@
 ////////// IMPORTS //////////
-require("dotenv").config()
-const got = require("got")
-const {URL} = require("url")
-const https = require("https")
+import fetch from "node-fetch"
+import got from "got"
+import {URL} from "url"
+import https from "https"
+import * as dotenv from "dotenv"
+import exp from "constants"
+dotenv.config()
 
 ////////// INITIALIZE VARS //////////
 // Used to access GroupMe API
@@ -105,6 +108,7 @@ const createPost = async (message, mentionids) => {
     else {
       messagearr.push(currmess)
       currmess = ""
+      i -= 1
     }
   }
   if (currmess.length > 0) {
@@ -360,7 +364,7 @@ Handle all functions needed for:
 */
 
 // Create event
-const createEvent = async (name, loc, address, dayofweek, hour, min, length) => {
+const createEvent = async (name, loc, address, dayofweek, hour, min, length, description) => {
   console.log(`Creating ${name} event`)
   console.log(`Start hour: ${hour}, start min: ${min}`)
 
@@ -408,7 +412,8 @@ const createEvent = async (name, loc, address, dayofweek, hour, min, length) => 
     "location": {
       address,
       "name": loc
-    }
+    },
+    description
   }
 
   // Prep message as JSON and construct packet
@@ -634,17 +639,17 @@ const createTiedPoll = async (tiedarr) => {
 
 // Get next sport in rotation
 const getNextSport = async () => {
-  // Get nearest Friday
-  let upcomingfriday = await nearestDay(5)
-  upcomingfriday = new Date(upcomingfriday.getTime())
-  console.log(`Upcoming Friday: ${upcomingfriday}`)
+  // Get nearest rotating sport day
+  let upcomingrotsportday = await nearestDay(rotsportday)
+  upcomingrotsportday = new Date(upcomingrotsportday.getTime())
+  console.log(`Upcoming rotating sport day: ${upcomingrotsportday}`)
 
   // Create base EPOCH date and find number of weeks since EPOCH
   const epoch = new Date(0)
   console.log(`EPOCH: ${epoch}`)
   const msinweek = 604800000
-  const diff = (upcomingfriday - epoch) / msinweek
-  console.log(`(Friday - EPOCH) / ms in week: ${diff}`)
+  const diff = (upcomingrotsportday - epoch) / msinweek
+  console.log(`(Upcoming rotating sport day - EPOCH) / ms in week: ${diff}`)
   const floordiff = Math.floor(diff)
   console.log(`Math.floor(diff): ${floordiff}`)
 
@@ -666,6 +671,30 @@ const getNextSport = async () => {
   }
 }
 
+// Return next sport ID
+const returnNextSportPos = async () => {
+    // Get nearest rotating sport day
+    let upcomingrotsportday = await nearestDay(rotsportday)
+    upcomingrotsportday = new Date(upcomingrotsportday.getTime())
+    console.log(`Upcoming rotating sport day: ${upcomingrotsportday}`)
+  
+    // Create base EPOCH date and find number of weeks since EPOCH
+    const epoch = new Date(0)
+    console.log(`EPOCH: ${epoch}`)
+    const msinweek = 604800000
+    const diff = (upcomingrotsportday - epoch) / msinweek
+    console.log(`(Upcoming rotating sport day - EPOCH) / ms in week: ${diff}`)
+    const floordiff = Math.floor(diff)
+    console.log(`Math.floor(diff): ${floordiff}`)
+  
+    // Use modulo to navigate sportjson
+    const sportarrlen = Object.keys(sportjson.sports).length
+    const position = floordiff % sportarrlen
+    console.log(`Sport Position: ${position}`)
+  
+    return position
+}
+
 // Get sports rotation
 const getSportRotation = async () => {
   const sportarr = Object.keys(sportjson.sports)
@@ -681,6 +710,55 @@ const getSportRotation = async () => {
   }
 
   return sportrot
+}
+
+// Get nearest event
+const upcomingEvent = async () => {
+  const limit = 5
+  const date = new Date().getTime()
+  const yesterdaylong = date - 24 * 60 * 60 * 1000
+  const yesterday = new Date(yesterdaylong)
+  var end_at = yesterday.toISOString()
+
+  const getpath = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+    responseType: "json"
+  })
+
+  console.log(response.body.response)
+
+  const eventarr = response.body.response.events
+  let goodevent = []
+
+  for (var i = 0; i < eventarr.length; i++) {
+    if ("deleted_at" in eventarr[i]) {
+      console.log(`Found deleted_at in ${JSON.stringify(eventarr[i])}`)
+    }
+    else if (ignorememberarr.includes(eventarr[i]["creator_id"])) {
+      console.log("creator_id in ignorememberarr... passing...")
+    }
+    else {
+      goodevent = eventarr[i]
+      console.log(`Found good event: ${JSON.stringify(goodevent)}`)
+      return eventarr[i].event_id
+    }
+  }
+  return null
+}
+
+// Cancel nearest event
+const cancelUpcoming = async () => {
+  const event_id = await upcomingEvent()
+
+  const getpath = `/v3/conversations/${groupid}/events/delete?event_id=${event_id}&token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await fetch(desturl, {
+    method: "DELETE",
+    responseType: "json"
+  })
+
+  console.log(`DELETE response: ${response}`)
 }
 
 /* 
@@ -775,70 +853,14 @@ const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 
-////////// EXPORTS //////////
-// Pic vars
-exports.postPic = postPic
-
-// Everyone
-exports.everyoneregex = everyoneregex
-exports.getMembers = getMembers
-
-// Help vars
-exports.helpregex = helpregex
-exports.helptext = helptext
-exports.getLocations = getLocations
-
-// Ballers
-exports.getBallers = getBallers
-exports.ballersregex = ballersregex
-
-// Event
-exports.createEvent = createEvent
-exports.createRotEvent = createRotEvent
-exports.locationsregex = locationsregex
-exports.nextregex = nextregex
-exports.getNextSport = getNextSport
-exports.getSportRotation = getSportRotation
-exports.sportrotregex = sportrotregex
-
-// Send DM
-exports.sendDm = sendDm
-exports.getUserId = getUserId
-exports.loguserid = loguserid
-
-// Sports poll
-exports.createSportsPoll = createSportsPoll
-exports.sportspollregex = sportspollregex
-exports.sportjson = sportjson
-exports.getPollWinner = getPollWinner
-exports.tiebreakertitle = tiebreakertitle
-exports.createTiedPoll = createTiedPoll
-
-// Newbie
-exports.newbiesregex = newbiesregex
-exports.newbiestext = newbiestext
-exports.versionregex = versionregex
-exports.sleepinsec = sleepinsec
-
-// Misc vars
-exports.coolregex = coolregex
-exports.createPost = createPost
-exports.getAdmins = getAdmins
-exports.testregex = testregex
-exports.adminregex = adminregex
-exports.sleep = sleep
-exports.getDayOfWeek = getDayOfWeek
-exports.getTodayDayofWeek = getTodayDayofWeek
-
-// Soccer Details
-exports.soccerday = soccerday
-exports.soccerhour = soccerhour
-exports.soccermin = soccermin
-exports.soccerlength = soccerlength
-exports.soccerregex = soccerregex
-
-// Rotsport Details
-exports.rotsportday = rotsportday
-exports.rotsporthour = rotsporthour
-exports.rotsportmin = rotsportmin
-exports.rotsportlength = rotsportlength
+export {postPic}
+export {everyoneregex, getMembers}
+export {helpregex, helptext, getLocations}
+export {getBallers, ballersregex}
+export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming}
+export {sendDm, getUserId, loguserid}
+export {createSportsPoll, sportspollregex, sportjson, getPollWinner, tiebreakertitle, createTiedPoll}
+export {newbiesregex, newbiestext, versionregex, sleep, sleepinsec}
+export {coolregex, createPost, getAdmins, testregex, adminregex, getDayOfWeek, getTodayDayofWeek}
+export {soccerday, soccerhour, soccermin, soccerlength, soccerregex}
+export {rotsportday, rotsporthour, rotsportmin, rotsportlength}

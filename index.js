@@ -1,5 +1,8 @@
-const express = require("express")
-const {respond} = require("./bot")
+import express from "express"
+import {respond} from "./bot.js"
+
+// const express = require("express")
+// const {respond} = require("./bot")
 
 const port = Number(process.env.PORT || 5000)
 const app = express()

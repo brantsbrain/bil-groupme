@@ -1,21 +1,21 @@
 ////////// IMPORTS //////////
-const cool = require('cool-ascii-faces')
-const {
+// const cool = require('cool-ascii-faces')
+import {
   helptext, helpregex,
   ballersregex, getBallers,
   createEvent, createRotEvent,
-  nextregex, getNextSport,
+  nextregex, getNextSport, returnNextSportPos,
   getDayOfWeek, rotsportday, rotsporthour, rotsportmin, rotsportlength,
   soccerday, soccerhour, soccermin, soccerlength, soccerregex,
-  getSportRotation, sportrotregex,
+  getSportRotation, sportrotregex, cancelUpcoming,
   createSportsPoll, sportspollregex,
   createTiedPoll, tiebreakertitle,
   locationsregex, getLocations,
   getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
-  newbiestext, testregex, versionregex, sleepinsec,
-  coolregex, createPost, sportjson, getPollWinner, sleep, getTodayDayofWeek
-} = require("./groupme-api")
+  newbiestext, testregex, versionregex, sleep, sleepinsec,
+  coolregex, createPost, sportjson, getPollWinner, getTodayDayofWeek
+} from "./groupme-api.js"
 
 ////////// INITIALIZE VARS //////////
 // Bot info
@@ -43,20 +43,43 @@ const respond = async (req, res) => {
     const soccerdaystr = await getDayOfWeek(soccerday)
     const today = await getTodayDayofWeek()
 
-    // Auto-create events on cron job POSTs
+    // Create soccer event on CRON job POST
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.scheduleday) {
       console.log(`Found ${firstsportheader}...`)
-      await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength)
+      await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength, sportjson.sports["Soccer"].description)
 
       // Post winter reminder
       if (sportjson.winter.remind) {
         await createPost(sportjson.winter.note)
       }
     }
+
+    // Check to see if enough players are going. Cancel if not
+    else if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.checkgoingday) {
+      const going = (await getBallers()).length
+
+      if (sportjson.checkgoing && going < sportjson.sports.Soccer.mintoplay) {
+        await createPost(`Minimum players for ${(sportjson.sports.Soccer.id).toLowerCase()} is ${sportjson.sports.Soccer.mintoplay}. Canceling because only ${going} RSVP'd.`)
+        await cancelUpcoming()
+      }
+    }
+    
+    // Create rotational event
     if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.scheduleday) {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()
+    }
+
+    // Check to see if enough players are going. Cancel if not
+    const rotsportpos = await returnNextSportPos()
+    if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.checkgoingday) {
+      const going = (await getBallers()).length
+
+      if (sportjson.checkgoing && going < sportjson.sports[rotsportpos].mintoplay) {
+        await createPost(`Minimum players for ${(sportjson.sports[rotsportpos].id).toLowerCase()} is ${sportjson.sports[rotsportpos].mintoplay}. Canceling because only ${going} RSVP'd.`)
+        await cancelUpcoming()
+      }
     }
 
     // Get dynamic day of week for sports poll title
@@ -211,7 +234,7 @@ const respond = async (req, res) => {
         }
       }
 
-      // Post sports poll
+      // Post soccer event
       else if (soccerregex.test(requesttext)) {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
@@ -262,4 +285,5 @@ const createCoolFaceMessage = async () => {
   await createPost(botResponse)
 }
 
-exports.respond = respond
+// exports.respond = respond
+export {respond}
