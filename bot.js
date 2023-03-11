@@ -238,7 +238,7 @@ const respond = async (req, res) => {
       else if (soccerregex.test(requesttext)) {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
-          await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength)
+          await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength, sportjson.sports["Soccer"].description)
           console.log(`${sendername} ran /soccer`)
         }
         else {
