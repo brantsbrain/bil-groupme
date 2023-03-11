@@ -364,7 +364,7 @@ Handle all functions needed for:
 */
 
 // Create event
-const createEvent = async (name, loc, address, dayofweek, hour, min, length) => {
+const createEvent = async (name, loc, address, dayofweek, hour, min, length, description) => {
   console.log(`Creating ${name} event`)
   console.log(`Start hour: ${hour}, start min: ${min}`)
 
@@ -412,7 +412,8 @@ const createEvent = async (name, loc, address, dayofweek, hour, min, length) => 
     "location": {
       address,
       "name": loc
-    }
+    },
+    description
   }
 
   // Prep message as JSON and construct packet

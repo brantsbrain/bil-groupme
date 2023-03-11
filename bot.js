@@ -47,7 +47,7 @@ const respond = async (req, res) => {
     const headerkeys = Object.keys(req.headers)
     if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.scheduleday) {
       console.log(`Found ${firstsportheader}...`)
-      await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength)
+      await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength, sportjson.sports["Soccer"].description)
 
       // Post winter reminder
       if (sportjson.winter.remind) {
