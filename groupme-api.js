@@ -545,7 +545,7 @@ const createRotEvent = async () => {
   }
   else {
     const sportkey = Object.keys(sportjson.sports)[position]
-    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, sportjson.sports[sportkey].address, rotsportday, rotsporthour, rotsportmin, rotsportlength)
+    await createEvent(sportjson.sports[sportkey].name, sportjson.sports[sportkey].location, sportjson.sports[sportkey].address, rotsportday, rotsporthour, rotsportmin, rotsportlength, sportjson.sports[sportkey].description)
   }
 }
 

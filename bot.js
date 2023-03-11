@@ -114,7 +114,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, val.address, rotsportday, rotsporthour, rotsportmin, rotsportlength)
+              await createEvent(val.name, val.location, val.address, rotsportday, rotsporthour, rotsportmin, rotsportlength, val.description)
             }
           }
         }
@@ -132,7 +132,7 @@ const respond = async (req, res) => {
           console.log(`Looking for ${winnerarr[0]}`)
           for (const [key, val] of Object.entries(sportjson.poll)) {
             if (key == winnerarr[0]) {
-              await createEvent(val.name, val.location, val.address, rotsportday, rotsporthour, rotsportmin, rotsportlength)
+              await createEvent(val.name, val.location, val.address, rotsportday, rotsporthour, rotsportmin, rotsportlength, val.description)
             }
           }
         }
