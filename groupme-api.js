@@ -818,6 +818,43 @@ const postPic = async (text) => {
   req.end(json)
 }
 
+// Remove inactive members
+const removeInactive = async (days, act) => {
+  fetch(`https://api.groupme.com/v3/groups/${groupid}?token=${accesstoken}`)
+  .then(response => response.json())
+  .then(data => {
+    const members = data.response.members
+
+    // Get the date 90 days ago
+    const now = new Date()
+    const ninetyDaysAgo = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000))
+
+    // Filter out members who haven't sent a message or liked a message in over 90 days
+    const activeMembers = members.filter(member => {
+      const lastMessageTime = new Date(member.last_message_created_at * 1000)
+      const lastLikedTime = new Date(member.last_liked_message_at * 1000)
+      return lastMessageTime >= ninetyDaysAgo || lastLikedTime >= ninetyDaysAgo
+    })
+
+    // Remove inactive members from the group using the GroupMe API
+    const inactiveMembers = members.filter(member => !activeMembers.includes(member))
+    const memberIdsToRemove = inactiveMembers.map(member => member.user_id).join(',')
+    const removeUrl = `${baseurl}/v3/groups/${groupid}/members/remove?token=${accesstoken}&membership_id=${memberIdsToRemove}`
+
+    if (act) {
+      fetch(removeUrl, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Removed inactive members:', data))
+        .catch(error => console.error('Error removing inactive members:', error))
+    }
+    else {
+      console.log(`List to remove: ${memberIdsToRemove}`)
+      sendDm(loguserid, `List to remove: ${memberIdsToRemove}`)
+    }
+  })
+  .catch(error => console.error('Error getting group members:', error))
+}
+
 var helptext = `Bot Commands:\n` +
   `/admins [message] - Mention the admins with a pressing question/comment\n` +
   `/next - Post the next upcoming # sport\n` +
@@ -853,7 +890,7 @@ const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 
-export {postPic}
+export {postPic, removeInactive}
 export {everyoneregex, getMembers}
 export {helpregex, helptext, getLocations}
 export {getBallers, ballersregex}
