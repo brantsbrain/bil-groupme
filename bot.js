@@ -7,7 +7,7 @@ import {
   nextregex, getNextSport, returnNextSportPos,
   getDayOfWeek, rotsportday, rotsporthour, rotsportmin, rotsportlength,
   soccerday, soccerhour, soccermin, soccerlength, soccerregex,
-  getSportRotation, sportrotregex, cancelUpcoming,
+  getSportRotation, sportrotregex, cancelUpcoming, cancelregex,
   createSportsPoll, sportspollregex,
   createTiedPoll, tiebreakertitle,
   locationsregex, getLocations,
@@ -217,6 +217,20 @@ const respond = async (req, res) => {
           await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
           await sendDm(loguserid, `${sendername} attempted to run /ballers`)
           console.log(`${sendername} attempted to run /ballers`)
+        }
+      }
+
+      // Cancel upcoming event
+      else if (cancelregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          await cancelUpcoming()
+          console.log(`${sendername} ran /cancel`)
+        }
+        else {
+          await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /cancel!`)
+          await sendDm(loguserid, `${sendername} attempted to run /cancel`)
+          console.log(`${sendername} attempted to run /cancel`)
         }
       }
 

@@ -829,6 +829,7 @@ var helptext = `Bot Commands:\n` +
   `\nAdmin Commands:\n` +
   `/ballers [message] - Mention all people going to nearest upcoming event\n` +
   `/everyone [message] - Mention everyone in the group\n` +
+  `/cancel - Cancel nearest upcoming event (must be created by Brant)\n` +
 
   `\nNavigating GroupMe:\n` +
   `Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n` +
@@ -852,12 +853,13 @@ const sportrotregex = /^(\s)*\/rotation/i
 const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
+const cancelregex = /^(\s)*\/cancel/i
 
 export {postPic}
 export {everyoneregex, getMembers}
 export {helpregex, helptext, getLocations}
 export {getBallers, ballersregex}
-export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming}
+export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
 export {sendDm, getUserId, loguserid}
 export {createSportsPoll, sportspollregex, sportjson, getPollWinner, tiebreakertitle, createTiedPoll}
 export {newbiesregex, newbiestext, versionregex, sleep, sleepinsec}
