@@ -11,7 +11,6 @@ import {
   createSportsPoll, sportspollregex,
   createTiedPoll, tiebreakertitle,
   locationsregex, getLocations,
-  removeInactive,
   getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex, versionregex, sleep, sleepinsec,
@@ -29,7 +28,6 @@ const maxattempts = 3
 // Header values
 const firstsportheader = "soccer"
 const secondsportheader = "sports"
-const inactiveheader = "inactive"
 
 ////////// RESPOND //////////
 const respond = async (req, res) => {
@@ -82,11 +80,6 @@ const respond = async (req, res) => {
         await createPost(`Minimum players for ${(sportjson.sports[rotsportpos].id).toLowerCase()} is ${sportjson.sports[rotsportpos].mintoplay}. Canceling because only ${going} RSVP'd.`)
         await cancelUpcoming()
       }
-    }
-
-    // Remove inactive members
-    if (headerkeys.indexOf(inactiveheader) > -1) {
-      await removeInactive(90, sportjson.removememberaction)
     }
 
     // Get dynamic day of week for sports poll title
