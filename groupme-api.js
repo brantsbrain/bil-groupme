@@ -820,7 +820,7 @@ const postPic = async (text) => {
 
 // Remove inactive members
 const removeInactive = async (days, act) => {
-  fetch(`https://api.groupme.com/v3/groups/${groupid}?token=${accesstoken}`)
+  fetch(`${baseurl}/v3/groups/${groupid}?token=${accesstoken}`)
   .then(response => response.json())
   .then(data => {
     const members = data.response.members
@@ -889,12 +889,13 @@ const sportrotregex = /^(\s)*\/rotation/i
 const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
+const cancelregex = /^(\s)*\/cancel/i
 
 export {postPic, removeInactive}
 export {everyoneregex, getMembers}
 export {helpregex, helptext, getLocations}
 export {getBallers, ballersregex}
-export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming}
+export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
 export {sendDm, getUserId, loguserid}
 export {createSportsPoll, sportspollregex, sportjson, getPollWinner, tiebreakertitle, createTiedPoll}
 export {newbiesregex, newbiestext, versionregex, sleep, sleepinsec}
