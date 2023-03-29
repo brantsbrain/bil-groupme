@@ -850,7 +850,7 @@ const getWeather = async () => {
   // console.log(sportdatestring)
 
   // Construct the API URL to retrieve the weather forecast for the specified location and date
-  const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&appid=${apikey}`
+  const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&units=imperial&appid=${apikey}`
 
   axios.get(apiUrl).then((response) => {
     // console.log(response.data)
@@ -871,7 +871,7 @@ const getWeather = async () => {
     if (hightemp) {
       // Log the high temperature for the forecasted date
       console.log(`The high temperature for ${rotsportdate.toISOString()} in ${location} is ${hightemp} °F`)
-      return `The high temperature for ${rotsportdate.toISOString()} in ${location} is ${hightemp} °F`
+      return (`The high temperature for ${rotsportdate.toISOString()} in ${location} is ${hightemp} °F`)
     } else {
       console.log(`No forecast found for ${rotsportdate.toISOString()}`)
     }
