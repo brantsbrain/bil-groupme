@@ -840,11 +840,13 @@ const getWeather = async () => {
   // Calculate the date of the nearest upcoming Friday
   const rotsportdate = new Date(today.getTime() + daysuntilsportday * 24 * 60 * 60 * 1000)
   const sportdatestring = rotsportdate.toISOString().slice(0, 10)
+  console.log(sportdatestring)
 
   // Construct the API URL to retrieve the weather forecast for the specified location and date
   const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${apikey}`
 
   axios.get(apiUrl).then((response) => {
+    console.log(response)
     // Find the forecast for the specified date
     const forecast = response.data.list.find((item) => item.dt_txt.startsWith(sportdatestring))
     if (forecast) {
@@ -897,10 +899,11 @@ const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 const cancelregex = /^(\s)*\/cancel/i
+const weatherregex = /^(\s)*\/weather/i
 
 export {postPic}
 export {everyoneregex, getMembers}
-export {helpregex, helptext, getLocations, getWeather}
+export {helpregex, helptext, getLocations, getWeather, weatherregex}
 export {getBallers, ballersregex}
 export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
 export {sendDm, getUserId, loguserid}

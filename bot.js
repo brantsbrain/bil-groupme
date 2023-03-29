@@ -10,7 +10,7 @@ import {
   getSportRotation, sportrotregex, cancelUpcoming, cancelregex,
   createSportsPoll, sportspollregex,
   createTiedPoll, tiebreakertitle,
-  locationsregex, getLocations, getWeather,
+  locationsregex, getLocations, getWeather, weatherregex,
   getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex, versionregex, sleep, sleepinsec,
@@ -185,7 +185,7 @@ const respond = async (req, res) => {
       }
 
       // Test regex
-      else if (testregex.test(requesttext)) {
+      else if (weatherregex.test(requesttext)) {
         // const adjustnewbiestext = newbiestext.replace(/#/g, sportday).replace(/~/g, soccerdaystr)
         // await sendDm(loguserid, adjustnewbiestext)
         await createPost(await getWeather())
