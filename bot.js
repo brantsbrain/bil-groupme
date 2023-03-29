@@ -186,7 +186,9 @@ const respond = async (req, res) => {
 
       // Test regex
       else if (weatherregex.test(requesttext)) {
-        await createPost(await getWeather())
+        const weather = await getWeather()
+        console.log(weather)
+        await createPost(weather)
       }
 
       // Post next upcoming Friday sport

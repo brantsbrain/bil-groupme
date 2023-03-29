@@ -858,28 +858,30 @@ const getWeather = async () => {
     // Find the forecast for the specified date
     // const forecast = response.data.daily.find((item) => item.dt == rotsportdate.getTime())
 
-    var hightemp = null
+    var hightemp = ""
+    var rain = ""
     console.log(`Length of daily list: ${response.data.daily.length}`)
     for (let i = 0; i < response.data.daily.length; i++) {
       console.log(response.data.daily[i].dt)
       if (response.data.daily[i].dt.toString() == rotsportdatestring) {
         console.log("Got match")
         hightemp = response.data.daily[i].temp.max
+        rain = response.data.daily[i].weather[0].description
       }
     }
 
-    if (hightemp) {
+    var poststring = "No weather data found"
+    if (hightemp != "") {
       // Log the high temperature for the forecasted date
-      const poststring = `The high temperature for ${rotsportdate.toLocaleDateString("en-US", {weekday: "long"})} in ${location} is ${hightemp.toString()} degrees`
+      poststring = `The high temperature for ${rotsportdate.toLocaleDateString("en-US", {weekday: "long"})} in ${location} is ${hightemp.toString()} degrees with ${rain}`
       console.log(poststring)
-      console.log(typeof poststring)
-      return poststring
     } else {
       console.log(`No forecast found for ${rotsportdate.toISOString()}`)
     }
   }).catch((error) => {
     console.log(`Error retrieving weather data: ${error}`)
   })
+  return poststring
 
 }
 
