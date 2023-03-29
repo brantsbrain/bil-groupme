@@ -853,7 +853,7 @@ const getWeather = async () => {
   const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&units=imperial&appid=${apikey}`
 
   var poststring = "No weather data found"
-  axios.get(apiUrl).then((response) => {
+  await axios.get(apiUrl).then((response) => {
     // console.log(response.data)
     
     // Find the forecast for the specified date
