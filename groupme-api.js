@@ -839,7 +839,7 @@ const getWeather = async () => {
 
   // Calculate the date of the nearest upcoming Friday
   const rotsportdate = new Date(today.getTime() + daysuntilsportday * 24 * 60 * 60 * 1000)
-  rotsportdate.setHours(0)
+  rotsportdate.setHours(today.hour - timezone)
   rotsportdate.setMinutes(0)
   rotsportdate.setSeconds(0)
   rotsportdate.setMilliseconds(0)
