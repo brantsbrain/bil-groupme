@@ -818,6 +818,50 @@ const postPic = async (text) => {
   req.end(json)
 }
 
+const getWeather = async () => {
+  const axios = require('axios')
+
+  // Replace YOUR_API_KEY with your OpenWeatherMap API key
+  const apikey = sportjson.openweatherapikey
+
+  // Set the location for the weather forecast (in this example, New York City)
+  const location = sportjson.openweatherlocation
+  const lat = sportjson.openweatherlat
+  const lon = sportjson.openweatherlon
+
+  // Get the current date and time
+  const today = new Date()
+
+  // Calculate the number of days until Friday
+  const daysuntilsportday = rotsportday - today.getDay()
+  if (daysuntilsportday <= 0) {
+    daysuntilsportday += 7
+  }
+
+  // Calculate the date of the nearest upcoming Friday
+  const rotsportdate = new Date(today.getTime() + daysuntilsportday * 24 * 60 * 60 * 1000)
+  const sportdatestring = rotsportdate.toISOString().slice(0, 10)
+
+  // Construct the API URL to retrieve the weather forecast for the specified location and date
+  const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${apikey}`
+
+  axios.get(apiUrl).then((response) => {
+    // Find the forecast for the specified date
+    const forecast = response.data.list.find((item) => item.dt_txt.startsWith(sportdatestring))
+    if (forecast) {
+      // Log the high temperature for the forecasted date
+      const highTemp = forecast.main.temp_max;
+      console.log(`The high temperature for ${sportdatestring} in ${location} is ${highTemp} °F`)
+      return `The high temperature for ${sportdatestring} in ${location} is ${highTemp} °F`
+    } else {
+      console.log(`No forecast found for ${sportdatestring}`)
+    }
+  }).catch((error) => {
+    console.log(`Error retrieving weather data: ${error}`)
+  })
+
+}
+
 var helptext = `Bot Commands:\n` +
   `/admins [message] - Mention the admins with a pressing question/comment\n` +
   `/next - Post the next upcoming # sport\n` +
@@ -857,7 +901,7 @@ const cancelregex = /^(\s)*\/cancel/i
 
 export {postPic}
 export {everyoneregex, getMembers}
-export {helpregex, helptext, getLocations}
+export {helpregex, helptext, getLocations, getWeather}
 export {getBallers, ballersregex}
 export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
 export {sendDm, getUserId, loguserid}
