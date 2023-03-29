@@ -840,13 +840,14 @@ const getWeather = async () => {
   // Calculate the date of the nearest upcoming Friday
   const rotsportdate = new Date(today.getTime() + daysuntilsportday * 24 * 60 * 60 * 1000)
   const sportdatestring = rotsportdate.toISOString().slice(0, 10)
+  console.log(rotsportdate.getTime())
   console.log(sportdatestring)
 
   // Construct the API URL to retrieve the weather forecast for the specified location and date
   const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${apikey}`
 
   axios.get(apiUrl).then((response) => {
-    console.log(response)
+    console.log(response.data)
     
     // Find the forecast for the specified date
     const forecast = response.data.daily.find((item) => item.dt == rotsportdate.getTime())
