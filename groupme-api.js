@@ -839,6 +839,12 @@ const getWeather = async () => {
 
   // Calculate the date of the nearest upcoming Friday
   const rotsportdate = new Date(today.getTime() + daysuntilsportday * 24 * 60 * 60 * 1000)
+  rotsportdate.setHours(0)
+  rotsportdate.setMinutes(0)
+  rotsportdate.setSeconds(0)
+  rotsportdate.setMilliseconds(0)
+  const rotsportdatestring = rotsportdate.getTime().toString().slice(0,10)
+  
   const sportdatestring = rotsportdate.toISOString().slice(0, 10)
   console.log(rotsportdate.getTime())
   console.log(sportdatestring)
@@ -855,7 +861,7 @@ const getWeather = async () => {
     var hightemp = null
     for (let i = 0; i < response.data.daily.length; i++) {
       console.log(response.data.daily[i].dt)
-      if (response.data.daily[i].dt === rotsportdate.getTime()) {
+      if (response.data.daily[i].dt == rotsportdatestring) {
         console.log("Got match")
         hightemp = response.data.daily[i].temp.max
       }
