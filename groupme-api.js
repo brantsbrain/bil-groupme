@@ -839,7 +839,7 @@ const getWeather = async () => {
 
   // Calculate the date of the nearest upcoming Friday
   const rotsportdate = new Date(today.getTime() + daysuntilsportday * 24 * 60 * 60 * 1000)
-  rotsportdate.setHours(today.getHours() + timezone)
+  rotsportdate.setHours(today.getHours())
   rotsportdate.setMinutes(0)
   rotsportdate.setSeconds(0)
   rotsportdate.setMilliseconds(0)
@@ -870,10 +870,10 @@ const getWeather = async () => {
 
     if (hightemp) {
       // Log the high temperature for the forecasted date
-      console.log(`The high temperature for ${sportdatestring} in ${location} is ${hightemp} °F`)
-      return `The high temperature for ${sportdatestring} in ${location} is ${hightemp} °F`
+      console.log(`The high temperature for ${rotsportdate.toISOString()} in ${location} is ${hightemp} °F`)
+      return `The high temperature for ${rotsportdate.toISOString()} in ${location} is ${hightemp} °F`
     } else {
-      console.log(`No forecast found for ${sportdatestring}`)
+      console.log(`No forecast found for ${rotsportdate.toISOString()}`)
     }
   }).catch((error) => {
     console.log(`Error retrieving weather data: ${error}`)
