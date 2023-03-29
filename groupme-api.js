@@ -852,14 +852,14 @@ const getWeather = async () => {
     // Find the forecast for the specified date
     // const forecast = response.data.daily.find((item) => item.dt == rotsportdate.getTime())
 
-    var hightemp = ""
+    var hightemp = null
     for (let i = 0; i < response.data.daily.length; i++) {
       if (response.data.daily[i].dt === rotsportdate.getTime()) {
         hightemp = response.data.daily[i].temp.max
       }
     }
 
-    if (forecast) {
+    if (hightemp) {
       // Log the high temperature for the forecasted date
       console.log(`The high temperature for ${sportdatestring} in ${location} is ${hightemp} °F`)
       return `The high temperature for ${sportdatestring} in ${location} is ${hightemp} °F`
