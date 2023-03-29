@@ -839,15 +839,15 @@ const getWeather = async () => {
 
   // Calculate the date of the nearest upcoming Friday
   const rotsportdate = new Date(today.getTime() + daysuntilsportday * 24 * 60 * 60 * 1000)
-  rotsportdate.setHours(today.hour + timezone)
+  rotsportdate.setHours(today.getHours() + timezone)
   rotsportdate.setMinutes(0)
   rotsportdate.setSeconds(0)
   rotsportdate.setMilliseconds(0)
   const rotsportdatestring = rotsportdate.getTime().toString().slice(0,10)
   console.log(rotsportdatestring)
   
-  const sportdatestring = rotsportdate.toISOString().slice(0, 10)
-  console.log(sportdatestring)
+  // const sportdatestring = rotsportdate.toISOString().slice(0, 10)
+  // console.log(sportdatestring)
 
   // Construct the API URL to retrieve the weather forecast for the specified location and date
   const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&appid=${apikey}`
