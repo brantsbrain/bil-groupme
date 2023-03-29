@@ -844,19 +844,25 @@ const getWeather = async () => {
   console.log(sportdatestring)
 
   // Construct the API URL to retrieve the weather forecast for the specified location and date
-  const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${apikey}`
+  const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&appid=${apikey}`
 
   axios.get(apiUrl).then((response) => {
     console.log(response.data)
     
     // Find the forecast for the specified date
-    const forecast = response.data.daily.find((item) => item.dt == rotsportdate.getTime())
+    // const forecast = response.data.daily.find((item) => item.dt == rotsportdate.getTime())
+
+    var hightemp = ""
+    for (let i = 0; i < response.data.daily.length; i++) {
+      if (response.data.daily[i].dt === rotsportdate.getTime()) {
+        hightemp = response.data.daily[i].temp.max
+      }
+    }
 
     if (forecast) {
       // Log the high temperature for the forecasted date
-      const highTemp = forecast.main.temp_max;
-      console.log(`The high temperature for ${sportdatestring} in ${location} is ${highTemp} °F`)
-      return `The high temperature for ${sportdatestring} in ${location} is ${highTemp} °F`
+      console.log(`The high temperature for ${sportdatestring} in ${location} is ${hightemp} °F`)
+      return `The high temperature for ${sportdatestring} in ${location} is ${hightemp} °F`
     } else {
       console.log(`No forecast found for ${sportdatestring}`)
     }
