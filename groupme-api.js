@@ -844,9 +844,9 @@ const getWeather = async () => {
   rotsportdate.setSeconds(0)
   rotsportdate.setMilliseconds(0)
   const rotsportdatestring = rotsportdate.getTime().toString().slice(0,10)
+  console.log(rotsportdatestring)
   
   const sportdatestring = rotsportdate.toISOString().slice(0, 10)
-  console.log(rotsportdate.getTime())
   console.log(sportdatestring)
 
   // Construct the API URL to retrieve the weather forecast for the specified location and date
@@ -859,9 +859,10 @@ const getWeather = async () => {
     // const forecast = response.data.daily.find((item) => item.dt == rotsportdate.getTime())
 
     var hightemp = null
+    console.log(`Length of daily list: ${response.data.daily.length}`)
     for (let i = 0; i < response.data.daily.length; i++) {
       console.log(response.data.daily[i].dt)
-      if (response.data.daily[i].dt == rotsportdatestring) {
+      if (response.data.daily[i].dt.toString() == rotsportdatestring) {
         console.log("Got match")
         hightemp = response.data.daily[i].temp.max
       }
