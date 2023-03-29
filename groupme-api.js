@@ -845,23 +845,14 @@ const getWeather = async () => {
   rotsportdate.setMilliseconds(0)
   const rotsportdatestring = rotsportdate.getTime().toString().slice(0,10)
   console.log(rotsportdatestring)
-  
-  // const sportdatestring = rotsportdate.toISOString().slice(0, 10)
-  // console.log(sportdatestring)
 
   // Construct the API URL to retrieve the weather forecast for the specified location and date
   const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&units=imperial&appid=${apikey}`
 
   var poststring = "No weather data found"
   await axios.get(apiUrl).then((response) => {
-    // console.log(response.data)
-    
-    // Find the forecast for the specified date
-    // const forecast = response.data.daily.find((item) => item.dt == rotsportdate.getTime())
-
     var hightemp = ""
     var rain = ""
-    console.log(`Length of daily list: ${response.data.daily.length}`)
     for (let i = 0; i < response.data.daily.length; i++) {
       console.log(response.data.daily[i].dt)
       if (response.data.daily[i].dt.toString() == rotsportdatestring) {
@@ -873,7 +864,7 @@ const getWeather = async () => {
 
     if (hightemp != "") {
       // Log the high temperature for the forecasted date
-      poststring = `The high temperature for ${rotsportdate.toLocaleDateString("en-US", {weekday: "long"})} in ${location} is ${hightemp.toString()} degrees with ${rain}`
+      poststring = `The high temperature for ${rotsportdate.toLocaleDateString("en-US", {weekday: "long"})} in ${location} is ${Math.round(hightemp)} degrees with ${rain}`
       console.log(poststring)
     } else {
       console.log(`No forecast found for ${rotsportdate.toISOString()}`)
