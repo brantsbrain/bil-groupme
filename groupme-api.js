@@ -5,6 +5,7 @@ import {URL} from "url"
 import https from "https"
 import * as dotenv from "dotenv"
 import exp from "constants"
+import axios from "axios"
 dotenv.config()
 
 ////////// INITIALIZE VARS //////////
@@ -819,8 +820,6 @@ const postPic = async (text) => {
 }
 
 const getWeather = async () => {
-  const axios = require('axios')
-
   // Replace YOUR_API_KEY with your OpenWeatherMap API key
   const apikey = sportjson.openweatherapikey
 
