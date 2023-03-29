@@ -847,14 +847,16 @@ const getWeather = async () => {
   const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&appid=${apikey}`
 
   axios.get(apiUrl).then((response) => {
-    console.log(response.data)
+    // console.log(response.data)
     
     // Find the forecast for the specified date
     // const forecast = response.data.daily.find((item) => item.dt == rotsportdate.getTime())
 
     var hightemp = null
     for (let i = 0; i < response.data.daily.length; i++) {
+      console.log(response.data.daily[i].dt)
       if (response.data.daily[i].dt === rotsportdate.getTime()) {
+        console.log("Got match")
         hightemp = response.data.daily[i].temp.max
       }
     }
