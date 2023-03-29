@@ -186,8 +186,6 @@ const respond = async (req, res) => {
 
       // Test regex
       else if (weatherregex.test(requesttext)) {
-        // const adjustnewbiestext = newbiestext.replace(/#/g, sportday).replace(/~/g, soccerdaystr)
-        // await sendDm(loguserid, adjustnewbiestext)
         await createPost(await getWeather())
       }
 

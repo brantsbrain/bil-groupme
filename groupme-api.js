@@ -870,8 +870,9 @@ const getWeather = async () => {
 
     if (hightemp) {
       // Log the high temperature for the forecasted date
-      const poststring = `The high temperature for ${rotsportdate.toLocaleDateString("en-US", {weekday: "long"})} in ${location} is ${hightemp} degrees`
+      const poststring = `The high temperature for ${rotsportdate.toLocaleDateString("en-US", {weekday: "long"})} in ${location} is ${hightemp.toString()} degrees`
       console.log(poststring)
+      console.log(typeof poststring)
       return poststring
     } else {
       console.log(`No forecast found for ${rotsportdate.toISOString()}`)
