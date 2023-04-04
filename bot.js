@@ -2,7 +2,7 @@
 // const cool = require('cool-ascii-faces')
 import {
   helptext, helpregex,
-  ballersregex, getBallers,
+  ballersregex, getBallers, changeLoc, changelocregex,
   createEvent, createRotEvent,
   nextregex, getNextSport, returnNextSportPos,
   getDayOfWeek, rotsportday, rotsporthour, rotsportmin, rotsportlength,
@@ -233,6 +233,29 @@ const respond = async (req, res) => {
           await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /cancel!`)
           await sendDm(loguserid, `${sendername} attempted to run /cancel`)
           console.log(`${sendername} attempted to run /cancel`)
+        }
+      }
+
+      // Change upcoming event location
+      else if (changelocregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          const match = requesttext.match(changelocregex)
+          if (match) {
+            console.log("Got regex parameter match")
+            const newloc = match[1]
+            await changeLoc(newloc)
+            await createPost(`LOCATION CHANGE:\n\nWe are going to ${newloc}!`, await getBallers())
+          }
+          else {
+            console.log("Couldn't get regex parameter match")
+          }
+          console.log(`${sendername} ran /change`)
+        }
+        else {
+          await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /change!`)
+          await sendDm(loguserid, `${sendername} attempted to run /change`)
+          console.log(`${sendername} attempted to run /change`)
         }
       }
 

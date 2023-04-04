@@ -748,6 +748,41 @@ const upcomingEvent = async () => {
   return null
 }
 
+// Get whole upcoming event
+const wholeUpcomingEvent = async () => {
+  const limit = 5
+  const date = new Date().getTime()
+  const yesterdaylong = date - 24 * 60 * 60 * 1000
+  const yesterday = new Date(yesterdaylong)
+  var end_at = yesterday.toISOString()
+
+  const getpath = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+    responseType: "json"
+  })
+
+  console.log(response.body.response)
+
+  const eventarr = response.body.response.events
+  let goodevent = []
+
+  for (var i = 0; i < eventarr.length; i++) {
+    if ("deleted_at" in eventarr[i]) {
+      console.log(`Found deleted_at in ${JSON.stringify(eventarr[i])}`)
+    }
+    else if (ignorememberarr.includes(eventarr[i]["creator_id"])) {
+      console.log("creator_id in ignorememberarr... passing...")
+    }
+    else {
+      goodevent = eventarr[i]
+      console.log(`Found good event: ${JSON.stringify(goodevent)}`)
+      return eventarr[i]
+    }
+  }
+  return null
+}
+
 // Cancel nearest event
 const cancelUpcoming = async () => {
   const event_id = await upcomingEvent()
@@ -760,6 +795,56 @@ const cancelUpcoming = async () => {
   })
 
   console.log(`DELETE response: ${response}`)
+}
+
+// Change location of upcoming event
+const changeLoc = async (loc) => {
+  const event = await wholeUpcomingEvent()
+  const event_id = event.event_id
+  const currentname = event.name
+  const currentstart = event.start_at
+  const currentend = event.end_at
+  const currenttimezone = event.timezone
+  const currentallday = event.is_all_day
+  const currentdescription = event.description
+
+  const message = {
+    "name": currentname,
+    "start_at": currentstart,
+    "end_at": currentend,
+    "is_all_day": currentallday,
+    "timezone": currenttimezone,
+    "location": {
+      "address": " ",
+      "name": loc
+    },
+    "description": currentdescription
+  }
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: `/v3/conversations/${groupid}/events/update?${event_id}`,
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "application/json",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
 }
 
 /* 
@@ -913,11 +998,13 @@ const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 const cancelregex = /^(\s)*\/cancel/i
 const weatherregex = /^(\s)*\/weather/i
+const changelocregex = /^\/change\s*(\S+)/
+
 
 export {postPic}
 export {everyoneregex, getMembers}
 export {helpregex, helptext, getLocations, getWeather, weatherregex}
-export {getBallers, ballersregex}
+export {getBallers, ballersregex, changeLoc, changelocregex}
 export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
 export {sendDm, getUserId, loguserid}
 export {createSportsPoll, sportspollregex, sportjson, getPollWinner, tiebreakertitle, createTiedPoll}
