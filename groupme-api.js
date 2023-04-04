@@ -987,7 +987,7 @@ const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 const cancelregex = /^(\s)*\/cancel/i
 const weatherregex = /^(\s)*\/weather/i
-const changelocregex = /^\/change\s*(\S+)/
+const changelocregex = /^\/change\s+(.+)$/
 
 
 export {postPic}
