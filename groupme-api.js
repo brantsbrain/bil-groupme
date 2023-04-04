@@ -799,26 +799,15 @@ const cancelUpcoming = async () => {
 
 // Change location of upcoming event
 const changeLoc = async (loc) => {
+  console.log(`Changing location of nearest event to ${loc}`)
   const event = await wholeUpcomingEvent()
   const event_id = event.event_id
-  const currentname = event.name
-  const currentstart = event.start_at
-  const currentend = event.end_at
-  const currenttimezone = event.timezone
-  const currentallday = event.is_all_day
-  const currentdescription = event.description
 
   const message = {
-    "name": currentname,
-    "start_at": currentstart,
-    "end_at": currentend,
-    "is_all_day": currentallday,
-    "timezone": currenttimezone,
     "location": {
-      "address": " ",
+      "address": loc,
       "name": loc
-    },
-    "description": currentdescription
+    }
   }
 
   // Prep message as JSON and construct packet
@@ -826,7 +815,7 @@ const changeLoc = async (loc) => {
   const groupmeAPIOptions = {
     agent: false,
     host: "api.groupme.com",
-    path: `/v3/conversations/${groupid}/events/update?${event_id}`,
+    path: `/v3/conversations/${groupid}/events/update?event_id=${event_id}`,
     port: 443,
     method: "POST",
     headers: {
