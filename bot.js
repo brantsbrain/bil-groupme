@@ -2,7 +2,7 @@
 // const cool = require('cool-ascii-faces')
 import {
   helptext, helpregex,
-  ballersregex, getBallers,
+  ballersregex, getBallers, changeLoc, changelocregex,
   createEvent, createRotEvent,
   nextregex, getNextSport, returnNextSportPos,
   getDayOfWeek, rotsportday, rotsporthour, rotsportmin, rotsportlength,
@@ -10,7 +10,7 @@ import {
   getSportRotation, sportrotregex, cancelUpcoming, cancelregex,
   createSportsPoll, sportspollregex,
   createTiedPoll, tiebreakertitle,
-  locationsregex, getLocations,
+  locationsregex, getLocations, getWeather, weatherregex,
   getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
   newbiestext, testregex, versionregex, sleep, sleepinsec,
@@ -69,6 +69,7 @@ const respond = async (req, res) => {
     if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.scheduleday) {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()
+      await createPost(await getWeather())
     }
 
     // Check to see if enough players are going. Cancel if not
@@ -185,9 +186,10 @@ const respond = async (req, res) => {
       }
 
       // Test regex
-      else if (testregex.test(requesttext)) {
-        const adjustnewbiestext = newbiestext.replace(/#/g, sportday).replace(/~/g, soccerdaystr)
-        await sendDm(loguserid, adjustnewbiestext)
+      else if (weatherregex.test(requesttext)) {
+        const weather = await getWeather()
+        console.log(weather)
+        await createPost(weather)
       }
 
       // Post next upcoming Friday sport
@@ -231,6 +233,29 @@ const respond = async (req, res) => {
           await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /cancel!`)
           await sendDm(loguserid, `${sendername} attempted to run /cancel`)
           console.log(`${sendername} attempted to run /cancel`)
+        }
+      }
+
+      // Change upcoming event location
+      else if (changelocregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          const match = requesttext.match(changelocregex)
+          if (match) {
+            console.log("Got regex parameter match")
+            const newloc = match[1]
+            await changeLoc(newloc)
+            await createPost(`LOCATION CHANGE:\n\nWe are going to ${newloc}!`, await getBallers())
+          }
+          else {
+            console.log("Couldn't get regex parameter match")
+          }
+          console.log(`${sendername} ran /change`)
+        }
+        else {
+          await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /change!`)
+          await sendDm(loguserid, `${sendername} attempted to run /change`)
+          console.log(`${sendername} attempted to run /change`)
         }
       }
 

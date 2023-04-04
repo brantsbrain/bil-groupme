@@ -5,6 +5,7 @@ import {URL} from "url"
 import https from "https"
 import * as dotenv from "dotenv"
 import exp from "constants"
+import axios from "axios"
 dotenv.config()
 
 ////////// INITIALIZE VARS //////////
@@ -747,6 +748,41 @@ const upcomingEvent = async () => {
   return null
 }
 
+// Get whole upcoming event
+const wholeUpcomingEvent = async () => {
+  const limit = 5
+  const date = new Date().getTime()
+  const yesterdaylong = date - 24 * 60 * 60 * 1000
+  const yesterday = new Date(yesterdaylong)
+  var end_at = yesterday.toISOString()
+
+  const getpath = `/v3/conversations/${groupid}/events/list?end_at=${end_at}&limit=${limit}&token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+    responseType: "json"
+  })
+
+  console.log(response.body.response)
+
+  const eventarr = response.body.response.events
+  let goodevent = []
+
+  for (var i = 0; i < eventarr.length; i++) {
+    if ("deleted_at" in eventarr[i]) {
+      console.log(`Found deleted_at in ${JSON.stringify(eventarr[i])}`)
+    }
+    else if (ignorememberarr.includes(eventarr[i]["creator_id"])) {
+      console.log("creator_id in ignorememberarr... passing...")
+    }
+    else {
+      goodevent = eventarr[i]
+      console.log(`Found good event: ${JSON.stringify(goodevent)}`)
+      return eventarr[i]
+    }
+  }
+  return null
+}
+
 // Cancel nearest event
 const cancelUpcoming = async () => {
   const event_id = await upcomingEvent()
@@ -759,6 +795,45 @@ const cancelUpcoming = async () => {
   })
 
   console.log(`DELETE response: ${response}`)
+}
+
+// Change location of upcoming event
+const changeLoc = async (loc) => {
+  console.log(`Changing location of nearest event to ${loc}`)
+  const event = await wholeUpcomingEvent()
+  const event_id = event.event_id
+
+  const message = {
+    "location": {
+      "address": loc,
+      "name": loc
+    }
+  }
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: `/v3/conversations/${groupid}/events/update?event_id=${event_id}`,
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "application/json",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
 }
 
 /* 
@@ -818,6 +893,63 @@ const postPic = async (text) => {
   req.end(json)
 }
 
+const getWeather = async () => {
+  // Replace YOUR_API_KEY with your OpenWeatherMap API key
+  const apikey = sportjson.openweatherapikey
+
+  // Set the location for the weather forecast (in this example, New York City)
+  const location = sportjson.openweatherlocation
+  const lat = sportjson.openweatherlat
+  const lon = sportjson.openweatherlon
+
+  // Get the current date and time
+  const today = new Date()
+
+  // Calculate the number of days until Friday
+  const daysuntilsportday = rotsportday - today.getDay()
+  if (daysuntilsportday <= 0) {
+    daysuntilsportday += 7
+  }
+
+  // Calculate the date of the nearest upcoming Friday
+  const rotsportdate = new Date(today.getTime() + daysuntilsportday * 24 * 60 * 60 * 1000)
+  rotsportdate.setHours(today.getHours())
+  rotsportdate.setMinutes(0)
+  rotsportdate.setSeconds(0)
+  rotsportdate.setMilliseconds(0)
+  const rotsportdatestring = rotsportdate.getTime().toString().slice(0,10)
+  console.log(rotsportdatestring)
+
+  // Construct the API URL to retrieve the weather forecast for the specified location and date
+  const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly&units=imperial&appid=${apikey}`
+
+  var poststring = "No weather data found"
+  await axios.get(apiUrl).then((response) => {
+    var hightemp = ""
+    var rain = ""
+    for (let i = 0; i < response.data.daily.length; i++) {
+      console.log(response.data.daily[i].dt)
+      if (response.data.daily[i].dt.toString() == rotsportdatestring) {
+        console.log("Got match")
+        hightemp = response.data.daily[i].temp.max
+        rain = response.data.daily[i].weather[0].description
+      }
+    }
+
+    if (hightemp != "") {
+      // Log the high temperature for the forecasted date
+      poststring = `The high temperature for ${rotsportdate.toLocaleDateString("en-US", {weekday: "long"})} in ${location} is ${Math.round(hightemp)} degrees with ${rain}`
+      console.log(poststring)
+    } else {
+      console.log(`No forecast found for ${rotsportdate.toISOString()}`)
+    }
+  }).catch((error) => {
+    console.log(`Error retrieving weather data: ${error}`)
+  })
+  return poststring
+
+}
+
 var helptext = `Bot Commands:\n` +
   `/admins [message] - Mention the admins with a pressing question/comment\n` +
   `/next - Post the next upcoming # sport\n` +
@@ -830,6 +962,7 @@ var helptext = `Bot Commands:\n` +
   `/ballers [message] - Mention all people going to nearest upcoming event\n` +
   `/everyone [message] - Mention everyone in the group\n` +
   `/cancel - Cancel nearest upcoming event (must be created by bot owner)\n` +
+  `/change [new location] - Change the location of nearest upcoming event (must be created by bot owner) and notify ballers\n` +
 
   `\nNavigating GroupMe:\n` +
   `Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n` +
@@ -854,11 +987,14 @@ const adminregex = /^(\s)*\/admin/i
 const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 const cancelregex = /^(\s)*\/cancel/i
+const weatherregex = /^(\s)*\/weather/i
+const changelocregex = /^\/change\s+(.+)$/
+
 
 export {postPic}
 export {everyoneregex, getMembers}
-export {helpregex, helptext, getLocations}
-export {getBallers, ballersregex}
+export {helpregex, helptext, getLocations, getWeather, weatherregex}
+export {getBallers, ballersregex, changeLoc, changelocregex}
 export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
 export {sendDm, getUserId, loguserid}
 export {createSportsPoll, sportspollregex, sportjson, getPollWinner, tiebreakertitle, createTiedPoll}
