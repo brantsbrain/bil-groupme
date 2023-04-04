@@ -962,6 +962,7 @@ var helptext = `Bot Commands:\n` +
   `/ballers [message] - Mention all people going to nearest upcoming event\n` +
   `/everyone [message] - Mention everyone in the group\n` +
   `/cancel - Cancel nearest upcoming event (must be created by bot owner)\n` +
+  `/change [new location] - Change the location of nearest upcoming event (must be created by bot owner) and notify ballers\n` +
 
   `\nNavigating GroupMe:\n` +
   `Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n` +
