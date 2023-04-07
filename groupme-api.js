@@ -956,6 +956,7 @@ var helptext = `Bot Commands:\n` +
   `/rotation - Post the current sport rotation\n` +
   `/locations - Post all previous locations of sports\n` +
   `/version - Display version number and GitHub URL for project\n` +
+  `/faq - Post link to BIL FAQs doc\n` +
   `/help - Uhhh... you're here\n` +
   
   `\nAdmin Commands:\n` +
@@ -989,8 +990,9 @@ const everyoneregex = /^(\s)*\/everyone/i
 const cancelregex = /^(\s)*\/cancel/i
 const weatherregex = /^(\s)*\/weather/i
 const changelocregex = /^\/change\s+(.+)$/
+const faqregex = /^(\s)*\/faq/i
 
-
+// Exports
 export {postPic}
 export {everyoneregex, getMembers}
 export {helpregex, helptext, getLocations, getWeather, weatherregex}
@@ -998,7 +1000,7 @@ export {getBallers, ballersregex, changeLoc, changelocregex}
 export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
 export {sendDm, getUserId, loguserid}
 export {createSportsPoll, sportspollregex, sportjson, getPollWinner, tiebreakertitle, createTiedPoll}
-export {newbiesregex, newbiestext, versionregex, sleep, sleepinsec}
+export {newbiesregex, newbiestext, versionregex, sleep, sleepinsec, faqregex}
 export {coolregex, createPost, getAdmins, testregex, adminregex, getDayOfWeek, getTodayDayofWeek}
 export {soccerday, soccerhour, soccermin, soccerlength, soccerregex}
 export {rotsportday, rotsporthour, rotsportmin, rotsportlength}

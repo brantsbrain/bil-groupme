@@ -13,7 +13,7 @@ import {
   locationsregex, getLocations, getWeather, weatherregex,
   getMembers, everyoneregex,
   getAdmins, sendDm, getUserId, loguserid, adminregex,
-  newbiestext, testregex, versionregex, sleep, sleepinsec,
+  newbiestext, testregex, versionregex, sleep, sleepinsec, faqregex,
   coolregex, createPost, sportjson, getPollWinner, getTodayDayofWeek
 } from "./groupme-api.js"
 
@@ -104,6 +104,11 @@ const respond = async (req, res) => {
       // Post version defined in bot
       else if (versionregex.test(requesttext)) {
         await createPost(`Current Version: ${version}`)
+      }
+
+      // Post link to FAQs
+      else if (faqregex.test(requesttext)) {
+        await createPost(`Link to BIL FAQs: ${sportjson.faqlink}`)
       }
 
       // Post help text
