@@ -69,7 +69,11 @@ const respond = async (req, res) => {
     if (headerkeys.indexOf(secondsportheader) > -1 && today == sportjson.rotsport.scheduleday) {
       console.log(`Found ${secondsportheader}...`)
       await createRotEvent()
-      await createPost(await getWeather())
+
+      // Post forecast
+      if (sportjson.weather.active) {
+        await createPost(await getWeather())
+      }
     }
 
     // Check to see if enough players are going. Cancel if not
