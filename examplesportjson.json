@@ -1,5 +1,16 @@
 {
+    "faqlink": "",
+    "weather": {
+        "active": false,
+        "apikey": "",
+        "location": "",
+        "lat": "",
+        "lon": ""
+    },
+    "removememberaction": false,
+    "checkgoing": false,
     "winter": {
+        "remind": false,
         "timespan": "",
         "note": "WINTER REMINDER: Don't forget to check the weather forecast BEFORE you RSVP! We don't want people to show up to a sport only to have a bunch of people bail last minute. Thanks!"
     },
@@ -21,7 +32,8 @@
             "id": "Basketball",
             "name": "Basketball it up!",
             "location": "Middle school",
-            "address": "123 Main St"
+            "address": "123 Main St",
+            "description": ""
         },
         "Poll": {
             "placeholder": "placeholder"
@@ -30,13 +42,15 @@
             "id": "Volleyball",
             "name": "Volleyballin",
             "location": "High school",
-            "address": "321 Main St"
+            "address": "321 Main St",
+            "description": ""
         },
         "Soccer": {
             "id": "Soccer",
             "name": "Soccer Friday!",
             "location": "Middle school",
-            "address": "123 Main St"
+            "address": "123 Main St",
+            "description": ""
         }
     },
     "poll": {
@@ -44,43 +58,50 @@
             "id": "Soccer",
             "name": "Soccer Y'all",
             "location": "High school",
-            "address": "321 Main St"
+            "address": "321 Main St",
+            "description": ""
         },
         "Ultimate Frisbee": {
             "id": "Ultimate Frisbee",
             "name": "Circle in Air Game",
             "location": "Middle school",
-            "address": "123 Main St"
+            "address": "123 Main St",
+            "description": ""
         },
         "Football": {
             "id": "Football",
             "name": "The 'Ol Pigskin",
             "location": "High school",
-            "address": "321 Main St"
+            "address": "321 Main St",
+            "description": ""
         },
         "Kickball": {
             "id": "Kickball",
             "name": "Kick the Ball Really Far Game",
             "location": "Middle school",
-            "address": "123 Main St"
+            "address": "123 Main St",
+            "description": ""
         },
         "Volleyball": {
             "id": "Volleyball",
             "name": "Volleyballin",
             "location": "High school",
-            "address": "321 Main St"
+            "address": "321 Main St",
+            "description": ""
         },
         "Basketball": {
             "id": "Basketball",
             "name": "Basketball it up!",
             "location": "Middle school",
-            "address": "123 Main St"
+            "address": "123 Main St",
+            "description": ""
         },
         "Wiffle Ball": {
             "id": "Wiffle Ball",
             "name": "Wiffle Ballers",
             "location": "High school",
-            "address": "321 Main St"
+            "address": "321 Main St",
+            "description": ""
         }
     },
     "addresses": {
