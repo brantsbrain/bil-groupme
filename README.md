@@ -24,6 +24,7 @@ We are constantly looking for ways to improve on current functionality and imple
 | `/next`                                   | Posts the next upcoming sport in the rotation |
 | `/rotation`                               | Posts the full current rotation of sports |
 | `/locations`                              | Posts a list of sports locations laid out in the `addresses` key of `SPORT_JSON` |
+| `/faq`                                    | Post link to BIL FAQs doc |
 | `/help`                                   | Posts help text |
 
 ### Admin Commands
@@ -32,6 +33,8 @@ We are constantly looking for ways to improve on current functionality and imple
 | ----------------------------------------- | ------- |
 | `/ballers [message]`                      | Mentions all members who have marked themselves as `Going` to the nearest upcoming event |
 | `/everyone [message]`                     | Mentions all members |
+| `/cancel`                                 | Cancel nearest upcoming event (must be created by bot owner) |
+| `/change [new location]`                  | Change the location of nearest upcoming event (must be created by bot owner) and notify baller |
 | `/sportspoll`                             | Manually post a sportspoll |
 | `/soccer`                                 | Manually post a soccer event |
 
