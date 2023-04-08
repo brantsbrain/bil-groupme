@@ -1,5 +1,4 @@
 ////////// IMPORTS //////////
-// const cool = require('cool-ascii-faces')
 import {
   helptext, helpregex,
   ballersregex, getBallers, changeLoc, changelocregex,
@@ -19,7 +18,7 @@ import {
 
 ////////// INITIALIZE VARS //////////
 // Bot info
-const version = "May I Take Your Hat Sir? v5.0\n" +
+const version = "May I Take Your Hat Sir?\n" +
                 "https://github.com/brantsbrain/bil-groupme"
 
 // Max attempts to find user id
@@ -39,12 +38,21 @@ const respond = async (req, res) => {
     console.log(`User request: "${requesttext}"`)
     console.log(`Request Body: "${JSON.stringify(request)}"`)
     
+    // Prep days of the week
     const sportday = await getDayOfWeek(rotsportday)
     const soccerdaystr = await getDayOfWeek(soccerday)
     const today = await getTodayDayofWeek()
 
-    // Create soccer event on CRON job POST
+    // Get dynamic day of week for sports poll title
+    const sportspolltitle = `${await getDayOfWeek(rotsportday)} Sports Poll`
+
+    // Gather headers
     const headerkeys = Object.keys(req.headers)
+
+    ///////////////////////////////////////////////////
+    //////////////////// CRON JOBS ////////////////////
+    ///////////////////////////////////////////////////
+    // Create soccer event
     if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.scheduleday) {
       console.log(`Found ${firstsportheader}...`)
       await createEvent(`Soccer ${soccerdaystr}s!`, sportjson.sports["Soccer"].location, sportjson.sports["Soccer"].address, soccerday, soccerhour, soccermin, soccerlength, sportjson.sports["Soccer"].description)
@@ -56,10 +64,10 @@ const respond = async (req, res) => {
     }
 
     // Check to see if enough players are going. Cancel if not
-    else if (headerkeys.indexOf(firstsportheader) > -1 && today == sportjson.soccer.checkgoingday) {
+    else if (headerkeys.indexOf(firstsportheader) > -1 && sportjson.checkgoing && today == sportjson.soccer.checkgoingday) {
       const going = (await getBallers()).length
 
-      if (sportjson.checkgoing && going < sportjson.sports.Soccer.mintoplay) {
+      if (going < sportjson.sports.Soccer.mintoplay) {
         await createPost(`Minimum players for ${(sportjson.sports.Soccer.id).toLowerCase()} is ${sportjson.sports.Soccer.mintoplay}. Canceling because only ${going} RSVP'd.`)
         await cancelUpcoming()
       }
@@ -87,15 +95,13 @@ const respond = async (req, res) => {
       }
     }
 
-    // Get dynamic day of week for sports poll title
-    const sportspolltitle = `${await getDayOfWeek(rotsportday)} Sports Poll`
-
-    // If text exists
+    //////////////////////////////////////////////////
+    //////////////////// COMMANDS ////////////////////
+    //////////////////////////////////////////////////
     if (requesttext) {
       res.writeHead(200)
       await sleep(1500)
 
-      //////////////////// BASE CONTROLS ////////////////////
       // Post a cool face
       if (coolregex.test(requesttext)) {
         await createCoolFaceMessage()
@@ -194,11 +200,9 @@ const respond = async (req, res) => {
         await createPost(await getLocations())
       }
 
-      // Test regex
+      // Post weather
       else if (weatherregex.test(requesttext)) {
-        const weather = await getWeather()
-        console.log(weather)
-        await createPost(weather)
+        await createPost(await getWeather())
       }
 
       // Post next upcoming Friday sport
@@ -216,7 +220,9 @@ const respond = async (req, res) => {
         await createPost(requesttext, await getAdmins())
       }
 
+      ////////////////////////////////////////////////////////
       //////////////////// ADMIN CONTROLS ////////////////////
+      ////////////////////////////////////////////////////////
       // Mention ballers
       else if (ballersregex.test(requesttext)) {
         const adminarr = await getAdmins()
@@ -327,11 +333,4 @@ const respond = async (req, res) => {
   }
 }
 
-// Create cool face
-const createCoolFaceMessage = async () => {
-  const botResponse = cool()
-  await createPost(botResponse)
-}
-
-// exports.respond = respond
 export {respond}

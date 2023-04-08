@@ -4,7 +4,6 @@ import got from "got"
 import {URL} from "url"
 import https from "https"
 import * as dotenv from "dotenv"
-import exp from "constants"
 import axios from "axios"
 dotenv.config()
 
@@ -20,8 +19,7 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-////////// ENVIRONMENT VARS //////////
-// Needed for interaction w/ GroupMe bot
+// ENV vars
 const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
@@ -74,13 +72,9 @@ if (!bot_id) {
   console.log("ENV: 'BOT_ID' is undefined")
 }
 
-/* 
-////////// SEND MESSAGES //////////
-Send either: 
-- a regular post to the GroupMe, 
-- a post w/ an array of mention IDs, or
-- a DM to a user ID from the bot owner's user ID
-*/
+///////////////////////////////////////////////////////
+//////////////////// SEND MESSAGES ////////////////////
+///////////////////////////////////////////////////////
 
 // Create a post and mention users if ID array is provided
 const createPost = async (message, mentionids) => {
@@ -241,14 +235,9 @@ const sendDm = async (userid, message) => {
   }
 }
 
-/* 
-////////// GETTERS //////////
-Get: 
-- an array of user IDs of members going to the most recently posted event,
-- an array of all user IDs,
-- an array of admin user IDs for the GroupMe, or
-- a user ID from a provided nickname
-*/
+/////////////////////////////////////////////////
+//////////////////// GETTERS ////////////////////
+/////////////////////////////////////////////////
 
 // Get members as an array from the nearest upcoming event
 const getBallers = async () => {
@@ -355,14 +344,9 @@ const getTodayDayofWeek = async () => {
   return currentdate.getDay()
 }
 
-/* 
-////////// EVENTS/DAYS //////////
-Handle all functions needed for:
-- creating events,
-- finding appropriate dates,
-- finding appropriate sports, and
-- polling
-*/
+/////////////////////////////////////////////////////
+//////////////////// EVENTS/DAYS ////////////////////
+/////////////////////////////////////////////////////
 
 // Create event
 const createEvent = async (name, loc, address, dayofweek, hour, min, length, description) => {
@@ -836,10 +820,9 @@ const changeLoc = async (loc) => {
   req.end(json)
 }
 
-/* 
-////////// MISC //////////
-Misc functions
-*/
+//////////////////////////////////////////////
+//////////////////// MISC ////////////////////
+//////////////////////////////////////////////
 
 // Get locations as string from sportjson
 const getLocations = async () => {
@@ -893,6 +876,7 @@ const postPic = async (text) => {
   req.end(json)
 }
 
+// Get upcoming weather forecast
 const getWeather = async () => {
   // Replace YOUR_API_KEY with your OpenWeatherMap API key
   const apikey = sportjson.openweatherapikey
@@ -950,6 +934,10 @@ const getWeather = async () => {
 
 }
 
+///////////////////////////////////////////////////
+//////////////////// HELP TEXT ////////////////////
+///////////////////////////////////////////////////
+
 var helptext = `Bot Commands:\n` +
   `/admins [message] - Mention the admins with a pressing question/comment\n` +
   `/next - Post the next upcoming # sport\n` +
@@ -964,6 +952,8 @@ var helptext = `Bot Commands:\n` +
   `/everyone [message] - Mention everyone in the group\n` +
   `/cancel - Cancel nearest upcoming event (must be created by bot owner)\n` +
   `/change [new location] - Change the location of nearest upcoming event (must be created by bot owner) and notify ballers\n` +
+  `/soccer - Post soccer event\n` +
+  `/sportspoll - Post sports poll\n` +
 
   `\nNavigating GroupMe:\n` +
   `Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n` +
@@ -973,7 +963,10 @@ var helptext = `Bot Commands:\n` +
   `Soccer ~s - Mondays at 8:00 AM EST a soccer event is created for the following ~\n` +
   `# Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following weekly sport day's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created. Ties must be resolved manually.`
 
+/////////////////////////////////////
 ////////// (LOTS OF) REGEX //////////
+/////////////////////////////////////
+
 const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
@@ -989,10 +982,13 @@ const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 const cancelregex = /^(\s)*\/cancel/i
 const weatherregex = /^(\s)*\/weather/i
-const changelocregex = /^\/change\s+(.+)$/
+const changelocregex = /^\/change\s+(.+)$/i
 const faqregex = /^(\s)*\/faq/i
 
-// Exports
+/////////////////////////////
+////////// EXPORTS //////////
+/////////////////////////////
+
 export {postPic}
 export {everyoneregex, getMembers}
 export {helpregex, helptext, getLocations, getWeather, weatherregex}
