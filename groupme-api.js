@@ -998,10 +998,48 @@ const kickInactive = async () => {
     responseType: "json"
   })
 
-  // Assign matching poll
-  const inactivitypoll = response.body.response.polls[0].data
+  // Get all member IDs
+  const allmembers = await getMembers()
+  
+  // Get active member IDs
+  const activemembers = response.body.response.polls[0].data.options[0].voter_ids
 
+  // Get IDs to remove
+  const removemembers = allmembers.filter(x => !activemembers.includes(x))
+  console.log(removemembers)
 
+  for (x of removemembers) {
+    if (sportjson.inactivitypoll.active) {
+      const message = {}
+      // Prep message as JSON and construct packet
+      const json = JSON.stringify(message)
+      const groupmeAPIOptions = {
+        agent: false,
+        host: "api.groupme.com",
+        path: `/v3/groups/${groupid}/members/${x}/remove`,
+        port: 443,
+        method: "POST",
+        headers: {
+          "Content-Length": json.length,
+          "Content-Type": "application/json",
+          "X-Access-Token": accesstoken
+        }
+      }
+  
+      // Send request
+      const req = https.request(groupmeAPIOptions, response => {
+        let data = ""
+        response.on("data", chunk => (data += chunk))
+        response.on("end", () =>
+          console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+        )
+      })
+      req.end(json)
+    }
+    else {
+      console.log(`Would remove ${x}`)
+    }
+  }
 }
 
 ///////////////////////////////////////////////////
