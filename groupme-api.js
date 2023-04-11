@@ -1037,38 +1037,47 @@ const kickInactive = async () => {
   console.log(removemembers)
 
   // Remove members if active. Log if not
+  var counter = 0
   for (const x of removemembers) {
     if (sportjson.inactivitypoll.active) {
-      // Prep message as JSON and construct packet
-      const message = {}
-      const json = JSON.stringify(message)
-      const groupmeAPIOptions = {
-        agent: false,
-        host: "api.groupme.com",
-        path: `/v3/groups/${groupid}/members/${x}/remove`,
-        port: 443,
-        method: "POST",
-        headers: {
-          "Content-Length": json.length,
-          "Content-Type": "application/json",
-          "X-Access-Token": accesstoken
+      try {
+        // Prep message as JSON and construct packet
+        const message = {}
+        const json = JSON.stringify(message)
+        const groupmeAPIOptions = {
+          agent: false,
+          host: "api.groupme.com",
+          path: `/v3/groups/${groupid}/members/${x}/remove`,
+          port: 443,
+          method: "POST",
+          headers: {
+            "Content-Length": json.length,
+            "Content-Type": "application/json",
+            "X-Access-Token": accesstoken
+          }
         }
+    
+        // Send request
+        const req = https.request(groupmeAPIOptions, response => {
+          let data = ""
+          response.on("data", chunk => (data += chunk))
+          response.on("end", () =>
+            console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+          )
+        })
+        req.end(json)
+
+        counter += 1
       }
-  
-      // Send request
-      const req = https.request(groupmeAPIOptions, response => {
-        let data = ""
-        response.on("data", chunk => (data += chunk))
-        response.on("end", () =>
-          console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
-        )
-      })
-      req.end(json)
+      catch(err) {
+        console.log(`Caught ${err}`)
+      }
     }
     else {
       console.log(`Would remove ${x}`)
     }
   }
+  await sendDm(loguserid, `Removed ${counter} members`)
 }
 
 ///////////////////////////////////////////////////
