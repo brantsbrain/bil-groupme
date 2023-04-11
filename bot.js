@@ -1,6 +1,7 @@
 ////////// IMPORTS //////////
 import {
   helptext, helpregex,
+  postInactivityPoll, kickInactive, inactivitypollregex,
   ballersregex, getBallers, changeLoc, changelocregex,
   createEvent, createRotEvent,
   nextregex, getNextSport, returnNextSportPos,
@@ -195,6 +196,11 @@ const respond = async (req, res) => {
         }
       }
 
+      // Assess inactivity poll
+      else if (requesttext.includes(`'Inactivity Poll' has expired`)) {
+        await kickInactive()
+      }
+
       // Post previous sports locations
       else if (locationsregex.test(requesttext)) {
         await createPost(await getLocations())
@@ -234,6 +240,21 @@ const respond = async (req, res) => {
           await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /ballers!`)
           await sendDm(loguserid, `${sendername} attempted to run /ballers`)
           console.log(`${sendername} attempted to run /ballers`)
+        }
+      }
+
+      // Post inactivity poll
+      else if (inactivitypollregex.test(requesttext)) {
+        const adminarr = await getAdmins()
+        if (adminarr.indexOf(senderid) > -1) {
+          await postInactivityPoll(sportjson.inactivitypoll.numdays)
+          await createPost(`Hello @everyone! You have ${sportjson.inactivitypoll.numdays} to respond to this poll or you'll be kicked!`, await getMembers())
+          console.log(`${sendername} ran /inactivitypoll`)
+        }
+        else {
+          await sendDm(senderid, `BOT: Sorry ${sendername}, you're not an admin so you can't run /inactivitypoll!`)
+          await sendDm(loguserid, `${sendername} attempted to run /inactivitypoll`)
+          console.log(`${sendername} attempted to run /inactivitypoll`)
         }
       }
 

@@ -934,6 +934,76 @@ const getWeather = async () => {
 
 }
 
+///////////////////////////////////////////
+////////// INACTIVITY POLL LOGIC //////////
+///////////////////////////////////////////
+
+// Post poll
+const postInactivityPoll = async (numdays) => {
+  console.log(`Creating inactivity poll...`)
+
+  // Set expiration date to numdays from today at 12:00 PM
+  let day = new Date()
+  day.setDate(day.getDate() + numdays)
+  day.setHours(12 + timezone, 0, 0)
+
+  // Convert to number of seconds since 01/01/1970 
+  let milliseconds = day.getTime()
+  let expiration = parseInt(milliseconds / 1000, 10)
+
+  // Setup options array
+  let options = [{"title": "Yes, I want to stay in BIL!"}]
+
+  // Prep poll
+  const message = {
+    "subject": `Inactivity Poll`,
+    options,
+    expiration,
+    "type": "multi",
+    "visibility": "public"
+  }
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: `/v3/poll/${groupid}`,
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "application/json",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
+}
+
+// Kick "no response" members
+const kickInactive = async () => {
+  // Get list of polls
+  const getpath = `/v3/poll/${groupid}?token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+    responseType: "json"
+  })
+
+  // Assign matching poll
+  const inactivitypoll = response.body.response.polls[0].data
+
+
+}
+
 ///////////////////////////////////////////////////
 //////////////////// HELP TEXT ////////////////////
 ///////////////////////////////////////////////////
@@ -984,6 +1054,7 @@ const cancelregex = /^(\s)*\/cancel/i
 const weatherregex = /^(\s)*\/weather/i
 const changelocregex = /^\/change\s+(.+)$/i
 const faqregex = /^(\s)*\/faq/i
+const inactivitypollregex = /^(\s)*\/inactivitypoll/i
 
 /////////////////////////////
 ////////// EXPORTS //////////
@@ -991,6 +1062,7 @@ const faqregex = /^(\s)*\/faq/i
 
 export {postPic}
 export {everyoneregex, getMembers}
+export {postInactivityPoll, kickInactive, inactivitypollregex}
 export {helpregex, helptext, getLocations, getWeather, weatherregex}
 export {getBallers, ballersregex, changeLoc, changelocregex}
 export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
