@@ -1016,9 +1016,9 @@ const kickInactive = async () => {
   const allmembers = await getWholeMembers()
   
   // Find Inactivity Poll
-  var polls = response.body.response.data.polls
+  var polls = response.body.response.polls
   for (let index = 0; index < polls.length; index++) {
-    if (polls[index].subject == "Inactivity Poll") {
+    if (polls[index].data.subject == "Inactivity Poll") {
       var inactpoll = polls[index]
       break
     }
