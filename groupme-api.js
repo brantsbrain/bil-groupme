@@ -973,7 +973,7 @@ const postInactivityPoll = async (numdays) => {
     "subject": `Inactivity Poll`,
     options,
     expiration,
-    "type": "multi",
+    "type": "single",
     "visibility": "public"
   }
 
