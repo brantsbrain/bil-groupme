@@ -952,7 +952,7 @@ const postInactivityPoll = async (numdays) => {
   let expiration = parseInt(milliseconds / 1000, 10)
 
   // Setup options array
-  let options = [{"title": "Yes, I want to stay in BIL!"}]
+  let options = [{"title": "Yes, I want to stay in BIL!"}, {"title": "Get me outta here"}]
 
   // Prep poll
   const message = {
