@@ -4,7 +4,6 @@ import got from "got"
 import {URL} from "url"
 import https from "https"
 import * as dotenv from "dotenv"
-import exp from "constants"
 import axios from "axios"
 dotenv.config()
 
@@ -20,8 +19,7 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-////////// ENVIRONMENT VARS //////////
-// Needed for interaction w/ GroupMe bot
+// ENV vars
 const bot_id = process.env.BOT_ID
 const accesstoken = process.env.ACCESS_TOKEN
 const groupid = process.env.GROUP_ID
@@ -74,13 +72,9 @@ if (!bot_id) {
   console.log("ENV: 'BOT_ID' is undefined")
 }
 
-/* 
-////////// SEND MESSAGES //////////
-Send either: 
-- a regular post to the GroupMe, 
-- a post w/ an array of mention IDs, or
-- a DM to a user ID from the bot owner's user ID
-*/
+///////////////////////////////////////////////////////
+//////////////////// SEND MESSAGES ////////////////////
+///////////////////////////////////////////////////////
 
 // Create a post and mention users if ID array is provided
 const createPost = async (message, mentionids) => {
@@ -241,14 +235,9 @@ const sendDm = async (userid, message) => {
   }
 }
 
-/* 
-////////// GETTERS //////////
-Get: 
-- an array of user IDs of members going to the most recently posted event,
-- an array of all user IDs,
-- an array of admin user IDs for the GroupMe, or
-- a user ID from a provided nickname
-*/
+/////////////////////////////////////////////////
+//////////////////// GETTERS ////////////////////
+/////////////////////////////////////////////////
 
 // Get members as an array from the nearest upcoming event
 const getBallers = async () => {
@@ -289,7 +278,7 @@ const getBallers = async () => {
   return memberarr
 }
 
-// Get members as an array
+// Get member user_ids as an array
 const getMembers = async () => {
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
@@ -305,6 +294,20 @@ const getMembers = async () => {
   }
 
   return memberarr
+}
+
+// Get whole member objects
+const getWholeMembers = async () => {
+  const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+      responseType: "json"
+  })
+
+  const memberdict = response.body.response.members
+  console.log(memberdict)
+
+  return memberdict
 }
 
 // Get admins as an array
@@ -355,14 +358,9 @@ const getTodayDayofWeek = async () => {
   return currentdate.getDay()
 }
 
-/* 
-////////// EVENTS/DAYS //////////
-Handle all functions needed for:
-- creating events,
-- finding appropriate dates,
-- finding appropriate sports, and
-- polling
-*/
+/////////////////////////////////////////////////////
+//////////////////// EVENTS/DAYS ////////////////////
+/////////////////////////////////////////////////////
 
 // Create event
 const createEvent = async (name, loc, address, dayofweek, hour, min, length, description) => {
@@ -836,10 +834,9 @@ const changeLoc = async (loc) => {
   req.end(json)
 }
 
-/* 
-////////// MISC //////////
-Misc functions
-*/
+//////////////////////////////////////////////
+//////////////////// MISC ////////////////////
+//////////////////////////////////////////////
 
 // Get locations as string from sportjson
 const getLocations = async () => {
@@ -893,6 +890,7 @@ const postPic = async (text) => {
   req.end(json)
 }
 
+// Get upcoming weather forecast
 const getWeather = async () => {
   // Replace YOUR_API_KEY with your OpenWeatherMap API key
   const apikey = sportjson.openweatherapikey
@@ -950,6 +948,142 @@ const getWeather = async () => {
 
 }
 
+///////////////////////////////////////////
+////////// INACTIVITY POLL LOGIC //////////
+///////////////////////////////////////////
+
+// Post poll
+const postInactivityPoll = async (numdays) => {
+  console.log(`Creating inactivity poll...`)
+
+  // Set expiration date to numdays from today at 12:00 PM
+  let day = new Date()
+  day.setDate(day.getDate() + numdays)
+  day.setHours(12 + timezone, 0, 0)
+
+  // Convert to number of seconds since 01/01/1970 
+  let milliseconds = day.getTime()
+  let expiration = parseInt(milliseconds / 1000, 10)
+
+  // Setup options array
+  let options = [{"title": "Yes, I want to stay in BIL!"}, {"title": "Get me outta here"}]
+
+  // Prep poll
+  const message = {
+    "subject": `Inactivity Poll`,
+    options,
+    expiration,
+    "type": "multi",
+    "visibility": "public"
+  }
+
+  // Prep message as JSON and construct packet
+  const json = JSON.stringify(message)
+  const groupmeAPIOptions = {
+    agent: false,
+    host: "api.groupme.com",
+    path: `/v3/poll/${groupid}`,
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Length": json.length,
+      "Content-Type": "application/json",
+      "X-Access-Token": accesstoken
+    }
+  }
+
+  // Send request
+  const req = https.request(groupmeAPIOptions, response => {
+    let data = ""
+    response.on("data", chunk => (data += chunk))
+    response.on("end", () =>
+      console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+    )
+  })
+  req.end(json)
+}
+
+// Kick "no response" members
+const kickInactive = async () => {
+  // Get list of polls
+  const getpath = `/v3/poll/${groupid}?token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+    responseType: "json"
+  })
+
+  // Get all member IDs
+  const allmembers = await getWholeMembers()
+  
+  // Find Inactivity Poll
+  var polls = response.body.response.polls
+  for (let index = 0; index < polls.length; index++) {
+    if (polls[index].data.subject == "Inactivity Poll") {
+      var inactpoll = polls[index]
+      break
+    }
+  }
+
+  // Get active member IDs
+  const activemembers = inactpoll.data.options[0].voter_ids
+
+  // Get IDs to remove
+  var removemembers = []
+  for (const x of allmembers) {
+    if (!(activemembers.includes(x.user_id))) {
+      removemembers.push(x.id)
+    }
+  }
+  console.log(removemembers)
+
+  // Remove members if active. Log if not
+  var counter = 0
+  for (const x of removemembers) {
+    if (sportjson.inactivitypoll.active) {
+      try {
+        // Prep message as JSON and construct packet
+        const message = {}
+        const json = JSON.stringify(message)
+        const groupmeAPIOptions = {
+          agent: false,
+          host: "api.groupme.com",
+          path: `/v3/groups/${groupid}/members/${x}/remove`,
+          port: 443,
+          method: "POST",
+          headers: {
+            "Content-Length": json.length,
+            "Content-Type": "application/json",
+            "X-Access-Token": accesstoken
+          }
+        }
+    
+        // Send request
+        const req = https.request(groupmeAPIOptions, response => {
+          let data = ""
+          response.on("data", chunk => (data += chunk))
+          response.on("end", () =>
+            console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+          )
+        })
+        req.end(json)
+
+        counter += 1
+      }
+      catch(err) {
+        console.log(`Caught ${err}`)
+      }
+    }
+    else {
+      console.log(`Would remove ${x}`)
+    }
+  }
+  await sendDm(loguserid, `Removed ${counter} members`)
+}
+
+///////////////////////////////////////////////////
+//////////////////// HELP TEXT ////////////////////
+///////////////////////////////////////////////////
+
 var helptext = `Bot Commands:\n` +
   `/admins [message] - Mention the admins with a pressing question/comment\n` +
   `/next - Post the next upcoming # sport\n` +
@@ -964,6 +1098,9 @@ var helptext = `Bot Commands:\n` +
   `/everyone [message] - Mention everyone in the group\n` +
   `/cancel - Cancel nearest upcoming event (must be created by bot owner)\n` +
   `/change [new location] - Change the location of nearest upcoming event (must be created by bot owner) and notify ballers\n` +
+  `/soccer - Post soccer event\n` +
+  `/sportspoll - Post sports poll\n` +
+  `/inactivitypoll - Post an inactivity poll\n` +
 
   `\nNavigating GroupMe:\n` +
   `Responding to a poll - Click/Tap the group picture in the upper right corner, find 'Polls', and select and cast your vote(s) for the desired options\n` +
@@ -973,7 +1110,10 @@ var helptext = `Bot Commands:\n` +
   `Soccer ~s - Mondays at 8:00 AM EST a soccer event is created for the following ~\n` +
   `# Sports - Wednesdays at 8:00 AM EST an event or poll is created for the following weekly sport day's sport. If the week is a poll week, upon poll expiration on Thursday 12:00 PM EST the winning sport's event is auto-created. Ties must be resolved manually.`
 
+/////////////////////////////////////
 ////////// (LOTS OF) REGEX //////////
+/////////////////////////////////////
+
 const ballersregex = /^(\s)*\/ballers/i
 const helpregex = /^(\s)*\/help/i
 const coolregex = /^(\s)*\/cool/i
@@ -989,12 +1129,17 @@ const versionregex = /^(\s)*\/version/i
 const everyoneregex = /^(\s)*\/everyone/i
 const cancelregex = /^(\s)*\/cancel/i
 const weatherregex = /^(\s)*\/weather/i
-const changelocregex = /^\/change\s+(.+)$/
+const changelocregex = /^\/change\s+(.+)$/i
 const faqregex = /^(\s)*\/faq/i
+const inactivitypollregex = /^(\s)*\/inactivitypoll/i
 
-// Exports
+/////////////////////////////
+////////// EXPORTS //////////
+/////////////////////////////
+
 export {postPic}
 export {everyoneregex, getMembers}
+export {postInactivityPoll, kickInactive, inactivitypollregex}
 export {helpregex, helptext, getLocations, getWeather, weatherregex}
 export {getBallers, ballersregex, changeLoc, changelocregex}
 export {createEvent, createRotEvent, locationsregex, nextregex, getNextSport, returnNextSportPos, getSportRotation, sportrotregex, cancelUpcoming, cancelregex}
