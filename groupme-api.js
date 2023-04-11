@@ -1008,7 +1008,7 @@ const kickInactive = async () => {
   const removemembers = allmembers.filter(x => !activemembers.includes(x))
   console.log(removemembers)
 
-  for (x of removemembers) {
+  for (const x of removemembers) {
     if (sportjson.inactivitypoll.active) {
       const message = {}
       // Prep message as JSON and construct packet
