@@ -1015,24 +1015,32 @@ const kickInactive = async () => {
   // Get all member IDs
   const allmembers = await getWholeMembers()
   
-  // Get active member IDs
-  const activemembers = response.body.response.polls[0].data.options[0].voter_ids
+  // Find Inactivity Poll
+  var polls = response.body.response.data.polls
+  for (let index = 0; index < polls.length; index++) {
+    if (polls[index].subject == "Inactivity Poll") {
+      var inactpoll = polls[index]
+      break
+    }
+  }
 
+  // Get active member IDs
+  const activemembers = inactpoll.data.options[0].voter_ids
+
+  // Get IDs to remove
   var removemembers = []
   for (const x of allmembers) {
     if (!(activemembers.includes(x.user_id))) {
       removemembers.push(x.id)
     }
   }
-
-  // Get IDs to remove
-  // const removemembers = allmembers.filter(x => !activemembers.includes(x))
   console.log(removemembers)
 
+  // Remove members if active. Log if not
   for (const x of removemembers) {
     if (sportjson.inactivitypoll.active) {
-      const message = {}
       // Prep message as JSON and construct packet
+      const message = {}
       const json = JSON.stringify(message)
       const groupmeAPIOptions = {
         agent: false,
