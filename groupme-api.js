@@ -278,7 +278,7 @@ const getBallers = async () => {
   return memberarr
 }
 
-// Get members as an array
+// Get member user_ids as an array
 const getMembers = async () => {
   const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
   const desturl = new URL(getpath, baseurl)
@@ -294,6 +294,20 @@ const getMembers = async () => {
   }
 
   return memberarr
+}
+
+// Get whole member objects
+const getWholeMembers = async () => {
+  const getpath = `/v3/groups/${groupid}?token=${accesstoken}`
+  const desturl = new URL(getpath, baseurl)
+  const response = await got(desturl, {
+      responseType: "json"
+  })
+
+  const memberdict = response.body.response.members
+  console.log(memberdict)
+
+  return memberdict
 }
 
 // Get admins as an array
@@ -999,13 +1013,20 @@ const kickInactive = async () => {
   })
 
   // Get all member IDs
-  const allmembers = await getMembers()
+  const allmembers = await getWholeMembers()
   
   // Get active member IDs
   const activemembers = response.body.response.polls[0].data.options[0].voter_ids
 
+  var removemembers = []
+  for (const x of allmembers) {
+    if (!(activemembers.includes(x.user_id))) {
+      removemembers.push(x.id)
+    }
+  }
+
   // Get IDs to remove
-  const removemembers = allmembers.filter(x => !activemembers.includes(x))
+  // const removemembers = allmembers.filter(x => !activemembers.includes(x))
   console.log(removemembers)
 
   for (const x of removemembers) {
