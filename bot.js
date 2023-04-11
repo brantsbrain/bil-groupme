@@ -249,6 +249,7 @@ const respond = async (req, res) => {
         const adminarr = await getAdmins()
         if (adminarr.indexOf(senderid) > -1) {
           await postInactivityPoll(sportjson.inactivitypoll.numdays)
+          await createPost(sportjson.inactivitypoll.text, await getMembers())
           console.log(`${sendername} ran /inactivitypoll`)
         }
         else {
