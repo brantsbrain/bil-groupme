@@ -1,4 +1,10 @@
 {
+    "inactivitypoll": {
+        "active": false,
+        "numdays": 10,
+        "posttext": false,
+        "text": ""
+    },
     "faqlink": "",
     "weather": {
         "active": false,
