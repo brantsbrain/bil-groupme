@@ -1075,6 +1075,7 @@ const kickInactive = async () => {
     }
     else {
       console.log(`Would remove ${x}`)
+      counter += 1
     }
   }
   await sendDm(loguserid, `Removed ${counter} members`)
