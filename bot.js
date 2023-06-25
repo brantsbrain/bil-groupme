@@ -213,12 +213,12 @@ const respond = async (req, res) => {
       }
 
       // Post next upcoming Friday sport
-      else if (nextregex.test(requesttext)) {
+      else if (nextregex.test(requesttext) && sportjson.rotsport.scheduleday < 8) {
         await getNextSport()
       }
 
       // Post current sport rotation
-      else if (sportrotregex.test(requesttext)) {
+      else if (sportrotregex.test(requesttext) && sportjson.rotsport.scheduleday < 8) {
         await createPost(await getSportRotation())
       }
 
